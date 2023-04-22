@@ -20,7 +20,7 @@ const Login = (props: Props) => {
     props.setVerified(true);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const emailValue = e.target.value;
     console.log(emailValue.length);
     let emailLabel = document.getElementById("emailLabel");
