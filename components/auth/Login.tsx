@@ -37,6 +37,7 @@ const Login = (props: Props) => {
 
   const toggleShowPassword = () => {
     setShowPassword((showPassword) => !showPassword);
+    document.getElementById("password")?.focus();
   };
 
   const handleLogin = async (e: React.SyntheticEvent) => {
@@ -89,7 +90,7 @@ const Login = (props: Props) => {
             <form className="flex flex-col gap-3" autoComplete="off" onSubmit={handleLogin}>
               <div className="relative flex-1">
                 <Input
-                  wide="full"
+                  wide="lg"
                   onChange={(e) => handleChange(e, "emailLabel")}
                   id="email"
                   type="email"
@@ -108,7 +109,7 @@ const Login = (props: Props) => {
               </div>
               <div className="relative flex-1">
                 <Input
-                  wide="full"
+                  wide="lg"
                   type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"

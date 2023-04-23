@@ -12,18 +12,18 @@ export const metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-  title: "My Safe House",
+  title: "Safe House",
   description: "Keep your information secure with us",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={signika.className + " text-base bg-slate-50 flex flex-col min-h-screen h-screen"}>
+      <body className={signika.className + " text-base bg-slate-50 flex flex-col"}>
         <AuthProvider>
           <Header />
           <MobileMenu />
-          <main className="flex-1 px-3 md:px-10 pt-5 pb-10 flex">{children}</main>
+          <main className="flex-1 px-3 md:px-10 pt-5 pb-10 flex min-h-screen">{children}</main>
           <Footer />
         </AuthProvider>
         <Toast />

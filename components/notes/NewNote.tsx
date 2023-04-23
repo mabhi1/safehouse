@@ -35,7 +35,7 @@ const NewNote = (props: Props) => {
 
   if (!showForm)
     return (
-      <div className="flex justify-center items-center shadow bg-slate-100 min-h-[15rem]">
+      <div className="flex justify-center items-center shadow bg-slate-100 min-h-[17rem]">
         <IoAddOutline className="text-4xl shadow-md border border-slate-200 cursor-pointer" onClick={() => setShowForm((showForm) => !showForm)} />
       </div>
     );

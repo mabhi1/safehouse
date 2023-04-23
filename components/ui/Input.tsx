@@ -14,8 +14,10 @@ const inputVariants = cva("border-2 focus-visible:outline-none bg-slate-50 borde
     },
     wide: {
       default: "",
-      md: "w-60 md:w-80",
-      full: "w-full",
+      xs: "w-32 lg:w-32 md:w-40",
+      sm: "w-40 lg:w-40 md:w-60",
+      md: "w-60 lg:w-60 md:w-80",
+      lg: "w-full",
     },
   },
   defaultVariants: {
