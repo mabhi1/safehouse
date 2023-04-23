@@ -1,17 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import Button from "./ui/Button";
+import Button from "../ui/Button";
 import { passwordReset, rememberSignIn, signIn } from "@/firebase/firebaseFunctions";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import Input from "./ui/Input";
+import React, { useEffect, useState } from "react";
+import Input from "../ui/Input";
 import { showToast } from "@/utils/handleToast";
-import Spinner from "./ui/Spinner";
+import Spinner from "../ui/Spinner";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import Footer from "@/app/Footer";
 
-type Props = {
-  setVerified: Dispatch<SetStateAction<boolean>>;
-};
+type Props = {};
 const Login = (props: Props) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -56,7 +53,6 @@ const Login = (props: Props) => {
     try {
       if (checked) await rememberSignIn(email, password);
       else await signIn(email, password);
-      props.setVerified(true);
     } catch (error: any) {
       if (error === "Wrong Password") error = "User Not Found";
       showToast("error", error);
@@ -76,7 +72,7 @@ const Login = (props: Props) => {
 
   return (
     <div className="text-base bg-slate-50 flex flex-col min-h-screen">
-      <header className="pt-5 px-5 md:px-10 flex items-center justify-between mb-10">
+      <header className="pt-5 px-3 md:px-10 flex items-center justify-between mb-10">
         <div className="flex gap-1 items-center">
           <Image src="/logo.png" alt="Safe House" width={50} height={50} priority />
           <Link href={"/home"}>Safe House</Link>
@@ -84,8 +80,8 @@ const Login = (props: Props) => {
       </header>
       <main className="flex-1 px-5 pb-5">
         <div className="flex-1 flex flex-col lg:flex-row items-center gap-5 justify-center">
-          <div className="w-1/2 lg:w-1/3 justify-center flex">
-            <Image src="/login-img.png" width={420} height={494} alt="Login" priority />
+          <div className="w-1/2 lg:w-1/4 justify-center flex">
+            <Image src="/login-img.png" width={420} height={494} alt="Login" priority className="w-auto h-auto" />
           </div>
           <div className="flex flex-col gap-3 lg:w-1/3 lg:p-8">
             <h1 className="text-3xl">Welcome back</h1>
@@ -105,7 +101,7 @@ const Login = (props: Props) => {
                 <label
                   id="emailLabel"
                   htmlFor="email"
-                  className="absolute cursor-text text-slate-400 text-base left-2 top-2 peer-focus:-translate-y-5 peer-focus:text-sm peer-focus:text-cyan-900 bg-slate-50 transition-all duration-200"
+                  className="absolute cursor-text text-slate-400 text-base left-[0.6rem] top-[0.6rem] peer-focus:-translate-y-5 peer-focus:text-sm peer-focus:text-cyan-900 bg-slate-50 transition-all duration-200"
                 >
                   Email
                 </label>
@@ -124,7 +120,7 @@ const Login = (props: Props) => {
                 <label
                   htmlFor="password"
                   id="passwordLabel"
-                  className="absolute cursor-text text-slate-400 text-base left-2 top-2 peer-focus:-translate-y-5 peer-focus:text-sm peer-focus:text-cyan-900 bg-slate-50 transition-all duration-200"
+                  className="absolute cursor-text text-slate-400 text-base left-[0.6rem] top-[0.6rem] peer-focus:-translate-y-5 peer-focus:text-sm peer-focus:text-cyan-900 bg-slate-50 transition-all duration-200"
                 >
                   Password
                 </label>

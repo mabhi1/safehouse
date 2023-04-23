@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import LogoutBtn from "../components/LogoutBtn";
+import LogoutBtn from "../components/auth/LogoutBtn";
 
 type Props = {};
 const classes = {
@@ -8,12 +8,12 @@ const classes = {
 };
 const Header = (props: Props) => {
   return (
-    <header className="flex items-center justify-between pt-5 px-10">
+    <header className="flex items-center justify-between shadow sticky z-50 bg-slate-50/10 backdrop-blur top-0 py-3 md:py-5 px-3 md:px-10">
       <div className="flex gap-1 items-center">
         <Image src="/logo.png" alt="Safe House" width={50} height={50} priority />
-        <Link href={"/home"}>Safe House</Link>
+        <Link href={"/"}>Safe House</Link>
       </div>
-      <nav className="flex gap-8">
+      <nav className="hidden lg:flex gap-8">
         <Link href={"/docs"} className={classes.navlinks}>
           Docs
         </Link>

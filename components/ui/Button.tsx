@@ -2,11 +2,11 @@ import { ButtonHTMLAttributes, FC } from "react";
 import { VariantProps, cva } from "class-variance-authority";
 import { mergeClass } from "@/utils/mergeClass";
 
-const buttonVariants = cva("p-2 cursor-pointer rounded", {
+const buttonVariants = cva("py-2 px-4 cursor-pointer rounded", {
   variants: {
     variant: {
       default: "shadow-lg shadow-cyan-900/50 bg-cyan-900 hover:bg-cyan-800 focus:bg-cyan-800 text-slate-50",
-      destructive: "",
+      destructive: "shadow-lg shadow-red-900/50 bg-red-900 hover:bg-red-800 focus:bg-red-800 text-slate-50",
       outline: "shadow shadow-cyan-950/50 bg-cyan-50 hover:bg-cyan-100 focus:bg-cyan-100 text-cyan-950 border border-cyan-950",
       disabled: "bg-slate-400 flex justify-center items-center text-slate-50 cursor-not-allowed",
       subtle: "",
@@ -15,7 +15,7 @@ const buttonVariants = cva("p-2 cursor-pointer rounded", {
     },
     size: {
       default: "",
-      sm: "min-w-[4rem] p-0",
+      sm: "min-w-[4rem] py-1 px-2",
       md: "min-w-[7rem]",
       lg: "",
     },

@@ -1,5 +1,5 @@
 import Toast from "@/components/ui/Toast";
-import { AuthProvider } from "../components/AuthProvider";
+import { AuthProvider } from "../components/auth/AuthProvider";
 import Header from "./Header";
 import "./globals.css";
 import { Signika_Negative } from "next/font/google";
@@ -18,10 +18,10 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={signika.className + " text-base bg-slate-50 flex flex-col min-h-screen"}>
+      <body className={signika.className + " text-base bg-slate-50 flex flex-col min-h-screen h-screen relative"}>
         <AuthProvider>
           <Header />
-          <main className="flex-1 px-10">{children}</main>
+          <main className="flex-1 px-3 md:px-10 pt-5 pb-10 flex">{children}</main>
           <Footer />
         </AuthProvider>
         <Toast />
