@@ -2,8 +2,9 @@ import Spinner from "@/components/ui/Spinner";
 
 export default function Home() {
   return (
-    <div className="flex-1 flex flex-col items-center gap-10 pt-20">
+    <div className="flex-1 flex flex-col items-center gap-5 pt-20">
       <Spinner size="xl" />
+      <span>Please Wait...</span>
     </div>
     // <main className="flex min-h-screen flex-col items-center justify-between p-24">
     //   <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">

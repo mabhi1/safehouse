@@ -78,7 +78,7 @@ const Login = (props: Props) => {
           <Link href={"/home"}>Safe House</Link>
         </div>
       </header>
-      <main className="flex-1 px-5 pb-5">
+      <main className="flex-1 px-12 md:px-5 pb-5">
         <div className="flex-1 flex flex-col lg:flex-row items-center gap-5 justify-center">
           <div className="w-1/2 lg:w-1/4 justify-center flex">
             <Image src="/login-img.png" width={420} height={494} alt="Login" priority className="w-auto h-auto" />
