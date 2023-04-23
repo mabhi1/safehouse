@@ -1,9 +1,8 @@
+"use client";
 import Link from "next/link";
-import { GrDocumentText, GrNotes } from "react-icons/gr";
-import { GoCalendar } from "react-icons/go";
-import { BsBank2, BsSafe2 } from "react-icons/bs";
-import Button from "./Button";
+import { FcHome, FcDocument, FcCalendar, FcLock, FcNews, FcLibrary } from "react-icons/fc";
 import LogoutBtn from "../auth/LogoutBtn";
+import { closeMobileMenu } from "@/utils/toggleMobileMenu";
 
 type Props = {};
 const classes = {
@@ -17,24 +16,28 @@ const MobileMenu = (props: Props) => {
         id="mobileMenu"
         className="lg:hidden fixed -left-full transition-all duration-300 bottom-0 top-16 p-5 z-40 w-3/4 shadow-lg border backdrop-blur border-r-slate-200 flex flex-col bg-slate-50/80"
       >
-        <Link href={"/docs"} className={classes.navLink}>
-          <GrDocumentText className={classes.navIcon} />
+        <Link href={"/"} className={classes.navLink} onClick={closeMobileMenu}>
+          <FcHome className={classes.navIcon} />
+          Home
+        </Link>
+        <Link href={"/docs"} className={classes.navLink} onClick={closeMobileMenu}>
+          <FcDocument className={classes.navIcon} />
           Docs
         </Link>
-        <Link href={"/notes"} className={classes.navLink}>
-          <GrNotes className={classes.navIcon} />
+        <Link href={"/notes"} className={classes.navLink} onClick={closeMobileMenu}>
+          <FcNews className={classes.navIcon} />
           Notes
         </Link>
-        <Link href={"/calendar"} className={classes.navLink}>
-          <GoCalendar className={classes.navIcon} />
+        <Link href={"/calendar"} className={classes.navLink} onClick={closeMobileMenu}>
+          <FcCalendar className={classes.navIcon} />
           Calendar
         </Link>
-        <Link href={"/banks"} className={classes.navLink}>
-          <BsBank2 className={classes.navIcon} />
+        <Link href={"/banks"} className={classes.navLink} onClick={closeMobileMenu}>
+          <FcLibrary className={classes.navIcon} />
           Banks
         </Link>
-        <Link href={"/passwords"} className={classes.navLink + " mb-2"}>
-          <BsSafe2 className={classes.navIcon} />
+        <Link href={"/passwords"} className={classes.navLink + " mb-2"} onClick={closeMobileMenu}>
+          <FcLock className={classes.navIcon} />
           Passwords
         </Link>
         <LogoutBtn />

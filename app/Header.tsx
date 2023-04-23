@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import LogoutBtn from "../components/auth/LogoutBtn";
-import MobileMenu from "@/components/ui/MobileMenu";
 import MobileMenuButton from "@/components/ui/MobileMenuButton";
 
 type Props = {};
@@ -16,6 +15,9 @@ const Header = (props: Props) => {
         <Link href={"/"}>Safe House</Link>
       </div>
       <nav className="hidden relative lg:flex">
+        <Link id="home-menu" href={"/"} className={classes.navlinks}>
+          Home
+        </Link>
         <Link id="docs-menu" href={"/docs"} className={classes.navlinks}>
           Docs
         </Link>
