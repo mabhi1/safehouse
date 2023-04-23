@@ -1,13 +1,13 @@
 "use client";
 import { dosignOut } from "@/firebase/firebaseFunctions";
 import useAuth from "./AuthProvider";
+import Button from "./ui/Button";
 
 type Props = {};
 
 const LogoutBtn = (props: Props) => {
   const setVerified = useAuth();
   const handleLogout = async () => {
-    console.log("asd");
     try {
       await dosignOut();
       setVerified(false);
@@ -16,10 +16,6 @@ const LogoutBtn = (props: Props) => {
     }
   };
 
-  return (
-    <button className="py-1 px-2 text-slate-50 bg-cyan-900 rounded cursor-pointer" onClick={handleLogout}>
-      Logout
-    </button>
-  );
+  return <Button onClick={handleLogout}>Logout</Button>;
 };
 export default LogoutBtn;

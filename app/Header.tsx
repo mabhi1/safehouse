@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import LogoutBtn from "./LogoutBtn";
+import LogoutBtn from "../components/LogoutBtn";
 
 type Props = {};
 const classes = {
@@ -8,7 +8,7 @@ const classes = {
 };
 const Header = (props: Props) => {
   return (
-    <header className="flex items-center justify-between">
+    <header className="flex items-center justify-between pt-5 px-10">
       <div className="flex gap-1 items-center">
         <Image src="/logo.png" alt="Safe House" width={50} height={50} priority />
         <Link href={"/home"}>Safe House</Link>

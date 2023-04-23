@@ -1,7 +1,17 @@
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signOut, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signOut,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  setPersistence,
+  browserSessionPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
 import "./firebase";
 
-const auth = getAuth();
+import auth from "./firebase";
 
 function createErrorMessage(error: { message: string }) {
   return error.message
@@ -34,6 +44,16 @@ async function createUser(email: string, password: string, displayName: string) 
 
 async function signIn(email: string, password: string) {
   try {
+    await setPersistence(auth, browserSessionPersistence);
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error: any) {
+    throw createErrorMessage(error);
+  }
+}
+
+async function rememberSignIn(email: string, password: string) {
+  try {
+    await setPersistence(auth, browserLocalPersistence);
     await signInWithEmailAndPassword(auth, email, password);
   } catch (error: any) {
     throw createErrorMessage(error);
@@ -56,4 +76,4 @@ async function dosignOut() {
   }
 }
 
-export { createUser, dosignOut, passwordReset, signIn };
+export { createUser, dosignOut, passwordReset, signIn, rememberSignIn };
