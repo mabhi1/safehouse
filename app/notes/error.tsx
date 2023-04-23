@@ -9,9 +9,6 @@ type Props = {
   reset: () => void;
 };
 const Error = ({ error, reset }: Props) => {
-  useEffect(() => {
-    console.log(error);
-  }, []);
   return (
     <div className="flex flex-1 flex-col items-center gap-5 pt-10">
       <h1 className="text-8xl text-red-900">OOPS!</h1>
