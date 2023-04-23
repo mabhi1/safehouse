@@ -23,7 +23,6 @@ const Notes = (props: Props) => {
 
   if (notesQuery.isLoading) return <Loading />;
   if (notesQuery.isError) throw notesQuery.error;
-  console.log(notesQuery.data);
 
   return (
     <div className="flex flex-col gap-5 flex-1">
