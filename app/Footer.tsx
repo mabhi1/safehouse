@@ -18,7 +18,7 @@ const Footer = (props: Props) => {
         </div>
         <div className="flex flex-col gap-2 lg:px-10 pt-1 lg:pt-0">
           <div className="text-slate-50">Navigation Links</div>
-          <div className="flex  flex-col">
+          <div className="flex flex-row justify-between lg:flex-col">
             <Link href={"/notes"}>Docs</Link>
             <Link href={"/notes"}>Notes</Link>
             <Link href={"/notes"}>Calendar</Link>
