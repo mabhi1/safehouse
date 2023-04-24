@@ -28,11 +28,11 @@
 
 #banks-menu:hover ~ #menu-hover {
   left: 19.3rem;
-  width: 3.7rem;
+  width: 3.3rem;
 }
 
 #passwords-menu:hover ~ #menu-hover {
-  left: 23.9rem;
+  left: 23.5rem;
   width: 5.5rem;
 }
 
