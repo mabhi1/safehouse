@@ -11,7 +11,7 @@ const buttonVariants = cva("py-2 px-4 cursor-pointer rounded", {
       disabled: "bg-slate-400 flex justify-center items-center text-slate-50 cursor-not-allowed",
       subtle: "",
       ghost: "",
-      link: "p-0 text-cyan-900 relative hover:after:w-full focus:after:w-full after:transition-all after:duration-500 after:content-[''] after:w-0 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-cyan-900",
+      link: "p-0 text-cyan-900 relative hover:after:w-full after:transition-all after:duration-500 after:content-[''] after:w-0 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-cyan-900",
     },
     size: {
       default: "",

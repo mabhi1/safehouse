@@ -29,12 +29,12 @@ const Footer = (props: Props) => {
         <div className="flex flex-col gap-2 lg:px-10 pt-1 lg:pt-0">
           <div className="text-slate-50">Newsletter</div>
           <div>Enter your email to join our newsletter</div>
-          <div className="flex wrap gap-5">
+          <div className="flex flex-wrap gap-5">
             <span className="flex items-center relative text-slate-900">
               <MdOutlineMail className="absolute top-1/2 -translate-y-1/2 left-2" />
               <Input type="text" variant={"iconSmall"} wide={"md"} className="border-slate-900" />
             </span>
-            <Button variant={"outline"} size={"sm"} className="min-w-auto">
+            <Button variant={"outline"} size={"sm"} className="min-w-fit">
               Subscribe
             </Button>
           </div>

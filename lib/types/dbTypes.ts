@@ -7,4 +7,13 @@ type NotesType = {
   updatedAt: Date;
 };
 
-export type { NotesType };
+type PasswordType = {
+  id: string;
+  password: string;
+  site: string;
+  uid: string;
+  updatedAt: Date;
+  username: string;
+};
+
+export type { NotesType, PasswordType };
