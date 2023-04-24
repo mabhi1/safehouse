@@ -55,7 +55,7 @@ const Passwords = (props: Props) => {
           <BiSearchAlt2 className="text-slate-400 absolute top-1/2 -translate-y-1/2 left-2" />
         </span>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
         {term ? showPasswords(filteredPasswords) : showPasswords(passwords)}
       </div>
     </div>

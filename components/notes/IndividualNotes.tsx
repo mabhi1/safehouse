@@ -13,7 +13,7 @@ const IndividualNotes = ({ note, searchTerm }: Props) => {
 
   return (
     <div className="flex flex-col gap-2 bg-amber-50 border border-amber-200 rounded p-2 justify-between overflow-hidden">
-      <div className="underline underline-offset-2">
+      <div className="underline underline-offset-2 break-words">
         <MarkedText text={note.name} searchTerm={searchTerm} />
       </div>
       <div className="overflow-y-auto min-h-[10rem] h-[10rem] p-1 bg-transparent">

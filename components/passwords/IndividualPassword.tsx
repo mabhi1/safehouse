@@ -16,22 +16,26 @@ const IndividualPassword = ({ password, searchTerm }: Props) => {
 
   if (!password) return <></>;
   return (
-    <div className="flex flex-col gap-2 shadow transition-shadow duration-300 hover:shadow-lg border rounded p-2 overflow-hidden">
-      <div>
-        <MarkedText text={password.site} searchTerm={searchTerm} />
+    <div className="flex flex-col justify-between shadow transition-shadow duration-300 hover:shadow-lg border rounded p-2 overflow-hidden">
+      <div className="flex flex-col gap-2">
+        <div className="break-words">
+          <MarkedText text={password.site} searchTerm={searchTerm} />
+        </div>
+        <div className="break-words">
+          <MarkedText text={password.username} searchTerm={searchTerm} />
+        </div>
+        <div className="break-words">{visible ? decryptPassword(password.password) : "********"}</div>
       </div>
       <div>
-        <MarkedText text={password.username} searchTerm={searchTerm} />
+        <div className="flex gap-4 justify-end my-2">
+          <Button variant="link" onClick={() => setVisible((visible) => !visible)}>
+            {visible ? "Hide" : "Show"}
+          </Button>
+          <Button variant="link">Edit</Button>
+          <Button variant="link">Delete</Button>
+        </div>
+        <div className="text-slate-500 italic text-xs border-t border-slate-500 pt-1">Updated : {dateFormatter(password.updatedAt)}</div>
       </div>
-      <div>{visible ? decryptPassword(password.password) : "********"}</div>
-      <div className="flex gap-4 justify-center md:justify-end">
-        <Button variant="link" onClick={() => setVisible((visible) => !visible)}>
-          {visible ? "Hide" : "Show"}
-        </Button>
-        <Button variant="link">Edit</Button>
-        <Button variant="link">Delete</Button>
-      </div>
-      <div className="text-slate-500 italic text-xs border-t border-slate-500 pt-1">Updated : {dateFormatter(password.updatedAt)}</div>
     </div>
   );
 };
