@@ -34,7 +34,7 @@ const MobileMenu = (props: Props) => {
         </Link>
         <Link href={"/banks"} className={classes.navLink} onClick={closeMobileMenu}>
           <FcLibrary className={classes.navIcon} />
-          Banks
+          Bank
         </Link>
         <Link href={"/passwords"} className={classes.navLink + " mb-2"} onClick={closeMobileMenu}>
           <FcLock className={classes.navIcon} />

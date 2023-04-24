@@ -28,7 +28,7 @@ const Header = (props: Props) => {
           Calendar
         </Link>
         <Link id="banks-menu" href={"/banks"} className={classes.navlinks}>
-          Banks
+          Bank
         </Link>
         <Link id="passwords-menu" href={"/passwords"} className={classes.navlinks}>
           Passwords
