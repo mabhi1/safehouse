@@ -26,13 +26,18 @@
   width: 4.9rem;
 }
 
-#banks-menu:hover ~ #menu-hover {
+#accounts-menu:hover ~ #menu-hover {
   left: 19.3rem;
+  width: 5rem;
+}
+
+#cards-menu:hover ~ #menu-hover {
+  left: 25.3rem;
   width: 3.3rem;
 }
 
 #passwords-menu:hover ~ #menu-hover {
-  left: 23.5rem;
+  left: 29.6rem;
   width: 5.5rem;
 }
 

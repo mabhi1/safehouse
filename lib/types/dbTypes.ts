@@ -42,4 +42,15 @@ type TaskType = {
   updatedAt: Date;
 };
 
-export type { NotesType, PasswordType, FolderType, FileType, TaskType };
+type CardType = {
+  id: string;
+  bank: string;
+  cvv: string;
+  expiry: string;
+  number: string;
+  type: "credit" | "debit";
+  uid: string;
+  updatedAt: Date;
+};
+
+export type { NotesType, PasswordType, FolderType, FileType, TaskType, CardType };

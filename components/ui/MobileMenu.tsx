@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { FcHome, FcDocument, FcCalendar, FcLock, FcNews, FcLibrary } from "react-icons/fc";
+import { FcHome, FcDocument, FcCalendar, FcLock, FcNews, FcLibrary, FcIpad } from "react-icons/fc";
 import LogoutBtn from "../auth/LogoutBtn";
 import { closeMobileMenu } from "@/utils/toggleMobileMenu";
 
@@ -32,9 +32,13 @@ const MobileMenu = (props: Props) => {
           <FcCalendar className={classes.navIcon} />
           Calendar
         </Link>
-        <Link href={"/bank"} className={classes.navLink} onClick={closeMobileMenu}>
+        <Link href={"/accounts"} className={classes.navLink} onClick={closeMobileMenu}>
           <FcLibrary className={classes.navIcon} />
-          Bank
+          Accounts
+        </Link>
+        <Link href={"/cards"} className={classes.navLink} onClick={closeMobileMenu}>
+          <FcIpad className={classes.navIcon} />
+          Cards
         </Link>
         <Link href={"/passwords"} className={classes.navLink + " mb-2"} onClick={closeMobileMenu}>
           <FcLock className={classes.navIcon} />

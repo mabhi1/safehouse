@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
 import { PasswordType } from "@/lib/types/dbTypes";
-import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { dateFormatter } from "@/utils/dateFormatter";
-import { decryptPassword } from "@/utils/encryption";
+import { decrypt } from "@/utils/encryption";
 import MarkedText from "../ui/MarkedText";
 
 type Props = {
@@ -24,7 +23,7 @@ const IndividualPassword = ({ password, searchTerm }: Props) => {
         <div className="break-words">
           <MarkedText text={password.username} searchTerm={searchTerm} />
         </div>
-        <div className="break-words">{visible ? decryptPassword(password.password) : "********"}</div>
+        <div className="break-words">{visible ? decrypt(password.password) : "********"}</div>
       </div>
       <div>
         <div className="flex gap-4 justify-end my-2">

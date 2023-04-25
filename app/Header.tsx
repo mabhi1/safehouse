@@ -27,8 +27,11 @@ const Header = (props: Props) => {
         <Link id="calendar-menu" href={"/calendar"} className={classes.navlinks}>
           Calendar
         </Link>
-        <Link id="banks-menu" href={"/bank"} className={classes.navlinks}>
-          Bank
+        <Link id="accounts-menu" href={"/accounts"} className={classes.navlinks}>
+          Accounts
+        </Link>
+        <Link id="cards-menu" href={"/cards"} className={classes.navlinks}>
+          Cards
         </Link>
         <Link id="passwords-menu" href={"/passwords"} className={classes.navlinks}>
           Passwords
