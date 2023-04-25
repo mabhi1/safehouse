@@ -26,7 +26,7 @@ const Passwords = (props: Props) => {
   });
 
   const filterPasswords = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value.toLowerCase();
+    const text = e.target.value.trim().toLowerCase();
     setTerm(text);
     setFilteredPasswords(
       passwords.filter((pass: PasswordType) => {

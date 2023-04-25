@@ -12,6 +12,7 @@ import Loading from "../loading";
 import { TaskType } from "@/lib/types/dbTypes";
 import TaskView from "@/components/calendar/TaskView";
 import TaskDetail from "@/components/calendar/TaskSummary";
+import FilteredEvents from "@/components/calendar/FilteredEvents";
 
 type Props = {};
 const Calendar = (props: Props) => {
@@ -23,6 +24,7 @@ const Calendar = (props: Props) => {
   const [showTask, setShowTask] = useState<TaskType[]>([]);
   const [upTask, setUpTask] = useState<TaskType[]>([]);
   const [taskMode, setTaskMode] = useState("close");
+  const [term, setTerm] = useState("");
   const currentUser = useAuth();
 
   const tasksQuery = useQuery({
@@ -52,6 +54,11 @@ const Calendar = (props: Props) => {
     );
   }, [task, selectDate]);
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim().toLowerCase();
+    setTerm(value);
+  };
+
   if (tasksQuery.isLoading) return <Loading />;
   if (tasksQuery.isError) throw tasksQuery.error;
 
@@ -60,10 +67,11 @@ const Calendar = (props: Props) => {
       <div className="flex justify-between gap-5 items-center">
         <div>Events</div>
         <span className="relative">
-          <Input variant="iconSmall" wide="md" type="text" placeholder="Search" />
+          <Input variant="iconSmall" wide="md" type="text" placeholder="Search" onChange={handleSearch} />
           <BiSearchAlt2 className="text-slate-400 absolute top-1/2 -translate-y-1/2 left-2" />
         </span>
       </div>
+
       <div className="flex flex-col-reverse justify-end lg:flex-row flex-wrap gap-5 lg:gap-2 lg:divide-x-2 h-full">
         <div className="flex flex-col items-center md:items-start md:flex-row gap-5 w-full lg:w-[75%]">
           <div
@@ -91,20 +99,30 @@ const Calendar = (props: Props) => {
           </section>
         </div>
         <div className={"lg:pl-2 lg:flex-1 flex flex-col"}>
-          <div
-            onClick={() => {
-              document.getElementById("mobileTask")?.classList.toggle("hidden");
-              taskMode === "close" ? setTaskMode("open") : setTaskMode("close");
-            }}
-            className="lg:hidden w-full flex p-1 rounded px-2 items-center border border-slate-300 justify-between"
-          >
-            <span>Upcoming Events</span>
-            {taskMode === "close" ? <BsFillCaretDownSquareFill className="text-xl" /> : <BsFillCaretUpSquareFill className="text-xl" />}
-          </div>
-          <div className="hidden lg:block">Upcoming Events</div>
-          <span id="mobileTask" className="hidden lg:block">
-            <TaskDetail upcomingTasks={upTask} />
-          </span>
+          {term.length > 0 ? (
+            <>
+              <div>Search Results</div>
+              <FilteredEvents setTask={setTask} task={task} term={term} />
+            </>
+          ) : (
+            <>
+              <div
+                onClick={() => {
+                  document.getElementById("mobileTask")?.classList.toggle("hidden");
+                  taskMode === "close" ? setTaskMode("open") : setTaskMode("close");
+                }}
+                className="lg:hidden w-full flex p-1 rounded px-2 items-center border border-slate-300 justify-between"
+              >
+                <span>Upcoming Events</span>
+                {taskMode === "close" ? <BsFillCaretDownSquareFill className="text-xl" /> : <BsFillCaretUpSquareFill className="text-xl" />}
+              </div>
+              <div className="hidden lg:block">Upcoming Events</div>
+
+              <span id="mobileTask" className="hidden lg:block">
+                <TaskDetail upcomingTasks={upTask} />
+              </span>
+            </>
+          )}
         </div>
       </div>
     </div>

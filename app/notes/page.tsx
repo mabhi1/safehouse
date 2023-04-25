@@ -26,7 +26,7 @@ const Notes = (props: Props) => {
   });
 
   const filterNotes = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value.toLowerCase();
+    const text = e.target.value.trim().toLowerCase();
     setTerm(text);
     setFilteredNotes(
       notes.filter((note: NotesType) => {

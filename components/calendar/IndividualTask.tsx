@@ -7,7 +7,7 @@ type Props = {
 const IndividualTask = ({ task }: Props) => {
   return (
     <div key={task.id} className="even:bg-slate-100 flex flex-col border-b border-slate-300 hover:bg-slate-100 p-2">
-      <div className="flex justify-between flex-col md:flex-row">
+      <div className="flex justify-between items-center flex-col md:flex-row">
         <div>{task.title}</div>
         <div className="flex gap-1 text-slate-500 text-sm">
           <div>{task.from}</div>

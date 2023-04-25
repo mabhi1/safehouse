@@ -30,7 +30,7 @@ const CalendarView = ({ selectDate, setSelectDate, today, setToday, currentDate,
             ? "before:bg-fuchsia-200 before:block "
             : "before:hidden hover:text-slate-50 bg-transparent hover:before:block ") +
           (events ? "after:content-[''] after:absolute after:rounded-full after:bottom-[6px] after:h-[4px] after:w-[4px] " : "") +
-          "date hover:before:bg-cyan-600 cursor-pointer border-t border-slate-300 flex justify-center items-center aspect-square"
+          "date hover:before:bg-cyan-600 cursor-pointer border-t border-slate-300 flex justify-center items-center aspect-square rounded-none"
         }
       >
         {date.date()}
