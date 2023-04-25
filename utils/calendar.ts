@@ -7,18 +7,19 @@ export const generateDate = (month = dayjs().month(), year = dayjs().year(), tas
 
   const arrayOfDate = [];
 
-  // const checkEvents = (d: dayjs.Dayjs) => {
-  //   return (
-  //     task.filter((t: TaskType) => {
-  //       if (
-  //         new Date(t.from).getDate() === d.toDate().getDate() &&
-  //         new Date(t.from).getFullYear() == d.toDate().getFullYear() &&
-  //         new Date(t.from).getMonth() == d.toDate().getMonth()
-  //       )
-  //         return t;
-  //     }).length > 0
-  //   );
-  // };
+  const checkEvents = (d: dayjs.Dayjs) => {
+    const date = new Date(d.toString());
+    return (
+      task.filter((t: TaskType) => {
+        if (
+          new Date(t.from).getDate() === date.getDate() &&
+          new Date(t.from).getFullYear() == date.getFullYear() &&
+          new Date(t.from).getMonth() == date.getMonth()
+        )
+          return t;
+      }).length > 0
+    );
+  };
 
   // create prefix date
   for (let i = 0; i < firstDateOfMonth.day(); i++) {
@@ -26,14 +27,14 @@ export const generateDate = (month = dayjs().month(), year = dayjs().year(), tas
     arrayOfDate.push({
       currentMonth: false,
       date,
-      events: false,
+      events: checkEvents(date),
     });
   }
 
   // generate current date
   for (let i = firstDateOfMonth.date(); i <= lastDateOfMonth.date(); i++) {
     arrayOfDate.push({
-      events: false,
+      events: checkEvents(firstDateOfMonth.date(i)),
       currentMonth: true,
       date: firstDateOfMonth.date(i),
       today: firstDateOfMonth.date(i).toDate().toDateString() === dayjs().toDate().toDateString(),
@@ -44,7 +45,7 @@ export const generateDate = (month = dayjs().month(), year = dayjs().year(), tas
 
   for (let i = lastDateOfMonth.date() + 1; i <= lastDateOfMonth.date() + remaining; i++) {
     arrayOfDate.push({
-      events: false,
+      events: checkEvents(firstDateOfMonth.date(i)),
       currentMonth: false,
       date: lastDateOfMonth.date(i),
     });
