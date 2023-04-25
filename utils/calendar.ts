@@ -10,7 +10,11 @@ export const generateDate = (month = dayjs().month(), year = dayjs().year(), tas
   const checkEvents = (d: dayjs.Dayjs) => {
     return (
       task.filter((t: TaskType) => {
-        if (new Date(t.from).getDate() === d.date() && new Date(t.from).getFullYear() == d.year() && new Date(t.from).getMonth() == d.month())
+        if (
+          new Date(t.from).getDate() === d.toDate().getDate() &&
+          new Date(t.from).getFullYear() == d.toDate().getFullYear() &&
+          new Date(t.from).getMonth() == d.toDate().getMonth()
+        )
           return t;
       }).length > 0
     );
