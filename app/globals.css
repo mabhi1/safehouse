@@ -51,3 +51,18 @@
   transform-origin: center;
   translate: 0 -6.5px;
 }
+
+.date {
+  position: relative;
+  background-color: transparent;
+  z-index: 0;
+}
+
+.date::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: 100%;
+  margin: 6px;
+}

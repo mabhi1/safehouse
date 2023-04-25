@@ -32,4 +32,14 @@ type FileType = {
   url: string;
 };
 
-export type { NotesType, PasswordType, FolderType, FileType };
+type TaskType = {
+  id: string;
+  title: string;
+  description: string;
+  from: string;
+  to: string;
+  uid: string;
+  updatedAt: Date;
+};
+
+export type { NotesType, PasswordType, FolderType, FileType, TaskType };
