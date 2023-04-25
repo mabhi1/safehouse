@@ -1,5 +1,4 @@
 import { TaskType } from "@/lib/types/dbTypes";
-import IndividualTask from "./IndividualTask";
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 type Props = {
@@ -13,7 +12,7 @@ const TaskDetail = ({ upcomingTasks }: Props) => {
       {upcomingTasks.map((task) => {
         const d = new Date(task.from);
         return (
-          <div className="flex border-b border-slate-300 py-2 last:border-0 hover:bg-slate-100 cursor-pointer">
+          <div key={task.id} className="flex border-b border-slate-300 py-2 last:border-0 hover:bg-slate-100 cursor-pointer">
             <div className="bg-cyan-100 dark:bg-cyan-800 min-w-[4rem] flex flex-col justify-center items-center py-3">
               <div className="text-xl leading-none">{d.getDate()}</div>
               <div className="text-sm">{months[d.getMonth()]}</div>
