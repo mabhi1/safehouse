@@ -1,6 +1,7 @@
 import { TaskType } from "@/lib/types/dbTypes";
 import { useEffect, useState } from "react";
 import Spinner from "../ui/Spinner";
+import MarkedText from "../ui/MarkedText";
 
 type Props = {
   task: TaskType[];
@@ -33,8 +34,12 @@ const FilteredEvents = ({ task, term, setTask }: Props) => {
               <div className="text-sm">{months[d.getMonth()]}</div>
             </div>
             <div className="px-2">
-              <div>{t.title}</div>
-              <div className="text-sm text-slate-500 h-10 overflow-hidden">{t.description}</div>
+              <div>
+                <MarkedText searchTerm={term} text={t.title} />
+              </div>
+              <div className="text-sm text-slate-500 h-10 overflow-hidden">
+                <MarkedText searchTerm={term} text={t.description} />
+              </div>
             </div>
           </div>
         );
