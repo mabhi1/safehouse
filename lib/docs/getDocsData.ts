@@ -28,7 +28,7 @@ const getFiles = async ({ folderId, currentUser }: props) => {
   const fileQuery = query(collection(db, "files"), where("parentId", "==", folderId), where("uid", "==", currentUser), orderBy("createdAt"));
   const fileSnapshot = await getDocs(fileQuery);
   fileSnapshot.forEach((doc) => {
-    newFiles.push({ ...doc.data(), name: doc.data().name, dbId: doc.data().dbId, id: doc.id });
+    newFiles.push({ ...doc.data(), url: doc.data().url, name: doc.data().name, dbId: doc.data().dbId, id: doc.id });
   });
   return newFiles;
 };

@@ -23,7 +23,7 @@ const Files = ({ folderId }: Props) => {
       setLoading(false);
     }
     getAllContent();
-  }, []);
+  }, [currentUser, folderId]);
 
   if (loading)
     return (
