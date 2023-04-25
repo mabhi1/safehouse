@@ -7,7 +7,8 @@ const buttonVariants = cva("py-2 px-4 cursor-pointer rounded", {
     variant: {
       default: "shadow-lg shadow-cyan-900/50 bg-cyan-900 hover:bg-cyan-800 focus:bg-cyan-800 text-slate-50",
       destructive: "shadow-lg shadow-red-900/50 bg-red-900 hover:bg-red-800 focus:bg-red-800 text-slate-50",
-      outline: "shadow shadow-cyan-950/50 bg-cyan-50 hover:bg-cyan-100 focus:bg-cyan-100 text-cyan-950 border border-cyan-950",
+      outline: "px-2 py-1 shadow shadow-cyan-950/50 bg-cyan-50 hover:bg-cyan-100 focus:bg-cyan-100 text-cyan-950 border border-cyan-950",
+      outline2: "px-2 py-1 shadow shadow-amber-950/50 bg-amber-50 hover:bg-amber-100 focus:bg-amber-100 text-amber-950 border border-amber-950",
       disabled: "bg-slate-400 flex justify-center items-center text-slate-50 cursor-not-allowed",
       subtle: "",
       ghost: "",

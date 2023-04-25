@@ -16,4 +16,20 @@ type PasswordType = {
   username: string;
 };
 
-export type { NotesType, PasswordType };
+type FolderType = {
+  id: string;
+  name: string;
+  path: {
+    id: string;
+    name: string;
+  }[];
+};
+
+type FileType = {
+  id: string;
+  name: string;
+  dbId: string;
+  url: string;
+};
+
+export type { NotesType, PasswordType, FolderType, FileType };

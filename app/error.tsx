@@ -12,7 +12,7 @@ const Error = ({ error, reset }: Props) => {
     <div className="flex flex-1 flex-col items-center gap-5 pt-10">
       <h1 className="text-5xl text-red-900">OOPS!</h1>
       <div className="w-56">
-        <Image src="/error.png" alt="Error" width={150} height={150} className="w-auto h-auto" />
+        <Image src="/error.png" alt="Error" width={150} height={150} className="w-auto h-auto" priority />
       </div>
       <span>
         <div className="text-center">Something Went wrong.</div>
