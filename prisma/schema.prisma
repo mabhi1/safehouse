@@ -15,9 +15,14 @@ model cards {
   cvv       String
   expiry    String
   number    String
-  type      String
+  type      CardType
   uid       String
   updatedAt DateTime @db.Date
+}
+
+enum CardType {
+  credit
+  debit
 }
 
 model notes {
