@@ -1,4 +1,4 @@
-import { GetPasswordsByUser } from "@/lib/prisma/passwords";
+import { GetPasswordsByUser, createPasswordByUser, updatePasswordById } from "@/lib/prisma/passwords";
 import { PasswordType } from "@/lib/types/dbTypes";
 import { NextResponse } from "next/server";
 
@@ -10,6 +10,13 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const res = await request.json();
-  console.log(res);
+  const body = await request.json();
+  const [data, error] = await createPasswordByUser(body);
+  return NextResponse.json({ data, error });
+}
+
+export async function PUT(request: Request) {
+  const body = await request.json();
+  const [data, error] = await updatePasswordById(body.id, body.site, body.username, body.password);
+  return NextResponse.json({ data, error });
 }

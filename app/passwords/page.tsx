@@ -8,6 +8,8 @@ import Loading from "../loading";
 import { PasswordType } from "@/lib/types/dbTypes";
 import IndividualPassword from "@/components/passwords/IndividualPassword";
 import { useState } from "react";
+import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 type Props = {};
 const Passwords = (props: Props) => {
@@ -47,11 +49,17 @@ const Passwords = (props: Props) => {
   if (passwordsQuery.isError) throw passwordsQuery.error;
 
   return (
-    <div className="flex flex-col gap-5 flex-1">
+    <>
+      <div className="flex md:hidden items-center justify-between mb-3">
+        <div>Passwords</div>
+        <Link href={"/passwords/create"}>
+          <Button variant={"outline"}>Add Password</Button>
+        </Link>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
         {term ? showPasswords(filteredPasswords) : showPasswords(passwords)}
       </div>
-    </div>
+    </>
   );
 };
 export default Passwords;

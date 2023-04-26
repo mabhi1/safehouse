@@ -17,7 +17,7 @@ const Edit = async ({ params: { noteId } }: Props) => {
         <Button variant={"link"}>Back to Notes</Button>
       </Link>
       <div className="ml-10 flex flex-col gap-3 md:gap-5">
-        {error ? (
+        {!note ? (
           <div>Note not found</div>
         ) : (
           <>

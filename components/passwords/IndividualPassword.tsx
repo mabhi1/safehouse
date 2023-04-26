@@ -5,6 +5,7 @@ import Button from "../ui/Button";
 import { dateFormatter } from "@/utils/dateFormatter";
 import { decrypt } from "@/utils/encryption";
 import MarkedText from "../ui/MarkedText";
+import Link from "next/link";
 
 type Props = {
   password: PasswordType;
@@ -30,7 +31,9 @@ const IndividualPassword = ({ password, searchTerm }: Props) => {
           <Button variant="link" onClick={() => setVisible((visible) => !visible)}>
             {visible ? "Hide" : "Show"}
           </Button>
-          <Button variant="link">Edit</Button>
+          <Link href={`/passwords/${password.id}`}>
+            <Button variant="link">Edit</Button>
+          </Link>
           <Button variant="link">Delete</Button>
         </div>
         <div className="text-slate-500 italic text-xs border-t border-slate-500 pt-1">Updated : {dateFormatter(password.updatedAt)}</div>

@@ -9,7 +9,6 @@ datasource db {
 
 model cards {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  v         Int      @map("__v")
   bank      String
   createdAt DateTime @db.Date
   cvv       String
@@ -36,7 +35,6 @@ model notes {
 
 model passwords {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  v         Int      @map("__v")
   createdAt DateTime @db.Date
   password  String
   site      String
@@ -47,7 +45,6 @@ model passwords {
 
 model shortcuts {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  v         Int      @map("__v")
   createdAt DateTime @db.Date
   image     String
   name      String
@@ -58,7 +55,6 @@ model shortcuts {
 
 model tasks {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  v           Int      @map("__v")
   createdAt   DateTime @db.Date
   description String
   from        String

@@ -61,3 +61,16 @@ export async function updateNoteById(id: string, name: string, description: stri
     return [null, error];
   }
 }
+
+export async function deleteNoteById(id: string) {
+  try {
+    const data = await prisma.notes.delete({
+      where: {
+        id: id,
+      },
+    });
+    return [data, null];
+  } catch (error) {
+    return [null, error];
+  }
+}

@@ -33,6 +33,10 @@ const NewNote = (props: Props) => {
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
+    if (title.trim() === "" || description.trim() === "") {
+      showToast("error", "Title or Description missing!");
+      return;
+    }
     notesMutation.mutate();
   };
 
@@ -47,7 +51,7 @@ const NewNote = (props: Props) => {
           autoFocus={true}
           placeholder="Enter Title"
           value={title}
-          onChange={(e) => setTitle(e.target.value.trim())}
+          onChange={(e) => setTitle(e.target.value)}
         />
       </div>
       <div className="flex flex-col">

@@ -11,9 +11,9 @@ import Link from "next/link";
 
 type Props = {};
 const Notes = (props: Props) => {
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState<NotesType[]>([]);
   const [term, setTerm] = useState("");
-  const [filteredNotes, setFilteredNotes] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState<NotesType[]>([]);
   const currentUser = useAuth();
 
   const notesQuery = useQuery({
@@ -38,7 +38,7 @@ const Notes = (props: Props) => {
   const showNotes = (notesList: NotesType[]) => {
     if (notesList.length === 0) return <div>No Notes to display</div>;
     return notesList?.map((note: NotesType) => {
-      return <IndividualNotes note={note} key={note.id} searchTerm={term} />;
+      return <IndividualNotes note={note} key={note.id} searchTerm={term} setNotes={setNotes} />;
     });
   };
 
