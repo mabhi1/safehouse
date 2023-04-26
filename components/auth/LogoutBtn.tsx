@@ -13,6 +13,10 @@ const LogoutBtn = (props: Props) => {
     }
   };
 
-  return <Button onClick={handleLogout}>Logout</Button>;
+  return (
+    <Button variant={"destructive"} onClick={handleLogout}>
+      Logout
+    </Button>
+  );
 };
 export default LogoutBtn;

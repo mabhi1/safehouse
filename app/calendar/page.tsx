@@ -64,14 +64,6 @@ const Calendar = (props: Props) => {
 
   return (
     <div className="flex flex-col gap-5 flex-1">
-      <div className="flex justify-between gap-5 items-center">
-        <div>Events</div>
-        <span className="relative">
-          <Input variant="iconSmall" wide="md" type="text" placeholder="Search" onChange={handleSearch} />
-          <BiSearchAlt2 className="text-slate-400 absolute top-1/2 -translate-y-1/2 left-2" />
-        </span>
-      </div>
-
       <div className="flex flex-col-reverse justify-end lg:flex-row flex-wrap gap-5 lg:gap-2 lg:divide-x-2 h-full">
         <div className="flex flex-col items-center md:items-start md:flex-row gap-5 w-full lg:w-[75%]">
           <div

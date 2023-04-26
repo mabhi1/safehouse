@@ -48,13 +48,6 @@ const Passwords = (props: Props) => {
 
   return (
     <div className="flex flex-col gap-5 flex-1">
-      <div className="flex justify-between gap-5 items-center">
-        <h1>Passwords</h1>
-        <span className="relative">
-          <Input variant="iconSmall" wide="md" type="text" placeholder="Search" onChange={filterPasswords} />
-          <BiSearchAlt2 className="text-slate-400 absolute top-1/2 -translate-y-1/2 left-2" />
-        </span>
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
         {term ? showPasswords(filteredPasswords) : showPasswords(passwords)}
       </div>

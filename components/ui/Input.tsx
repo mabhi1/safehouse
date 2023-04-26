@@ -6,6 +6,7 @@ const inputVariants = cva("border-2 focus-visible:outline-none bg-slate-50 borde
   variants: {
     variant: {
       default: "p-2 focus:border-cyan-900",
+      compact: "px-2 py-1 focus:border-cyan-900",
       iconSmall: "py-1 px-2 pl-6 focus:border-cyan-900",
       iconLarge: "p-2 pl-5 focus:border-cyan-900",
       disabled: "bg-transparent border-none ",
@@ -17,7 +18,8 @@ const inputVariants = cva("border-2 focus-visible:outline-none bg-slate-50 borde
       xs: "w-32 lg:w-32 md:w-40",
       sm: "w-40 lg:w-40 md:w-60",
       md: "w-60 lg:w-60 md:w-80",
-      lg: "w-full",
+      lg: "w-96",
+      full: "w-full",
     },
   },
   defaultVariants: {

@@ -90,7 +90,7 @@ const Login = (props: Props) => {
             <form className="flex flex-col gap-3" autoComplete="off" onSubmit={handleLogin}>
               <div className="relative flex-1">
                 <Input
-                  wide="lg"
+                  wide="full"
                   onChange={(e) => handleChange(e, "emailLabel")}
                   id="email"
                   type="email"
@@ -109,7 +109,7 @@ const Login = (props: Props) => {
               </div>
               <div className="relative flex-1">
                 <Input
-                  wide="lg"
+                  wide="full"
                   type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"

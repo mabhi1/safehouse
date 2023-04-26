@@ -5,6 +5,7 @@ import "./globals.css";
 import { Signika_Negative } from "next/font/google";
 import Footer from "./Footer";
 import MobileMenu from "@/components/ui/MobileMenu";
+import DesktopMenu from "@/components/ui/DesktopMenu";
 
 const signika = Signika_Negative({ subsets: ["latin"] });
 
@@ -16,14 +17,17 @@ export const metadata = {
   description: "Keep your information secure with us",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode | any }) {
   return (
     <html lang="en">
       <body className={signika.className + " text-base bg-slate-50 flex flex-col"}>
         <AuthProvider>
           <Header />
           <MobileMenu />
-          <main className="flex-1 px-3 md:px-10 pt-5 pb-10 flex min-h-screen">{children}</main>
+          <main className="flex-1 flex min-h-screen">
+            <DesktopMenu path={children.props?.childProp.segment} />
+            <div className="p-3 md:p-5 flex-1">{children}</div>
+          </main>
           <Footer />
         </AuthProvider>
         <Toast />
