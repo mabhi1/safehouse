@@ -16,11 +16,11 @@ const Header = (props: Props) => {
         <Image src="/logo.png" alt="Safe House" width={50} height={50} priority />
         <Link href={"/"}>Safe House</Link>
       </div>
-      <div className="hidden lg:flex gap-2">
+      <div className="hidden md:flex gap-2">
         <Input type="text" placeholder="Search" wide={"lg"} />
         <Button>Search</Button>
       </div>
-      <span className="hidden lg:inline">
+      <span className="hidden md:inline">
         <LogoutBtn />
       </span>
       <MobileMenuButton />

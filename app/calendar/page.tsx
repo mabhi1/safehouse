@@ -63,59 +63,57 @@ const Calendar = (props: Props) => {
   if (tasksQuery.isError) throw tasksQuery.error;
 
   return (
-    <div className="flex flex-col gap-5 flex-1">
-      <div className="flex flex-col-reverse justify-end lg:flex-row flex-wrap gap-5 lg:gap-2 lg:divide-x-2 h-full">
-        <div className="flex flex-col items-center md:items-start md:flex-row gap-5 w-full lg:w-[75%]">
-          <div
-            onClick={() => {
-              document.getElementById("mobileCalendar")?.classList.toggle("hidden");
-              mode === "close" ? setMode("open") : setMode("close");
-            }}
-            className="md:hidden w-full flex p-1 rounded px-2 items-center border border-slate-300 justify-between"
-          >
-            <span>Calendar</span>
-            {mode === "close" ? <BsFillCaretDownSquareFill className="text-xl" /> : <BsFillCaretUpSquareFill className="text-xl" />}
-          </div>
-          <section id="mobileCalendar" className="lg:sticky top-24 transition-all duration-200 hidden md:flex flex-col w-[90%] md:w-60 lg:w-72">
-            <CalendarView
-              currentDate={currentDate}
-              selectDate={selectDate}
-              setSelectDate={setSelectDate}
-              setToday={setToday}
-              task={task}
-              today={today}
-            />
-          </section>
-          <section className={"flex-1 md:pl-2 md:border-l-2 h-full flex flex-col overflow-y-auto w-full"}>
-            <TaskView selectDate={selectDate} setTask={setTask} showTask={showTask} />
-          </section>
+    <div className="flex flex-col-reverse justify-end lg:flex-row flex-wrap gap-5 lg:gap-2 lg:divide-x-2 h-full">
+      <div className="flex flex-col items-center md:items-start md:flex-row gap-5 w-full lg:w-[75%]">
+        <div
+          onClick={() => {
+            document.getElementById("mobileCalendar")?.classList.toggle("hidden");
+            mode === "close" ? setMode("open") : setMode("close");
+          }}
+          className="md:hidden w-full flex p-1 rounded px-2 items-center border border-slate-300 justify-between"
+        >
+          <span>Calendar</span>
+          {mode === "close" ? <BsFillCaretDownSquareFill className="text-xl" /> : <BsFillCaretUpSquareFill className="text-xl" />}
         </div>
-        <div className={"lg:pl-2 lg:flex-1 flex flex-col"}>
-          {term.length > 0 ? (
-            <>
-              <div>Search Results</div>
-              <FilteredEvents setTask={setTask} task={task} term={term} />
-            </>
-          ) : (
-            <>
-              <div
-                onClick={() => {
-                  document.getElementById("mobileTask")?.classList.toggle("hidden");
-                  taskMode === "close" ? setTaskMode("open") : setTaskMode("close");
-                }}
-                className="lg:hidden w-full flex p-1 rounded px-2 items-center border border-slate-300 justify-between"
-              >
-                <span>Upcoming Events</span>
-                {taskMode === "close" ? <BsFillCaretDownSquareFill className="text-xl" /> : <BsFillCaretUpSquareFill className="text-xl" />}
-              </div>
-              <div className="hidden lg:block">Upcoming Events</div>
+        <section id="mobileCalendar" className="lg:sticky top-24 transition-all duration-200 hidden md:flex flex-col w-[90%] md:w-60 lg:w-72">
+          <CalendarView
+            currentDate={currentDate}
+            selectDate={selectDate}
+            setSelectDate={setSelectDate}
+            setToday={setToday}
+            task={task}
+            today={today}
+          />
+        </section>
+        <section className={"flex-1 md:pl-2 md:border-l-2 h-full flex flex-col overflow-y-auto w-full"}>
+          <TaskView selectDate={selectDate} setTask={setTask} showTask={showTask} />
+        </section>
+      </div>
+      <div className={"lg:pl-2 lg:flex-1 flex flex-col"}>
+        {term.length > 0 ? (
+          <>
+            <div>Search Results</div>
+            <FilteredEvents setTask={setTask} task={task} term={term} />
+          </>
+        ) : (
+          <>
+            <div
+              onClick={() => {
+                document.getElementById("mobileTask")?.classList.toggle("hidden");
+                taskMode === "close" ? setTaskMode("open") : setTaskMode("close");
+              }}
+              className="lg:hidden w-full flex p-1 rounded px-2 items-center border border-slate-300 justify-between"
+            >
+              <span>Upcoming Events</span>
+              {taskMode === "close" ? <BsFillCaretDownSquareFill className="text-xl" /> : <BsFillCaretUpSquareFill className="text-xl" />}
+            </div>
+            <div className="hidden lg:block">Upcoming Events</div>
 
-              <span id="mobileTask" className="hidden lg:block">
-                <TaskDetail upcomingTasks={upTask} />
-              </span>
-            </>
-          )}
-        </div>
+            <span id="mobileTask" className="hidden lg:block">
+              <TaskDetail upcomingTasks={upTask} />
+            </span>
+          </>
+        )}
       </div>
     </div>
   );

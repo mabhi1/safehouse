@@ -12,8 +12,7 @@ const TaskView = ({ selectDate, setTask, showTask }: Props) => {
   return (
     <>
       <div className="flex justify-between items-center mb-3">
-        <div className="hidden md:block text-slate-500 underline underline-offset-2">Selected Date : {selectDate.toDate().toDateString()}</div>
-        <div className="md:hidden text-slate-500 underline underline-offset-2">{selectDate.toDate().toDateString()}</div>
+        <div className="text-slate-500 underline underline-offset-2">{selectDate.toDate().toDateString()}</div>
         <Button variant={"outline"} size={"sm"}>
           Add Event
         </Button>

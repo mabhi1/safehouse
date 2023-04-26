@@ -12,7 +12,7 @@ const classes = {
 const DesktopMenu = ({ path }: Props) => {
   return (
     <>
-      <nav className="w-52 border-r border-r-slate-200 hidden lg:flex flex-col">
+      <nav className="w-52 border-r border-r-slate-200 hidden md:flex flex-col">
         <Link href={"/"} className={classes.navLink + (path === "__PAGE__" ? classes.path : "")}>
           <FcHome className={classes.navIcon} />
           Home
