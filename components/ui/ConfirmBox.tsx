@@ -14,10 +14,10 @@ const ConfirmBox = ({ open, setOpen, action }: Props) => {
         <div>Are you sure you want to delete this note?</div>
         <div className="flex gap-5 justify-center">
           <Button size={"sm"} onClick={() => action()}>
-            Yes, I'm sure
+            {"Yes, I'm sure"}
           </Button>
           <Button variant={"destructive"} size={"sm"} onClick={() => setOpen(false)}>
-            No, Cancel
+            {"No, Cancel"}
           </Button>
         </div>
       </div>
