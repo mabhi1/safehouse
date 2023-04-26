@@ -27,7 +27,6 @@ enum CardType {
 
 model notes {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  v           Int      @map("__v")
   createdAt   DateTime @db.Date
   description String
   name        String

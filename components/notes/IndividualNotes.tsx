@@ -1,6 +1,7 @@
 import { NotesType } from "@/lib/types/dbTypes";
 import Button from "../ui/Button";
 import MarkedText from "../ui/MarkedText";
+import Link from "next/link";
 
 type Props = {
   note: NotesType;
@@ -27,7 +28,9 @@ const IndividualNotes = ({ note, searchTerm }: Props) => {
       </div>
       <div>
         <div className="flex gap-4 justify-end my-2">
-          <Button variant="link">Edit</Button>
+          <Link href={`/notes/${note.id}`}>
+            <Button variant="link">Edit</Button>
+          </Link>
           <Button variant="link">Delete</Button>
         </div>
         <div className="text-slate-500 italic text-xs border-t border-slate-500 pt-1">Updated : {dateFormatter.format(new Date(note.updatedAt))}</div>

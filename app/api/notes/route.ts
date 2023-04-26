@@ -1,4 +1,4 @@
-import { getNotesByUser } from "@/lib/prisma/notes";
+import { createNoteByUser, getNotesByUser } from "@/lib/prisma/notes";
 import { NotesType } from "@/lib/types/dbTypes";
 import { NextResponse } from "next/server";
 
@@ -11,5 +11,6 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const res = await request.json();
-  console.log(res);
+  const [data, error] = await createNoteByUser(res);
+  return NextResponse.json({ data, error });
 }

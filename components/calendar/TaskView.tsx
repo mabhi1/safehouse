@@ -11,12 +11,7 @@ type Props = {
 const TaskView = ({ selectDate, setTask, showTask }: Props) => {
   return (
     <>
-      <div className="flex justify-between items-center mb-3">
-        <div className="text-slate-500 underline underline-offset-2">{selectDate.toDate().toDateString()}</div>
-        <Button variant={"outline"} size={"sm"}>
-          Add Event
-        </Button>
-      </div>
+      <div className="text-slate-500 mb-3 underline underline-offset-2">{selectDate.toDate().toDateString()}</div>
       {showTask.length === 0 && <div>No Events to display</div>}
       {showTask.map((task) => {
         return <IndividualTask task={task} key={task.id} />;

@@ -1,6 +1,4 @@
 "use client";
-import Input from "@/components/ui/Input";
-import { BiSearchAlt2 } from "react-icons/bi";
 import useAuth from "@/components/auth/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -8,6 +6,8 @@ import Loading from "../loading";
 import IndividualNotes from "@/components/notes/IndividualNotes";
 import { NotesType } from "@/lib/types/dbTypes";
 import { useState } from "react";
+import Button from "@/components/ui/Button";
+import Link from "next/link";
 
 type Props = {};
 const Notes = (props: Props) => {
@@ -37,7 +37,7 @@ const Notes = (props: Props) => {
 
   const showNotes = (notesList: NotesType[]) => {
     if (notesList.length === 0) return <div>No Notes to display</div>;
-    return notesList.map((note: NotesType) => {
+    return notesList?.map((note: NotesType) => {
       return <IndividualNotes note={note} key={note.id} searchTerm={term} />;
     });
   };
@@ -45,6 +45,18 @@ const Notes = (props: Props) => {
   if (notesQuery.isLoading) return <Loading />;
   if (notesQuery.isError) throw notesQuery.error;
 
-  return <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">{term ? showNotes(filteredNotes) : showNotes(notes)}</div>;
+  if (!notesQuery.isLoading) {
+    return (
+      <>
+        <div className="flex md:hidden items-center justify-between mb-3">
+          <div>Notes</div>
+          <Link href={"/notes/create"}>
+            <Button variant={"outline"}>Add Note</Button>
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">{term ? showNotes(filteredNotes) : showNotes(notes)}</div>
+      </>
+    );
+  }
 };
 export default Notes;

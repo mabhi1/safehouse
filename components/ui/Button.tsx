@@ -18,7 +18,7 @@ const buttonVariants = cva("py-2 px-4 cursor-pointer rounded", {
       default: "",
       sm: "min-w-[4rem] py-1 px-2",
       md: "min-w-[7rem]",
-      lg: "",
+      lg: "w-72 lg:w-96 md:w-80",
     },
   },
   defaultVariants: {
