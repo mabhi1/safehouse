@@ -16,7 +16,7 @@ const Edit = async ({ params: { noteId } }: Props) => {
         <IoArrowBack className="text-cyan-900" />
         <Button variant={"link"}>Back to Notes</Button>
       </Link>
-      <div className="ml-10 flex flex-col gap-3 md:gap-5">
+      <div className="justify-center md:justify-start md:ml-10 flex flex-col gap-3 md:gap-5">
         {!note ? (
           <div>Note not found</div>
         ) : (

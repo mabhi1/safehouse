@@ -30,6 +30,7 @@ type FileType = {
   name: string;
   dbId: string;
   url: string;
+  uid: string;
 };
 
 type TaskType = {

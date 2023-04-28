@@ -1,4 +1,4 @@
-export const showToast = (type: string, message: string) => {
+export const showToast = (type: "success" | "error" | "info" | "warning", message: string) => {
   // Current Toast type and messge
   let messageBox = document.getElementById(`${type}-toast-message`);
   let toast = document.getElementById(`${type}-toast`);

@@ -63,3 +63,16 @@ export async function updatePasswordById(id: string, site: string, username: str
     return [null, error];
   }
 }
+
+export async function deletePasswordById(id: string) {
+  try {
+    const data = await prisma.passwords.delete({
+      where: {
+        id: id,
+      },
+    });
+    return [data, null];
+  } catch (error) {
+    return [null, error];
+  }
+}

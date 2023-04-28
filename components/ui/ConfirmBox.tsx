@@ -9,9 +9,9 @@ type Props = {
 const ConfirmBox = ({ open, setOpen, action }: Props) => {
   return (
     <div className={(open ? "fixed" : "hidden") + " fixed inset-0 z-50 flex justify-center items-center bg-slate-200/50"}>
-      <div className="flex flex-col border w-3/4 md:w-1/2 p-5 items-center md:p-10 shadow gap-5 bg-slate-50 ">
+      <div className="flex flex-col border rounded w-3/4 md:w-1/2 lg:w-1/4 p-5 items-center md:p-10 shadow gap-3 md:gap-5 bg-slate-50 ">
         <CiWarning className="text-5xl" />
-        <div>Are you sure you want to delete this note?</div>
+        <div>Are you sure?</div>
         <div className="flex gap-5 justify-center">
           <Button size={"sm"} onClick={() => action()}>
             {"Yes, I'm sure"}

@@ -14,9 +14,9 @@ import Button from "@/components/ui/Button";
 type Props = {};
 const Passwords = (props: Props) => {
   const currentUser = useAuth();
-  const [passwords, setPasswords] = useState([]);
+  const [passwords, setPasswords] = useState<PasswordType[]>([]);
   const [term, setTerm] = useState("");
-  const [filteredPasswords, setFilteredPasswords] = useState([]);
+  const [filteredPasswords, setFilteredPasswords] = useState<PasswordType[]>([]);
 
   const passwordsQuery = useQuery({
     queryKey: ["passwords"],
@@ -41,7 +41,7 @@ const Passwords = (props: Props) => {
   const showPasswords = (passList: PasswordType[]) => {
     if (passList.length === 0) return <div>No Notes to display</div>;
     return passList.map((pass: PasswordType) => {
-      return <IndividualPassword password={pass} key={pass.id} searchTerm={term} />;
+      return <IndividualPassword password={pass} key={pass.id} searchTerm={term} setPasswords={setPasswords} />;
     });
   };
 

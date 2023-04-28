@@ -9,8 +9,8 @@ type props = {
 
 const getCurrentFolder = async ({ folderId, currentUser }: props) => {
   const docSnap = await getDoc(doc(db, "folders", folderId));
-  if (docSnap.data()!.uid !== currentUser) throw new Error("Unauthorized Access");
-  return docSnap.data();
+  if (docSnap.data()?.uid !== currentUser) throw new Error("Unauthorized Access");
+  return { id: docSnap.id, path: docSnap.data()?.path, name: docSnap.data()?.name, ...docSnap.data() };
 };
 
 const getFolders = async ({ folderId, currentUser }: props) => {
@@ -23,14 +23,20 @@ const getFolders = async ({ folderId, currentUser }: props) => {
   return newFolders;
 };
 
+const getFolderSnapshot = async ({ folderId, currentUser }: props) => {
+  const folderQuery = query(collection(db, "folders"), where("parentId", "==", folderId), where("uid", "==", currentUser), orderBy("createdAt"));
+  const folderSnapshot = await getDocs(folderQuery);
+  return folderSnapshot;
+};
+
 const getFiles = async ({ folderId, currentUser }: props) => {
   const newFiles: FileType[] = [];
   const fileQuery = query(collection(db, "files"), where("parentId", "==", folderId), where("uid", "==", currentUser), orderBy("createdAt"));
   const fileSnapshot = await getDocs(fileQuery);
   fileSnapshot.forEach((doc) => {
-    newFiles.push({ ...doc.data(), url: doc.data().url, name: doc.data().name, dbId: doc.data().dbId, id: doc.id });
+    newFiles.push({ ...doc.data(), uid: doc.data().uid, url: doc.data().url, name: doc.data().name, dbId: doc.data().dbId, id: doc.id });
   });
   return newFiles;
 };
 
-export { getFolders, getCurrentFolder, getFiles };
+export { getFolders, getCurrentFolder, getFiles, getFolderSnapshot };
