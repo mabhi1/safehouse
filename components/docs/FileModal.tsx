@@ -95,6 +95,7 @@ const FileModal = ({ open, setOpen, folderId, setFiles }: Props) => {
               setOpen(false);
               //@ts-ignore
               setFiles((prevFiles) => [...prevFiles, { ...docSnap.data(), id: docSnap.id }]);
+              showToast("success", `Files uploaded successfully`);
             } catch (error) {
               console.error(error);
             }
