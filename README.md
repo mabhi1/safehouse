@@ -1,6 +1,6 @@
 ## Safe House
 
-This is a full stack application built using Next.js, TailwindCSS, MongoDB, and Firebase. Users can store their passwords, notes, documents, and events. All the confidential data is protected
+This is a full stack application built using Next.js, TailwindCSS, Prisma, MongoDB, and Firebase. Users can store their passwords, notes, documents, and events. All the confidential data is protected
 
 ## Getting Started
 
