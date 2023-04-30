@@ -12,7 +12,7 @@ import Link from "next/link";
 type Props = {
   term: string;
 };
-const Notes = ({ term }: Props) => {
+const NotesPage = ({ term }: Props) => {
   const [notes, setNotes] = useState<NotesType[]>([]);
   const currentUser = useAuth();
 
@@ -49,4 +49,4 @@ const Notes = ({ term }: Props) => {
     );
   }
 };
-export default Notes;
+export default NotesPage;

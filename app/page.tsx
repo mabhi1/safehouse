@@ -4,7 +4,7 @@ const classes = {
   cards: "flex flex-col gap-3 border p-5 shadow items-center",
   cardHeading: "underline underline-offset-2",
   cardBody: "text-center",
-  cardImage: "w-1/2 md:w-full",
+  cardImage: "w-full",
 };
 export default function Home() {
   return (
@@ -23,7 +23,7 @@ export default function Home() {
       </div>
       <div className="flex flex-col p-5 gap-10">
         <div className="text-center text-xl">Features</div>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
           <div className={classes.cards}>
             <div className={classes.cardImage}>
               <Image src={"/docs.png"} width={720} height={720} alt="Docs" priority />
