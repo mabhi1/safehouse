@@ -17,7 +17,7 @@ const Header = (props: Props) => {
       <span className="hidden md:inline">
         <LogoutBtn />
       </span>
-      <div className="flex gap-3 items-center">
+      <div className="flex gap-3 items-center md:hidden">
         <MobileSearchButton />
         <MobileMenuButton />
       </div>
