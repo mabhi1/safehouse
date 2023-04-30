@@ -4,8 +4,8 @@ export const toggleMobileMenu = (target: HTMLDivElement) => {
   else target.setAttribute("id", "mobile-menu-btn");
 
   const mobileMenu = document.getElementById("mobileMenu");
-  mobileMenu?.classList.toggle("left-0");
   mobileMenu?.classList.toggle("-left-full");
+  mobileMenu?.classList.toggle("left-0");
 };
 
 export const closeMobileMenu = () => {
