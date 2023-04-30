@@ -11,7 +11,7 @@ import { useState } from "react";
 type Props = {
   params: { term: string };
 };
-const page = ({ params: { term } }: Props) => {
+const CalendarTerm = ({ params: { term } }: Props) => {
   const [task, setTask] = useState<TaskType[]>([]);
   const currentUser = useAuth();
 
@@ -29,4 +29,4 @@ const page = ({ params: { term } }: Props) => {
 
   return <FilteredEvents setTask={setTask} task={task} term={term} />;
 };
-export default page;
+export default CalendarTerm;

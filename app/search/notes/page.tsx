@@ -2,9 +2,9 @@
 import { useRouter } from "next/navigation";
 
 type Props = {};
-const page = (props: Props) => {
+const NotesSearch = (props: Props) => {
   const router = useRouter();
   router.push("/notes");
   return <div></div>;
 };
-export default page;
+export default NotesSearch;

@@ -11,7 +11,7 @@ import { useState } from "react";
 type Props = {
   params: { term: string };
 };
-const page = ({ params: { term } }: Props) => {
+const CardTerm = ({ params: { term } }: Props) => {
   const [cards, setCards] = useState<CardType[]>([]);
   const currentUser = useAuth();
 
@@ -36,4 +36,4 @@ const page = ({ params: { term } }: Props) => {
 
   if (!cardsQuery.isLoading) return <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">{showCards()}</div>;
 };
-export default page;
+export default CardTerm;

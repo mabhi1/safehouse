@@ -11,7 +11,7 @@ import { useState } from "react";
 type Props = {
   params: { term: string };
 };
-const page = ({ params: { term } }: Props) => {
+const NotesTerm = ({ params: { term } }: Props) => {
   const [note, setNotes] = useState<NotesType[]>([]);
   const currentUser = useAuth();
 
@@ -40,4 +40,4 @@ const page = ({ params: { term } }: Props) => {
 
   if (!notesQuery.isLoading) return <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">{showNotes()}</div>;
 };
-export default page;
+export default NotesTerm;

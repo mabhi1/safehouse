@@ -11,7 +11,7 @@ import { useState } from "react";
 type Props = {
   params: { term: string };
 };
-const page = ({ params: { term } }: Props) => {
+const PasswordTerm = ({ params: { term } }: Props) => {
   const [passwords, setPasswords] = useState<PasswordType[]>([]);
   const currentUser = useAuth();
 
@@ -40,4 +40,4 @@ const page = ({ params: { term } }: Props) => {
 
   if (!passwordsQuery.isLoading) return <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">{showPasswords()}</div>;
 };
-export default page;
+export default PasswordTerm;

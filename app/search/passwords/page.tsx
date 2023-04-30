@@ -2,9 +2,9 @@
 import { useRouter } from "next/navigation";
 
 type Props = {};
-const page = (props: Props) => {
+const PasswordSearch = (props: Props) => {
   const router = useRouter();
   router.push("/passwords");
   return <div></div>;
 };
-export default page;
+export default PasswordSearch;
