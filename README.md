@@ -22,6 +22,6 @@ This project is deployed on vercel with the URL [safehouse](https://mysafehouse.
 
 ## Test User
 
-Use the following credentials to test the application
-Username - test@test.com
+Use the following credentials to test the application__
+Username - test@test.com__
 Password - test123
