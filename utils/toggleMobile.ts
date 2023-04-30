@@ -17,3 +17,10 @@ export const closeMobileMenu = () => {
     mobileMenu?.classList.toggle("left-0");
   }, 300);
 };
+
+export const toggleMobileSearchForm = () => {
+  const mobileSearchForm = document.getElementById("mobileSearchForm");
+  mobileSearchForm?.classList.toggle("-mt-20");
+  mobileSearchForm?.classList.toggle("mb-[0.7rem]");
+  mobileSearchForm?.classList.toggle("mt-0");
+};

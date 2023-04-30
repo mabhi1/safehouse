@@ -38,7 +38,7 @@ const FilteredEvents = ({ task, term, setTask }: Props) => {
                 <MarkedText searchTerm={term} text={t.title} />
               </div>
               <div className="text-sm text-slate-500 h-10 overflow-hidden">
-                <MarkedText searchTerm={term} text={t.description} />
+                {t.description ? <MarkedText searchTerm={term} text={t.description} /> : <div>No Description</div>}
               </div>
             </div>
           </div>

@@ -63,8 +63,8 @@ const Calendar = (props: Props) => {
   if (tasksQuery.isError) throw tasksQuery.error;
 
   return (
-    <div className="flex flex-col-reverse justify-end lg:flex-row flex-wrap gap-5 lg:gap-2 lg:divide-x-2 h-full">
-      <div className="flex flex-col items-center md:items-start md:flex-row gap-5 w-full lg:w-[75%]">
+    <div className="flex flex-col-reverse justify-end lg:flex-row flex-wrap gap-3 md:gap-5 lg:gap-2 lg:divide-x-2 h-full">
+      <div className="flex flex-col items-center md:items-start md:flex-row gap-3 md:gap-5 w-full lg:w-[75%]">
         <div
           onClick={() => {
             document.getElementById("mobileCalendar")?.classList.toggle("hidden");

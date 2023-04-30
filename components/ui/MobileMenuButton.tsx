@@ -1,6 +1,6 @@
 "use client";
 
-import { toggleMobileMenu } from "@/utils/toggleMobileMenu";
+import { toggleMobileMenu } from "@/utils/toggleMobile";
 
 type Props = {};
 const MobileMenuButton = (props: Props) => {

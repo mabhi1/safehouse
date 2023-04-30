@@ -6,6 +6,7 @@ import { Signika_Negative } from "next/font/google";
 import Footer from "./Footer";
 import MobileMenu from "@/components/ui/MobileMenu";
 import DesktopMenu from "@/components/ui/DesktopMenu";
+import MobileSearchForm from "@/components/ui/MobileSearchForm";
 
 const signika = Signika_Negative({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode | a
       <body className={signika.className + " text-base bg-slate-50 flex flex-col"}>
         <AuthProvider>
           <Header />
+          <MobileSearchForm />
           <MobileMenu />
           <main className="flex-1 flex min-h-screen">
             <DesktopMenu path={children.props?.childProp.segment} />

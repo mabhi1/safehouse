@@ -9,11 +9,11 @@ import { useState } from "react";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 
-type Props = {};
-const Notes = (props: Props) => {
+type Props = {
+  term: string;
+};
+const Notes = ({ term }: Props) => {
   const [notes, setNotes] = useState<NotesType[]>([]);
-  const [term, setTerm] = useState("");
-  const [filteredNotes, setFilteredNotes] = useState<NotesType[]>([]);
   const currentUser = useAuth();
 
   const notesQuery = useQuery({
@@ -25,20 +25,10 @@ const Notes = (props: Props) => {
     },
   });
 
-  const filterNotes = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value.trim().toLowerCase();
-    setTerm(text);
-    setFilteredNotes(
-      notes.filter((note: NotesType) => {
-        if (note.name.toLowerCase().includes(text) || note.description.toLowerCase().includes(text)) return note;
-      })
-    );
-  };
-
-  const showNotes = (notesList: NotesType[]) => {
-    if (notesList.length === 0) return <div>No Notes to display</div>;
-    return notesList?.map((note: NotesType) => {
-      return <IndividualNotes note={note} key={note.id} searchTerm={term} setNotes={setNotes} />;
+  const showNotes = () => {
+    if (notes.length === 0) return <div>No Notes to display</div>;
+    return notes?.map((note: NotesType) => {
+      return <IndividualNotes note={note} key={note.id} searchTerm={""} setNotes={setNotes} />;
     });
   };
 
@@ -54,7 +44,7 @@ const Notes = (props: Props) => {
             <Button variant={"outline"}>Add Note</Button>
           </Link>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">{term ? showNotes(filteredNotes) : showNotes(notes)}</div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">{showNotes()}</div>
       </>
     );
   }

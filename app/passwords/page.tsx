@@ -1,6 +1,4 @@
 "use client";
-import Input from "@/components/ui/Input";
-import { BiSearchAlt2 } from "react-icons/bi";
 import useAuth from "@/components/auth/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -15,8 +13,6 @@ type Props = {};
 const Passwords = (props: Props) => {
   const currentUser = useAuth();
   const [passwords, setPasswords] = useState<PasswordType[]>([]);
-  const [term, setTerm] = useState("");
-  const [filteredPasswords, setFilteredPasswords] = useState<PasswordType[]>([]);
 
   const passwordsQuery = useQuery({
     queryKey: ["passwords"],
@@ -27,21 +23,10 @@ const Passwords = (props: Props) => {
     },
   });
 
-  const filterPasswords = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const text = e.target.value.trim().toLowerCase();
-    setTerm(text);
-    setFilteredPasswords(
-      passwords.filter((pass: PasswordType) => {
-        if (pass.site.toLowerCase().includes(text) || pass.username.toLowerCase().includes(text) || pass.password.toLowerCase().includes(text))
-          return pass;
-      })
-    );
-  };
-
   const showPasswords = (passList: PasswordType[]) => {
-    if (passList.length === 0) return <div>No Notes to display</div>;
+    if (passList.length === 0) return <div>No Passwords to display</div>;
     return passList.map((pass: PasswordType) => {
-      return <IndividualPassword password={pass} key={pass.id} searchTerm={term} setPasswords={setPasswords} />;
+      return <IndividualPassword password={pass} key={pass.id} searchTerm={""} setPasswords={setPasswords} />;
     });
   };
 
@@ -56,9 +41,7 @@ const Passwords = (props: Props) => {
           <Button variant={"outline"}>Add Password</Button>
         </Link>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
-        {term ? showPasswords(filteredPasswords) : showPasswords(passwords)}
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">{showPasswords(passwords)}</div>
     </>
   );
 };
