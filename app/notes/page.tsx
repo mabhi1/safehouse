@@ -9,10 +9,8 @@ import { useState } from "react";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 
-type Props = {
-  term: string;
-};
-const NotesPage = ({ term }: Props) => {
+type Props = {};
+const NotesPage = (props: Props) => {
   const [notes, setNotes] = useState<NotesType[]>([]);
   const currentUser = useAuth();
 
