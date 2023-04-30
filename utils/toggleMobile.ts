@@ -1,10 +1,11 @@
+"use client";
 export const toggleMobileMenu = (target: HTMLDivElement) => {
   if (document.getElementById("mobile-menu-btn")) target.removeAttribute("id");
   else target.setAttribute("id", "mobile-menu-btn");
 
   const mobileMenu = document.getElementById("mobileMenu");
-  mobileMenu?.classList.toggle("-left-full");
   mobileMenu?.classList.toggle("left-0");
+  mobileMenu?.classList.toggle("-left-full");
 };
 
 export const closeMobileMenu = () => {
@@ -13,9 +14,7 @@ export const closeMobileMenu = () => {
 
   const mobileMenu = document.getElementById("mobileMenu");
   mobileMenu?.classList.toggle("-left-full");
-  setTimeout(() => {
-    mobileMenu?.classList.toggle("left-0");
-  }, 300);
+  mobileMenu?.classList.toggle("left-0");
 };
 
 export const toggleMobileSearchForm = () => {
