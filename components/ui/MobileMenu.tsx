@@ -32,10 +32,10 @@ const MobileMenu = (props: Props) => {
           <FcCalendar className={classes.navIcon} />
           Calendar
         </Link>
-        <Link href={"/accounts"} className={classes.navLink} onClick={closeMobileMenu}>
+        {/* <Link href={"/accounts"} className={classes.navLink} onClick={closeMobileMenu}>
           <FcLibrary className={classes.navIcon} />
           Accounts
-        </Link>
+        </Link> */}
         <Link href={"/cards"} className={classes.navLink} onClick={closeMobileMenu}>
           <FcIpad className={classes.navIcon} />
           Cards

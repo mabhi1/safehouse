@@ -37,13 +37,13 @@ const DesktopMenu = ({ path }: Props) => {
         <Link href={"/calendar/create"} className={classes.subNavLink + (path === "calendar" ? "" : " hidden")}>
           <Button variant="link">Add Event</Button>
         </Link>
-        <Link href={"/accounts"} className={classes.navLink + (path === "accounts" ? classes.path : "")}>
+        {/* <Link href={"/accounts"} className={classes.navLink + (path === "accounts" ? classes.path : "")}>
           <FcLibrary className={classes.navIcon} />
           Accounts
         </Link>
         <Link href={"/accounts/create"} className={classes.subNavLink + (path === "accounts" ? "" : " hidden")}>
           <Button variant="link">Add Account</Button>
-        </Link>
+        </Link> */}
         <Link href={"/cards"} className={classes.navLink + (path === "cards" ? classes.path : "")}>
           <FcIpad className={classes.navIcon} />
           Cards

@@ -8,6 +8,8 @@ import Loading from "../loading";
 import IndividualCards from "@/components/bank/IndividualCards";
 import { BiSearchAlt2 } from "react-icons/bi";
 import Input from "@/components/ui/Input";
+import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 type Props = {};
 const Cards = (props: Props) => {
@@ -34,13 +36,23 @@ const Cards = (props: Props) => {
   const showCards = (cardList: CardType[]) => {
     if (cardList.length === 0) return <div>No Cards to display</div>;
     return cardList.map((card: CardType) => {
-      return <IndividualCards card={card} key={card.id} searchTerm={term} />;
+      return <IndividualCards card={card} key={card.id} searchTerm={term} setCards={setCards} />;
     });
   };
 
   if (passwordsQuery.isLoading) return <Loading />;
   if (passwordsQuery.isError) throw passwordsQuery.error;
 
-  return <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">{term ? showCards(filtered) : showCards(cards)}</div>;
+  return (
+    <>
+      <div className="flex md:hidden items-center justify-between mb-3">
+        <div>Cards</div>
+        <Link href={"/cards/create"}>
+          <Button variant={"outline"}>Add Card</Button>
+        </Link>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">{term ? showCards(filtered) : showCards(cards)}</div>
+    </>
+  );
 };
 export default Cards;
