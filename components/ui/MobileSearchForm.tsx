@@ -12,7 +12,7 @@ const MobileSearchForm = (props: Props) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const page = document.getElementById("mobilePage") as HTMLSelectElement;
-    router.push(`/search/${page.value}/${search}`);
+    router.push(`/search/${page.value}/${search.trim().toLowerCase()}`);
   };
 
   return (

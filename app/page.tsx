@@ -1,20 +1,20 @@
 import Image from "next/image";
 
 const classes = {
-  cards: "flex flex-col gap-3 border p-5 shadow items-center",
+  cards: "flex flex-col gap-3 p-5 shadow items-center",
   cardHeading: "underline underline-offset-2",
   cardBody: "text-center",
-  cardImage: "w-full",
+  cardImage: "w-1/2",
 };
 export default function Home() {
   return (
     <div className="flex flex-col divide-y-2">
-      <div className="flex flex-col md:flex-row justify-evenly p-5 lg:p-10">
-        <div className="min-w-full md:min-w-[16rem] lg:min-w-[24rem]">
-          <Image src={"/frontpage.png"} width={500} height={477} alt="Safe House" priority />
+      <div className="flex flex-col md:flex-row justify-center items-center gap-3 md:gap-5 p-5 lg:p-10">
+        <div className="w-full md:w-1/2">
+          <Image src={"/homepage.png"} width={1200} height={676} alt="Safe House" priority className="w-auto h-auto" />
         </div>
-        <div className="flex flex-col justify-center p-5 lg:p-10">
-          <h1 className="text-5xl">Safe House</h1>
+        <div className="flex flex-col justify-center p-5 lg:p-10 gap-3 md:gap-5 w-full md:w-1/2">
+          <h1 className="text-3xl">Safe House</h1>
           <div className="">
             Your personal Secure storage for passwords, banks, notes and more. All the data for your cards and passwords are stored in an encrypted
             form. Only you can see your data
@@ -22,7 +22,7 @@ export default function Home() {
         </div>
       </div>
       <div className="flex flex-col p-5 gap-10">
-        <div className="text-center text-xl">Features</div>
+        <div className="text-center">Features</div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
           <div className={classes.cards}>
             <div className={classes.cardImage}>
