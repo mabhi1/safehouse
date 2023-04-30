@@ -57,6 +57,14 @@
   translate: 0 -6.5px;
 }
 
+#openMobileMenu {
+  left: 0;
+}
+
+#closeMobileMenu {
+  left: -100%;
+}
+
 .date {
   position: relative;
   background-color: transparent;

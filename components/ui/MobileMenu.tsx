@@ -13,7 +13,7 @@ const MobileMenu = (props: Props) => {
   return (
     <>
       <nav
-        id="mobileMenu"
+        id="closeMobileMenu"
         className="md:hidden fixed -left-full transition-all duration-300 bottom-0 top-16 p-5 z-40 w-3/4 shadow-lg border backdrop-blur border-r-slate-200 flex flex-col bg-slate-50/80"
       >
         <Link href={"/"} className={classes.navLink} onClick={closeMobileMenu}>
