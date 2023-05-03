@@ -10,7 +10,7 @@ import Link from "next/link";
 import axios from "axios";
 import { showToast } from "@/utils/handleToast";
 import Spinner from "../ui/Spinner";
-import ConfirmBox from "../ui/ConfirmBox";
+import { openConfirmBox } from "@/utils/handleModal";
 
 type Props = {
   password: PasswordType;
@@ -19,7 +19,6 @@ type Props = {
 };
 const IndividualPassword = ({ password, searchTerm, setPasswords }: Props) => {
   const [visible, setVisible] = useState(false);
-  const [confirm, setConfirm] = useState(false);
 
   const queryClient = useQueryClient();
   const passwordsMutation = useMutation({
@@ -30,7 +29,7 @@ const IndividualPassword = ({ password, searchTerm, setPasswords }: Props) => {
       queryClient.invalidateQueries(["passwords"]);
       if (passwordsMutation.isError) showToast("error", "Error deleting password");
       else {
-        setPasswords((passwords) => passwords.filter((password) => password.id !== data.data.data.id));
+        setPasswords((passwords) => passwords.filter((password) => password.id !== data?.data?.data?.id));
         showToast("success", "Password deleted successfully");
       }
     },
@@ -51,7 +50,6 @@ const IndividualPassword = ({ password, searchTerm, setPasswords }: Props) => {
 
   return (
     <div className="flex flex-col justify-between shadow transition-shadow duration-300 hover:shadow-lg border rounded p-2 overflow-hidden">
-      <ConfirmBox open={confirm} setOpen={setConfirm} action={handleDelete} />
       <div className="flex flex-col gap-2">
         <div className="break-words">
           <MarkedText text={password.site} searchTerm={searchTerm} />
@@ -69,7 +67,7 @@ const IndividualPassword = ({ password, searchTerm, setPasswords }: Props) => {
           <Link href={`/passwords/${password.id}`}>
             <Button variant="link">Edit</Button>
           </Link>
-          <Button variant="link" onClick={() => setConfirm(true)}>
+          <Button variant="link" onClick={() => openConfirmBox(handleDelete)}>
             Delete
           </Button>
         </div>

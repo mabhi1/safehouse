@@ -45,7 +45,7 @@ const Files = ({ folderId }: Props) => {
       </div>
       <div className="flex flex-wrap gap-3">
         {files.map((file) => (
-          <IndividualFile file={file} key={file.id} />
+          <IndividualFile file={file} key={file.id} setFiles={setFiles} setLoading={setLoading} />
         ))}
       </div>
     </div>

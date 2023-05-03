@@ -6,8 +6,7 @@ import { showToast } from "@/utils/handleToast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import Spinner from "../ui/Spinner";
-import ConfirmBox from "../ui/ConfirmBox";
-import { useState } from "react";
+import { openConfirmBox } from "@/utils/handleModal";
 
 type Props = {
   note: NotesType;
@@ -16,7 +15,6 @@ type Props = {
 };
 const IndividualNotes = ({ note, searchTerm, setNotes }: Props) => {
   const dateFormatter = new Intl.DateTimeFormat("en-us", { dateStyle: "long" });
-  const [confirm, setConfirm] = useState(false);
   const queryClient = useQueryClient();
   const notesMutation = useMutation({
     mutationFn: () => {
@@ -26,7 +24,7 @@ const IndividualNotes = ({ note, searchTerm, setNotes }: Props) => {
       queryClient.invalidateQueries(["notes"]);
       if (notesMutation.isError) showToast("error", "Error deleting note");
       else {
-        setNotes((notes) => notes.filter((note) => note.id !== data.data.data.id));
+        setNotes((notes) => notes.filter((note) => note.id !== data?.data?.data?.id));
         showToast("success", "Note deleted successfully");
       }
     },
@@ -47,7 +45,6 @@ const IndividualNotes = ({ note, searchTerm, setNotes }: Props) => {
 
   return (
     <div className="flex flex-col gap-2 bg-amber-50 border border-amber-200 rounded p-2 justify-between overflow-hidden">
-      <ConfirmBox open={confirm} setOpen={setConfirm} action={handleDelete} />
       <div className="underline underline-offset-2 break-words">
         <MarkedText text={note.name} searchTerm={searchTerm} />
       </div>
@@ -65,7 +62,7 @@ const IndividualNotes = ({ note, searchTerm, setNotes }: Props) => {
           <Link href={`/notes/${note.id}`}>
             <Button variant="link">Edit</Button>
           </Link>
-          <Button variant="link" onClick={() => setConfirm(true)}>
+          <Button variant="link" onClick={() => openConfirmBox(handleDelete)}>
             Delete
           </Button>
         </div>

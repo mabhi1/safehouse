@@ -1,5 +1,6 @@
 "use client";
 import { FcApproval, FcExpired, FcHighPriority, FcInfo } from "react-icons/fc";
+import { IoClose } from "react-icons/io5";
 
 type Props = {};
 
@@ -24,6 +25,7 @@ const Toast = (props: Props) => {
         className="toast z-50 transition-transform duration-300 fixed top-1 right-1 md:top-10 md:right-10 translate-x-[150%] flex w-96 gap-3 bg-red-50 items-center border-l-8 border-l-red-700 rounded shadow-lg shadow-slate-300 p-3"
       >
         <FcHighPriority className="text-2xl" />
+        <IoClose data-toast-close className="absolute top-1 right-1 text-2xl cursor-pointer" />
         <div>
           <h1>Error</h1>
           <span className="text-slate-600" id="error-toast-message"></span>

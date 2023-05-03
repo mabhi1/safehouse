@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import MobileMenu from "@/components/ui/MobileMenu";
 import DesktopMenu from "@/components/ui/DesktopMenu";
 import MobileSearchForm from "@/components/ui/MobileSearchForm";
+import ConfirmBox from "@/components/ui/ConfirmBox";
 
 const signika = Signika_Negative({ subsets: ["latin"] });
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode | a
           <Footer />
         </AuthProvider>
         <Toast />
+        <ConfirmBox />
       </body>
     </html>
   );

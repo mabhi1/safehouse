@@ -1,27 +1,38 @@
+"use client";
 import { CiWarning } from "react-icons/ci";
 import Button from "./Button";
 
-type Props = {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  action: () => void;
-};
-const ConfirmBox = ({ open, setOpen, action }: Props) => {
+type Props = {};
+const ConfirmBox = (props: Props) => {
+  const handleClose = () => {
+    const modal = document.querySelector("[data-modal]") as HTMLDialogElement;
+    const actioButton = document.querySelector("[data-modal-action]") as HTMLButtonElement;
+    actioButton.removeEventListener("click", () => {});
+    modal.close();
+  };
+
   return (
-    <div className={(open ? "fixed" : "hidden") + " fixed inset-0 z-50 flex justify-center items-center bg-slate-200/50"}>
-      <div className="flex flex-col border rounded w-3/4 md:w-1/2 lg:w-1/4 p-5 items-center md:p-10 shadow gap-3 md:gap-5 bg-slate-50 text-slate-900 ">
+    <dialog
+      data-modal
+      className="rounded border shadow bg-slate-50"
+      onClick={(e) => {
+        const { tagName } = e.target as HTMLElement;
+        if (tagName === "DIALOG") handleClose();
+      }}
+    >
+      <div className="flex flex-col rounded p-5 items-center gap-3 md:gap-5 bg-slate-50 text-slate-900 ">
         <CiWarning className="text-5xl" />
         <div>Are you sure?</div>
         <div className="flex gap-5 justify-center">
-          <Button size={"sm"} onClick={() => action()}>
+          <Button data-modal-action size={"sm"}>
             {"Yes, I'm sure"}
           </Button>
-          <Button variant={"destructive"} size={"sm"} onClick={() => setOpen(false)}>
+          <Button variant={"destructive"} size={"sm"} onClick={handleClose}>
             {"No, Cancel"}
           </Button>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 };
 export default ConfirmBox;

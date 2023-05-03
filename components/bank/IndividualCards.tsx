@@ -7,8 +7,8 @@ import MarkedText from "../ui/MarkedText";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { showToast } from "@/utils/handleToast";
-import ConfirmBox from "../ui/ConfirmBox";
 import Spinner from "../ui/Spinner";
+import { openConfirmBox } from "@/utils/handleModal";
 
 type Props = {
   card: CardType;
@@ -21,7 +21,6 @@ const styles = {
 };
 const IndividualCards = ({ card, searchTerm, setCards }: Props) => {
   const [show, setShow] = useState(false);
-  const [confirm, setConfirm] = useState(false);
   const queryClient = useQueryClient();
   const cardMutation = useMutation({
     mutationFn: () => {
@@ -31,7 +30,7 @@ const IndividualCards = ({ card, searchTerm, setCards }: Props) => {
       queryClient.invalidateQueries(["cards"]);
       if (cardMutation.isError) showToast("error", "Error deleting Card");
       else {
-        setCards((cardList) => cardList.filter((card) => card.id !== data.data.data.id));
+        setCards((cardList) => cardList.filter((card) => card.id !== data?.data?.data?.id));
         showToast("success", "Card deleted successfully");
       }
     },
@@ -52,7 +51,6 @@ const IndividualCards = ({ card, searchTerm, setCards }: Props) => {
 
   return (
     <div className={`flex flex-col aspect-video p-2 md:p-4 text-slate-50 gap-2 justify-between rounded select-none ${styles[card.type]}`}>
-      <ConfirmBox open={confirm} setOpen={setConfirm} action={handleDelete} />
       <div className="flex flex-nowrap gap-1">
         <span>{<MarkedText searchTerm={searchTerm} text={card.bank} />}</span>
         <span>{<MarkedText searchTerm={searchTerm} text={card.type} />}</span>
@@ -80,7 +78,7 @@ const IndividualCards = ({ card, searchTerm, setCards }: Props) => {
         ) : (
           <AiFillEye onClick={() => setShow((show) => !show)} className="cursor-pointer text-xl" />
         )}
-        <MdDelete className="cursor-pointer text-xl" onClick={() => setConfirm(true)} />
+        <MdDelete className="cursor-pointer text-xl" onClick={() => openConfirmBox(handleDelete)} />
       </div>
     </div>
   );
