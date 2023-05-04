@@ -36,12 +36,12 @@ const IndividualFile = ({ file, setFiles, setLoading }: Props) => {
 
   return (
     <div className="relative">
-      <a href={file.url} target="_blank">
-        <div className="flex flex-col items-center text-center rounded hover:bg-slate-200">
-          <Image src="/file.png" width={60} height={70} alt={file.name} priority />
+      <div className="flex flex-col items-center text-center rounded hover:bg-slate-200">
+        <Image src="/file.png" width={60} height={70} alt={file.name} priority />
+        <a href={file.url} target="_blank">
           <div className="w-24 break-words text-slate-900">{file.name}</div>
-        </div>
-      </a>
+        </a>
+      </div>
       <MdDelete
         onClick={() =>
           openConfirmBox(() => {

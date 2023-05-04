@@ -9,7 +9,7 @@ const classes = {
 export default function Home() {
   return (
     <div className="flex flex-col divide-y-2">
-      <div className="flex flex-col md:flex-row justify-center items-center gap-3 md:gap-5 p-5 lg:p-10">
+      <div className="flex flex-col md:flex-row justify-center items-center gap-3 md:gap-5 px-5 pb-5 lg:px-10 lg:pb-10">
         <div className="w-full md:w-1/2">
           <Image src={"/homepage.png"} width={1200} height={676} alt="Safe House" priority className="w-auto h-auto" />
         </div>

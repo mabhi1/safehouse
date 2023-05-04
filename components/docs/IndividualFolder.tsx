@@ -12,12 +12,12 @@ const IndividualFolder = ({ folder, setSelected }: Props) => {
   return (
     <>
       <div className="relative">
-        <Link href={`/docs/${folder.id}`}>
-          <div className="flex flex-col items-center text-center rounded hover:bg-slate-200">
-            <Image src="/folder.png" width={70} height={70} alt={folder.name} priority />
+        <div className="flex flex-col items-center text-center rounded hover:bg-slate-200">
+          <Image src="/folder.png" width={70} height={70} alt={folder.name} priority />
+          <Link href={`/docs/${folder.id}`}>
             <div className="w-24 break-words text-slate-900">{folder.name}</div>
-          </div>
-        </Link>
+          </Link>
+        </div>
         <BsThreeDotsVertical onClick={() => setSelected(folder)} className="cursor-pointer absolute right-0 top-0" />
       </div>
     </>
