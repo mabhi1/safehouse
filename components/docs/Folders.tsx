@@ -199,16 +199,16 @@ const Folders = ({ folderId }: Props) => {
             <Image src="/folder.png" width={40} height={40} alt={selected.name} priority />
             <div className=" break-words text-slate-900">{selected.name}</div>
           </div>
-          <div className="flex gap-3 md:gap-5">
+          <div className="flex gap-3 md:gap-5 justify-center items-center">
             <form className="flex flex-row gap-3 md:gap-5" onSubmit={handleRenameFolder}>
               <Input
                 wide={"md"}
+                className="w-full"
                 type="text"
                 id="name"
                 placeholder="New Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                autoFocus={true}
               />
               <Button>Rename</Button>
             </form>

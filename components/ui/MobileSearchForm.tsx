@@ -19,7 +19,7 @@ const MobileSearchForm = (props: Props) => {
     <form
       onSubmit={handleSubmit}
       id="mobileSearchForm"
-      className="flex md:hidden gap-2 w-full -mt-20 mb-[0.7rem] transition-all duration-300 bg-slate-50 justify-center py-3 border-b"
+      className="flex md:hidden px-3 gap-2 w-full -mt-20 mb-[0.7rem] transition-all duration-300 bg-slate-50 justify-center py-3 border-b"
     >
       <div className="relative">
         <Input
@@ -27,7 +27,7 @@ const MobileSearchForm = (props: Props) => {
           id="searchPage"
           placeholder="Search"
           wide={"lg"}
-          className="pr-[6.5rem]"
+          className="pr-[6.5rem] w-full"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
