@@ -22,6 +22,12 @@ const MobileSearchForm = (props: Props) => {
       className="flex md:hidden px-3 gap-2 w-full -mt-20 mb-[0.7rem] transition-all duration-300 bg-slate-50 justify-center py-3 border-b"
     >
       <div className="relative">
+        <select name="page" id="mobilePage" className="absolute top-1 bottom-1 right-1 focus:outline-none bg-transparent border-l-2 border-slate-400">
+          <option value="notes">Notes</option>
+          <option value="calendar">Calendar</option>
+          <option value="cards">Cards</option>
+          <option value="passwords">Passwords</option>
+        </select>
         <Input
           type="text"
           id="searchPage"
@@ -31,12 +37,6 @@ const MobileSearchForm = (props: Props) => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select name="page" id="mobilePage" className="absolute top-1 bottom-1 right-1 focus:outline-none bg-transparent border-l-2 border-slate-400">
-          <option value="notes">Notes</option>
-          <option value="calendar">Calendar</option>
-          <option value="cards">Cards</option>
-          <option value="passwords">Passwords</option>
-        </select>
       </div>
       <Button>Search</Button>
     </form>
