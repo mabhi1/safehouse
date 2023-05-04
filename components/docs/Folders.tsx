@@ -201,7 +201,15 @@ const Folders = ({ folderId }: Props) => {
           </div>
           <div className="flex gap-3 md:gap-5">
             <form className="flex flex-row gap-3 md:gap-5" onSubmit={handleRenameFolder}>
-              <Input type="text" id="name" placeholder="New Name" value={name} onChange={(e) => setName(e.target.value)} autoFocus={true} />
+              <Input
+                wide={"md"}
+                type="text"
+                id="name"
+                placeholder="New Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus={true}
+              />
               <Button>Rename</Button>
             </form>
             <Button
