@@ -22,18 +22,25 @@ const ContactForm = (props: Props) => {
     }
     setLoading(true);
     if (formElement.current)
-      emailjs.sendForm("service_5uh2m5o", "template_4gt0ocx", formElement.current, "IvWTeDQIgeJ6LRxbB").then(
-        (result) => {
-          showToast("success", "Message sent successfully");
-          setMessage("");
-          setLoading(false);
-        },
-        (error) => {
-          setMessage("");
-          setLoading(false);
-          showToast("error", "Error sending message");
-        }
-      );
+      emailjs
+        .sendForm(
+          `${process.env.NEXT_PUBLIC_SERVICE_ID}`,
+          `${process.env.NEXT_PUBLIC_TEMPLATE_ID}`,
+          formElement.current,
+          `${process.env.NEXT_PUBLIC_PUBLIC_ID}`
+        )
+        .then(
+          (result) => {
+            showToast("success", "Message sent successfully");
+            setMessage("");
+            setLoading(false);
+          },
+          (error) => {
+            setMessage("");
+            setLoading(false);
+            showToast("error", "Error sending message");
+          }
+        );
   };
   return (
     <div className="flex flex-col md:gap-2 lg:px-10 pt-1 lg:pt-0">
