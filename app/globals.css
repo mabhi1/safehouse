@@ -7,38 +7,24 @@
 }
 
 #home-menu:hover ~ #menu-hover {
-  left: 0.5rem;
-  width: 3.5rem;
 }
 
 #docs-menu:hover ~ #menu-hover {
-  left: 4.9rem;
-  width: 3.2rem;
 }
 
 #notes-menu:hover ~ #menu-hover {
-  left: 8.9rem;
-  width: 3.7rem;
 }
 
 #calendar-menu:hover ~ #menu-hover {
-  left: 13.5rem;
-  width: 4.9rem;
 }
 
 #accounts-menu:hover ~ #menu-hover {
-  left: 19.3rem;
-  width: 5rem;
 }
 
 #cards-menu:hover ~ #menu-hover {
-  left: 25.3rem;
-  width: 3.3rem;
 }
 
 #passwords-menu:hover ~ #menu-hover {
-  left: 29.6rem;
-  width: 5.5rem;
 }
 
 #mobile-menu-btn {

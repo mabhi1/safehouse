@@ -15,7 +15,7 @@ export const showToast = (type: "success" | "error" | "info" | "warning", messag
   });
 
   // handle Close Button
-  const closeBtn = document.querySelector("[data-toast-close]") as HTMLButtonElement;
+  const closeBtn = document.getElementById(`${type}-toast-close`) as HTMLButtonElement;
   closeBtn.addEventListener("click", () => {
     if (toast && toast.dataset.id === newId) {
       toast.classList.add("translate-x-[150%]");
@@ -30,7 +30,7 @@ export const showToast = (type: "success" | "error" | "info" | "warning", messag
   messageBox.textContent = message;
   setTimeout(() => {
     if (toast) toast.classList.remove("translate-x-[150%]");
-  }, 100);
+  }, 10);
 
   // Hide current toast after 4 seconds
   setTimeout(() => {

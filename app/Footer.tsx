@@ -1,10 +1,11 @@
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import ContactForm from "@/components/footer/ContactForm";
 import Link from "next/link";
 import { BiCopyright } from "react-icons/bi";
-import { MdOutlineMail } from "react-icons/md";
 
 type Props = {};
+const classes = {
+  link: "hover:text-slate-50",
+};
 const Footer = (props: Props) => {
   return (
     <footer>
@@ -19,26 +20,24 @@ const Footer = (props: Props) => {
         <div className="flex flex-col md:gap-2 lg:px-10 pt-1 lg:pt-0">
           <div className="text-slate-50">Navigation Links</div>
           <div className="flex flex-row gap-x-6 lg:flex-col">
-            <Link href={"/notes"}>Docs</Link>
-            <Link href={"/notes"}>Notes</Link>
-            <Link href={"/notes"}>Calendar</Link>
-            <Link href={"/notes"}>Banks</Link>
-            <Link href={"/notes"}>Passwords</Link>
+            <Link href={"/notes"} className={classes.link}>
+              Docs
+            </Link>
+            <Link href={"/notes"} className={classes.link}>
+              Notes
+            </Link>
+            <Link href={"/notes"} className={classes.link}>
+              Calendar
+            </Link>
+            <Link href={"/notes"} className={classes.link}>
+              Banks
+            </Link>
+            <Link href={"/notes"} className={classes.link}>
+              Passwords
+            </Link>
           </div>
         </div>
-        <div className="flex flex-col md:gap-2 lg:px-10 pt-1 lg:pt-0">
-          <div className="text-slate-50">Newsletter</div>
-          <div>Enter your email to join our newsletter</div>
-          <div className="flex flex-wrap gap-5">
-            <span className="flex items-center relative text-slate-900">
-              <MdOutlineMail className="absolute top-1/2 -translate-y-1/2 left-2" />
-              <Input type="text" variant={"iconSmall"} wide={"md"} className="border-slate-900" />
-            </span>
-            <Button variant={"outline"} size={"sm"} className="min-w-fit">
-              Subscribe
-            </Button>
-          </div>
-        </div>
+        <ContactForm />
       </div>
       <div className="bg-cyan-950 text-sm text-slate-50 flex justify-center gap-1 items-center py-1 md:py-3">
         <BiCopyright /> 2023. All Rights Reserved
