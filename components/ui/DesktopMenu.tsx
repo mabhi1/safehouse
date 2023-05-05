@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FcHome, FcDocument, FcCalendar, FcLock, FcNews, FcLibrary, FcIpad } from "react-icons/fc";
+import { FcHome, FcDocument, FcCalendar, FcLock, FcNews, FcIpad } from "react-icons/fc";
 import Button from "./Button";
 
 type Props = {

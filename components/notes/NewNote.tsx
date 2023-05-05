@@ -9,7 +9,7 @@ import { showToast } from "@/utils/handleToast";
 
 type Props = {};
 const NewNote = (props: Props) => {
-  const currentUser = useAuth()!;
+  const auth = useAuth()!;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const queryClient = useQueryClient();
@@ -19,7 +19,7 @@ const NewNote = (props: Props) => {
       return axios.post("/api/notes", {
         name: title,
         description,
-        uid: currentUser.uid,
+        uid: auth?.currentUser.uid,
       });
     },
     onSuccess: (data) => {

@@ -11,19 +11,19 @@ type Props = {
 const Location = ({ folderId }: Props) => {
   const [current, setCurrent] = useState<FolderType>();
   const [loading, setLoading] = useState(false);
-  const currentUser = useAuth();
+  const auth = useAuth();
 
   useEffect(() => {
     async function getCurrentPath() {
       if (folderId === "root") return;
-      if (!currentUser) return;
+      if (!auth?.currentUser) return;
       setLoading(true);
-      const currentFolder = (await getCurrentFolder({ folderId, currentUser: currentUser.uid })) as FolderType;
+      const currentFolder = (await getCurrentFolder({ folderId, currentUser: auth.currentUser.uid })) as FolderType;
       setCurrent(currentFolder);
       setLoading(false);
     }
     getCurrentPath();
-  }, [folderId, currentUser]);
+  }, [folderId, auth?.currentUser]);
 
   if (loading) return <div className="italic bg-slate-200 p-1 rounded">root</div>;
   return (

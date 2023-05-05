@@ -19,7 +19,7 @@ type Props = {
 const FolderModal = ({ open, setOpen, folderId, setFolders }: Props) => {
   const [folder, setFolder] = useState("");
   const [loading, setLoading] = useState(false);
-  const currentUser = useAuth();
+  const auth = useAuth();
   useEffect(() => {
     if (open) document.getElementById("folderInput")?.focus();
     setFolder("");
@@ -33,7 +33,7 @@ const FolderModal = ({ open, setOpen, folderId, setFolders }: Props) => {
       setLoading(false);
       return;
     }
-    const folderList = await getFolders({ folderId, currentUser: currentUser!.uid });
+    const folderList = await getFolders({ folderId, currentUser: auth!.currentUser!.uid });
     folderList.forEach((doc) => {
       if (doc.name.toLowerCase() === folder.toLowerCase()) {
         error = true;
@@ -48,7 +48,7 @@ const FolderModal = ({ open, setOpen, folderId, setFolders }: Props) => {
     const newId = uuidV4();
     let currentFolder;
     if (folderId !== "root") {
-      currentFolder = await getCurrentFolder({ currentUser: currentUser?.uid || "", folderId });
+      currentFolder = await getCurrentFolder({ currentUser: auth?.currentUser?.uid || "", folderId });
     }
     try {
       await setDoc(doc(db, "folders", newId), {
@@ -56,7 +56,7 @@ const FolderModal = ({ open, setOpen, folderId, setFolders }: Props) => {
         path: folderId !== "root" ? [...currentFolder?.path, { id: folderId, name: currentFolder?.name }] : [{ id: "root", name: "root" }],
         parentId: folderId,
         createdAt: serverTimestamp(),
-        uid: currentUser?.uid,
+        uid: auth?.currentUser?.uid,
       });
       const docSnap = await getDoc(doc(db, "folders", newId));
       //@ts-ignore

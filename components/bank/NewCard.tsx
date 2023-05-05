@@ -16,7 +16,7 @@ const NewCard = (props: Props) => {
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
   const queryClient = useQueryClient();
-  const currentUser = useAuth();
+  const auth = useAuth();
 
   const cardMutation = useMutation({
     mutationFn: () => {
@@ -29,7 +29,7 @@ const NewCard = (props: Props) => {
         number: encrypt(number),
         expiry: finalExpiry,
         cvv: encrypt(cvv),
-        uid: currentUser?.uid,
+        uid: auth?.currentUser?.uid,
       });
     },
     onSuccess: (data) => {

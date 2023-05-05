@@ -1,12 +1,10 @@
 "use client";
 import useAuth from "@/components/auth/AuthProvider";
 import CalendarView from "@/components/calendar/CalendarView";
-import Input from "@/components/ui/Input";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { BiSearchAlt2 } from "react-icons/bi";
 import { BsFillCaretDownSquareFill, BsFillCaretUpSquareFill } from "react-icons/bs";
 import Loading from "../loading";
 import { TaskType } from "@/lib/types/dbTypes";
@@ -25,12 +23,12 @@ const Calendar = (props: Props) => {
   const [upTask, setUpTask] = useState<TaskType[]>([]);
   const [taskMode, setTaskMode] = useState("close");
   const [term, setTerm] = useState("");
-  const currentUser = useAuth();
+  const auth = useAuth();
 
   const tasksQuery = useQuery({
     queryKey: ["tasks"],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/tasks?uid=${currentUser?.uid}`);
+      const { data } = await axios.get(`/api/tasks?uid=${auth?.currentUser?.uid}`);
       setTask(data.tasks);
       return data;
     },
@@ -53,11 +51,6 @@ const Calendar = (props: Props) => {
       })
     );
   }, [task, selectDate]);
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim().toLowerCase();
-    setTerm(value);
-  };
 
   if (tasksQuery.isLoading) return <Loading />;
   if (tasksQuery.isError) throw tasksQuery.error;

@@ -17,7 +17,7 @@ type Props = {
   setFiles: React.Dispatch<React.SetStateAction<FileType[]>>;
 };
 const FileModal = ({ open, setOpen, folderId, setFiles }: Props) => {
-  const currentUser = useAuth();
+  const auth = useAuth();
   const storage = getStorage();
   useEffect(() => {
     const fileInput = document.getElementById("files") as HTMLInputElement;
@@ -41,14 +41,14 @@ const FileModal = ({ open, setOpen, folderId, setFiles }: Props) => {
     const messageDiv = document.getElementById("uploadMessage") as HTMLDivElement;
     let currentFolder: FolderType;
     if (folderId !== "root") {
-      currentFolder = await getCurrentFolder({ currentUser: currentUser?.uid || "", folderId });
+      currentFolder = await getCurrentFolder({ currentUser: auth?.currentUser?.uid || "", folderId });
     }
 
     for (let i = 0; i < files.length; i++) {
       let error = false;
-      const Allfiles = await getFiles({ folderId, currentUser: currentUser?.uid || "" });
+      const Allfiles = await getFiles({ folderId, currentUser: auth?.currentUser?.uid || "" });
       Allfiles.forEach((file) => {
-        if (file.uid !== currentUser?.uid) {
+        if (file.uid !== auth?.currentUser?.uid) {
           error = true;
           return;
         }
@@ -87,7 +87,7 @@ const FileModal = ({ open, setOpen, folderId, setFiles }: Props) => {
                   folderId !== "root" ? [...currentFolder.path, { id: currentFolder.id, name: currentFolder.name }] : [{ id: "root", name: "root" }],
                 parentId: folderId ? folderId : "root",
                 createdAt: serverTimestamp(),
-                uid: currentUser?.uid,
+                uid: auth?.currentUser?.uid,
                 url: url,
               });
               const docSnap = await getDoc(doc(db, "files", newId));

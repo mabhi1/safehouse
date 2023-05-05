@@ -12,12 +12,12 @@ import Link from "next/link";
 type Props = {};
 const NotesPage = (props: Props) => {
   const [notes, setNotes] = useState<NotesType[]>([]);
-  const currentUser = useAuth();
+  const auth = useAuth();
 
   const notesQuery = useQuery({
     queryKey: ["notes"],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/notes?uid=${currentUser?.uid}`);
+      const { data } = await axios.get(`/api/notes?uid=${auth?.currentUser?.uid}`);
       setNotes(data.notes);
       return data;
     },

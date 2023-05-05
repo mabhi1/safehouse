@@ -13,12 +13,12 @@ type Props = {
 };
 const PasswordTerm = ({ params: { term } }: Props) => {
   const [passwords, setPasswords] = useState<PasswordType[]>([]);
-  const currentUser = useAuth();
+  const auth = useAuth();
 
   const passwordsQuery = useQuery({
     queryKey: ["passwords"],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/passwords?uid=${currentUser?.uid}`);
+      const { data } = await axios.get(`/api/passwords?uid=${auth?.currentUser?.uid}`);
       setPasswords(
         data.passwords.filter((pass: PasswordType) => {
           if (pass.site.toLowerCase().includes(term) || pass.username.toLowerCase().includes(term)) return pass;

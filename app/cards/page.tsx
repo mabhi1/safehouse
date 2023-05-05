@@ -11,13 +11,13 @@ import Button from "@/components/ui/Button";
 
 type Props = {};
 const Cards = (props: Props) => {
-  const currentUser = useAuth();
+  const auth = useAuth();
   const [cards, setCards] = useState<CardType[]>([]);
 
   const cardsQuery = useQuery({
     queryKey: ["cards"],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/cards?uid=${currentUser?.uid}`);
+      const { data } = await axios.get(`/api/cards?uid=${auth?.currentUser?.uid}`);
       setCards(data.cards);
       return data;
     },

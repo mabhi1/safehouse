@@ -16,17 +16,17 @@ const Files = ({ folderId }: Props) => {
   const [files, setFiles] = useState<FileType[]>([]);
   const [fileModal, setFileModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const currentUser = useAuth();
+  const auth = useAuth();
 
   useEffect(() => {
     async function getAllContent() {
-      if (!currentUser) return;
+      if (!auth?.currentUser) return;
       setLoading(true);
-      setFiles(await getFiles({ currentUser: currentUser.uid, folderId }));
+      setFiles(await getFiles({ currentUser: auth.currentUser.uid, folderId }));
       setLoading(false);
     }
     getAllContent();
-  }, [currentUser, folderId]);
+  }, [auth?.currentUser, folderId]);
 
   if (loading)
     return (

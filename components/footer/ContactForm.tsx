@@ -8,7 +8,7 @@ import Spinner from "../ui/Spinner";
 
 type Props = {};
 const ContactForm = (props: Props) => {
-  const currentUser = useAuth();
+  const auth = useAuth();
   const formElement = useRef<HTMLFormElement>(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ const ContactForm = (props: Props) => {
     <div className="flex flex-col md:gap-2 lg:px-10 pt-1 lg:pt-0">
       <div className="text-slate-50">Contact Us</div>
       <form ref={formElement} className="flex flex-col gap-3" onSubmit={handleSubmit}>
-        <input type="hidden" name="email" id="email" value={currentUser?.email || ""} />
+        <input type="hidden" name="email" id="email" value={auth?.currentUser?.email || ""} />
         <textarea
           name="message"
           id="message"

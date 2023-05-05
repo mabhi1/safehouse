@@ -10,7 +10,7 @@ import { encrypt } from "@/utils/encryption";
 
 type Props = {};
 const NewPassword = (props: Props) => {
-  const currentUser = useAuth()!;
+  const auth = useAuth()!;
   const [site, setSite] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +22,7 @@ const NewPassword = (props: Props) => {
         site,
         username,
         password: encrypt(password),
-        uid: currentUser.uid,
+        uid: auth?.currentUser.uid,
       });
     },
     onSuccess: (data) => {

@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { FcHome, FcDocument, FcCalendar, FcLock, FcNews, FcLibrary, FcIpad } from "react-icons/fc";
-import LogoutBtn from "../auth/LogoutBtn";
 import { closeMobileMenu } from "@/utils/toggleMobile";
 
 type Props = {};
@@ -44,7 +43,6 @@ const MobileMenu = (props: Props) => {
           <FcLock className={classes.navIcon} />
           Passwords
         </Link>
-        <LogoutBtn />
       </nav>
     </>
   );

@@ -3,7 +3,6 @@ import useAuth from "@/components/auth/AuthProvider";
 import Files from "@/components/docs/Files";
 import Folders from "@/components/docs/Folders";
 import Location from "@/components/docs/Location";
-import Button from "@/components/ui/Button";
 import { getCurrentFolder } from "@/lib/docs/getDocsData";
 import { useState, useEffect } from "react";
 
@@ -11,21 +10,21 @@ type Props = {
   params: { folderId: string };
 };
 const FolderId = ({ params: { folderId } }: Props) => {
-  const currentUser = useAuth();
+  const auth = useAuth();
   const [error, setError] = useState(false);
 
   useEffect(() => {
     async function getCurrentPath() {
       if (folderId === "root") return;
-      if (!currentUser) return;
+      if (!auth?.currentUser) return;
       try {
-        await getCurrentFolder({ folderId, currentUser: currentUser.uid });
+        await getCurrentFolder({ folderId, currentUser: auth.currentUser.uid });
       } catch (error) {
         setError(true);
       }
     }
     getCurrentPath();
-  }, [folderId, currentUser]);
+  }, [folderId, auth?.currentUser]);
 
   if (error) throw new Error();
   return (

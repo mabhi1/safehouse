@@ -13,12 +13,12 @@ type Props = {
 };
 const NotesTerm = ({ params: { term } }: Props) => {
   const [note, setNotes] = useState<NotesType[]>([]);
-  const currentUser = useAuth();
+  const auth = useAuth();
 
   const notesQuery = useQuery({
     queryKey: ["notes"],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/notes?uid=${currentUser?.uid}`);
+      const { data } = await axios.get(`/api/notes?uid=${auth?.currentUser?.uid}`);
       setNotes(
         data.notes.filter((note: NotesType) => {
           if (note.name.toLowerCase().includes(term) || note.description.toLowerCase().includes(term)) return note;

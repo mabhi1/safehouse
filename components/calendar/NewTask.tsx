@@ -9,7 +9,7 @@ import { showToast } from "@/utils/handleToast";
 
 type Props = {};
 const NewTask = (props: Props) => {
-  const currentUser = useAuth()!;
+  const auth = useAuth()!;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [start, setStart] = useState(new Date().toISOString().split(".")[0]);
@@ -23,8 +23,8 @@ const NewTask = (props: Props) => {
         description: description,
         from: start,
         to: end,
-        uid: currentUser.uid,
-        email: currentUser.email,
+        uid: auth?.currentUser.uid,
+        email: auth?.currentUser.email,
       });
     },
     onSuccess: (data) => {

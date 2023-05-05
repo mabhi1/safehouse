@@ -13,12 +13,12 @@ type Props = {
 };
 const CardTerm = ({ params: { term } }: Props) => {
   const [cards, setCards] = useState<CardType[]>([]);
-  const currentUser = useAuth();
+  const auth = useAuth();
 
   const cardsQuery = useQuery({
     queryKey: ["cards"],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/cards?uid=${currentUser?.uid}`);
+      const { data } = await axios.get(`/api/cards?uid=${auth?.currentUser?.uid}`);
       setCards(data.cards.filter((card: CardType) => card.bank.toLowerCase().includes(term) || card.type.toLowerCase().includes(term)));
       return data;
     },

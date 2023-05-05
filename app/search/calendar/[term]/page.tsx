@@ -13,12 +13,12 @@ type Props = {
 };
 const CalendarTerm = ({ params: { term } }: Props) => {
   const [task, setTask] = useState<TaskType[]>([]);
-  const currentUser = useAuth();
+  const auth = useAuth();
 
   const tasksQuery = useQuery({
     queryKey: ["tasks"],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/tasks?uid=${currentUser?.uid}`);
+      const { data } = await axios.get(`/api/tasks?uid=${auth?.currentUser?.uid}`);
       setTask(data.tasks);
       return data;
     },

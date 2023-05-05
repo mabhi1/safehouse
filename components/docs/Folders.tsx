@@ -25,28 +25,28 @@ const Folders = ({ folderId }: Props) => {
   const [folderModal, setFolderModal] = useState(false);
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const currentUser = useAuth();
+  const auth = useAuth();
   const storage = getStorage();
 
   useEffect(() => {
     async function getAllContent() {
-      if (!currentUser) return;
+      if (!auth?.currentUser) return;
       setLoading(true);
-      setFolders(await getFolders({ currentUser: currentUser.uid, folderId }));
+      setFolders(await getFolders({ currentUser: auth.currentUser.uid, folderId }));
       setLoading(false);
     }
     getAllContent();
-  }, [currentUser, folderId]);
+  }, [auth?.currentUser, folderId]);
 
   const handleDeleteFolder = async (id: string) => {
     setLoading(true);
     // delete all folders inside
     let error = false;
-    const folderQuery = query(collection(db, "folders"), where("uid", "==", currentUser?.uid));
+    const folderQuery = query(collection(db, "folders"), where("uid", "==", auth?.currentUser?.uid));
     const folderSnapshot = await getDocs(folderQuery);
     folderSnapshot.forEach((dir) => {
       const data = dir.data();
-      if (data.uid !== currentUser?.uid) error = true;
+      if (data.uid !== auth?.currentUser?.uid) error = true;
       data.path.map(async (p: FolderType) => {
         if (p.id === id) {
           await deleteDoc(doc(db, "folders", dir.id));
@@ -56,11 +56,11 @@ const Folders = ({ folderId }: Props) => {
     });
     if (error) return;
     // delete all files inside
-    const fileQuery = query(collection(db, "files"), where("uid", "==", currentUser?.uid));
+    const fileQuery = query(collection(db, "files"), where("uid", "==", auth?.currentUser?.uid));
     const fileSnapshot = await getDocs(fileQuery);
     fileSnapshot.forEach((dir) => {
       const data = dir.data();
-      if (data.uid !== currentUser?.uid) {
+      if (data.uid !== auth?.currentUser?.uid) {
         error = true;
         return;
       }
@@ -102,11 +102,11 @@ const Folders = ({ folderId }: Props) => {
 
     setLoading(true);
     // edit all folders inside
-    const folderQuery = query(collection(db, "folders"), where("uid", "==", currentUser?.uid));
+    const folderQuery = query(collection(db, "folders"), where("uid", "==", auth?.currentUser?.uid));
     const folderSnapshot = await getDocs(folderQuery);
     folderSnapshot.forEach((dir) => {
       const data = dir.data();
-      if (data.uid !== currentUser?.uid) error = true;
+      if (data.uid !== auth?.currentUser?.uid) error = true;
       if (data.name.toLowerCase() === name.toLowerCase()) {
         error = true;
         showToast("error", "Folder already exists with same name");
@@ -138,7 +138,7 @@ const Folders = ({ folderId }: Props) => {
     });
 
     // edit all files inside
-    const fileQuery = query(collection(db, "files"), where("uid", "==", currentUser?.uid));
+    const fileQuery = query(collection(db, "files"), where("uid", "==", auth?.currentUser?.uid));
     const fileSnapshot = await getDocs(fileQuery);
     fileSnapshot.forEach((dir) => {
       const data = dir.data();

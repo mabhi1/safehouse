@@ -1,12 +1,12 @@
 "use client";
-import { createContext, useContext, useState, Dispatch, useEffect } from "react";
+import { createContext, useContext, useState, Dispatch, useEffect, SetStateAction } from "react";
 import auth from "../../firebase/firebase";
 import Login from "./Login";
 import LoadingPage from "@/app/LoadingPage";
 import { User } from "firebase/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const AuthContext = createContext<User | null>(null);
+const AuthContext = createContext<{ currentUser: User; setCurrentUser: Dispatch<SetStateAction<User | null>> } | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient();
@@ -23,7 +23,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   if (loading) return <LoadingPage />;
   if (!currentUser) return <Login />;
   return (
-    <AuthContext.Provider value={currentUser}>
+    <AuthContext.Provider value={{ currentUser, setCurrentUser }}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </AuthContext.Provider>
   );

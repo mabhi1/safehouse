@@ -11,13 +11,13 @@ import Button from "@/components/ui/Button";
 
 type Props = {};
 const Passwords = (props: Props) => {
-  const currentUser = useAuth();
+  const auth = useAuth();
   const [passwords, setPasswords] = useState<PasswordType[]>([]);
 
   const passwordsQuery = useQuery({
     queryKey: ["passwords"],
     queryFn: async () => {
-      const { data } = await axios.get(`/api/passwords?uid=${currentUser?.uid}`);
+      const { data } = await axios.get(`/api/passwords?uid=${auth?.currentUser?.uid}`);
       setPasswords(data.passwords);
       return data;
     },
