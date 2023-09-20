@@ -30,7 +30,9 @@ const IndividualCards = ({ card, searchTerm, setCards }: Props) => {
       queryClient.invalidateQueries(["cards"]);
       if (cardMutation.isError) showToast("error", "Error deleting Card");
       else {
-        setCards((cardList) => cardList.filter((card) => card.id !== data?.data?.data?.id));
+        setCards((cardList) =>
+          cardList.filter((card) => card.id !== data?.data?.data?.id)
+        );
         showToast("success", "Card deleted successfully");
       }
     },
@@ -38,6 +40,14 @@ const IndividualCards = ({ card, searchTerm, setCards }: Props) => {
 
   const handleDelete = async () => {
     cardMutation.mutate();
+  };
+
+  const formatCardNumber = (number: string) => {
+    const arr = number.split("");
+    arr.splice(4, 0, " ");
+    arr.splice(9, 0, " ");
+    arr.splice(14, 0, " ");
+    return arr.join("");
   };
 
   if (!card) return <></>;
@@ -50,14 +60,20 @@ const IndividualCards = ({ card, searchTerm, setCards }: Props) => {
     );
 
   return (
-    <div className={`flex flex-col aspect-video p-2 md:p-4 text-slate-50 gap-2 justify-between rounded select-none ${styles[card.type]}`}>
+    <div
+      className={`flex flex-col aspect-video p-2 md:p-4 text-slate-50 gap-2 justify-between rounded select-none ${
+        styles[card.type]
+      }`}
+    >
       <div className="flex flex-nowrap gap-1">
         <span>{<MarkedText searchTerm={searchTerm} text={card.bank} />}</span>
         <span>{<MarkedText searchTerm={searchTerm} text={card.type} />}</span>
       </div>
       {show ? (
         <div className="flex flex-col">
-          <div className="break-words">{decrypt(card.number)}</div>
+          <div className="break-words">
+            {formatCardNumber(decrypt(card.number))}
+          </div>
           <div className="flex justify-between">
             <div>{card.expiry}</div>
             <div>{decrypt(card.cvv)}</div>
@@ -74,11 +90,20 @@ const IndividualCards = ({ card, searchTerm, setCards }: Props) => {
       )}
       <div className="flex justify-between">
         {show ? (
-          <AiFillEyeInvisible onClick={() => setShow((show) => !show)} className="cursor-pointer text-xl" />
+          <AiFillEyeInvisible
+            onClick={() => setShow((show) => !show)}
+            className="cursor-pointer text-xl"
+          />
         ) : (
-          <AiFillEye onClick={() => setShow((show) => !show)} className="cursor-pointer text-xl" />
+          <AiFillEye
+            onClick={() => setShow((show) => !show)}
+            className="cursor-pointer text-xl"
+          />
         )}
-        <MdDelete className="cursor-pointer text-xl" onClick={() => openConfirmBox(handleDelete)} />
+        <MdDelete
+          className="cursor-pointer text-xl"
+          onClick={() => openConfirmBox(handleDelete)}
+        />
       </div>
     </div>
   );
