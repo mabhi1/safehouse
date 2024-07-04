@@ -126,14 +126,26 @@ const Login = (props: Props) => {
                   Password
                 </label>
                 {showPassword ? (
-                  <FiEyeOff className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer" onClick={toggleShowPassword} />
+                  <FiEyeOff
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer"
+                    onClick={toggleShowPassword}
+                  />
                 ) : (
-                  <FiEye className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer" onClick={toggleShowPassword} />
+                  <FiEye
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer"
+                    onClick={toggleShowPassword}
+                  />
                 )}
               </div>
               <div className="flex justify-between">
                 <span className="flex gap-1 items-center">
-                  <Input type="checkbox" id="remember" name="remember" value="remember" className="hover:cursor-pointer" />
+                  <Input
+                    type="checkbox"
+                    id="remember"
+                    name="remember"
+                    value="remember"
+                    className="hover:cursor-pointer"
+                  />
                   <label htmlFor="remember" className="cursor-pointer">
                     Remember Me
                   </label>
@@ -147,7 +159,7 @@ const Login = (props: Props) => {
                 )}
               </div>
               {loading ? (
-                <Button variant="disabled">
+                <Button variant="disabled" disabled type="button">
                   <Spinner size="sm" />
                 </Button>
               ) : (
@@ -156,7 +168,9 @@ const Login = (props: Props) => {
               <div className="flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-slate-300 after:mt-0.5 after:flex-1 after:border-t after:border-slate-300">
                 <p className="mx-4 mb-0 text-center">OR</p>
               </div>
-              <Button variant="disabled">Register</Button>
+              <Button variant="disabled" disabled type="button">
+                Register
+              </Button>
             </form>
           </div>
         </div>
