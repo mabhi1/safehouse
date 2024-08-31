@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode | a
           <MobileSearchForm />
           <MobileMenu />
           <main className="flex-1 flex min-h-screen">
-            <DesktopMenu path={children.props?.childProp.segment} />
+            <DesktopMenu />
             <div className="p-3 md:p-5 flex-1">{children}</div>
           </main>
           <Footer />
