@@ -12,9 +12,10 @@ export default async function Notes() {
   if (!data || error) throw new Error("User not found");
 
   return (
-    <ul className="grid grid-cols-3 gap-5 w-full">
+    <ul className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {data.length <= 0 && <div className="text-lg">No Saved Notes</div>}
       {data.map((note) => (
-        <NoteCard key={note.id} note={note} />
+        <NoteCard key={note.id} note={note} uid={userId} />
       ))}
     </ul>
   );

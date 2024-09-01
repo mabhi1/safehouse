@@ -1,8 +1,8 @@
 import prisma from "..";
 
-export async function getNotesByUser(uid: string) {
+export async function GetPasswordsByUser(uid: string) {
   try {
-    const data = await prisma.notes.findMany({
+    const data = await prisma.passwords.findMany({
       where: {
         uid,
       },
@@ -10,16 +10,17 @@ export async function getNotesByUser(uid: string) {
     });
     return { data, error: null };
   } catch (error) {
-    return { data: null, error: error };
+    return { data: null, error };
   }
 }
 
-export async function createNoteByUser(title: string, description: string, uid: string) {
+export async function createPasswordByUser(site: string, username: string, password: string, uid: string) {
   try {
-    const data = await prisma.notes.create({
+    const data = await prisma.passwords.create({
       data: {
-        title,
-        description,
+        site,
+        username,
+        password,
         uid,
       },
     });
@@ -29,9 +30,9 @@ export async function createNoteByUser(title: string, description: string, uid: 
   }
 }
 
-export async function getNoteById(id: string) {
+export async function getPasswordById(id: string) {
   try {
-    const data = await prisma.notes.findUnique({
+    const data = await prisma.passwords.findUnique({
       where: {
         id,
       },
@@ -42,16 +43,17 @@ export async function getNoteById(id: string) {
   }
 }
 
-export async function updateNoteById(id: string, title: string, description: string, uid: string) {
+export async function updatePasswordById(id: string, site: string, username: string, password: string, uid: string) {
   try {
-    const data = await prisma.notes.update({
+    const data = await prisma.passwords.update({
       where: {
         id,
         uid,
       },
       data: {
-        title: title,
-        description: description,
+        site,
+        username,
+        password,
       },
     });
     return { data, error: null };
@@ -60,9 +62,9 @@ export async function updateNoteById(id: string, title: string, description: str
   }
 }
 
-export async function deleteNoteById(id: string, uid: string) {
+export async function deletePasswordById(id: string, uid: string) {
   try {
-    const data = await prisma.notes.delete({
+    const data = await prisma.passwords.delete({
       where: {
         id,
         uid,

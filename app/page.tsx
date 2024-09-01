@@ -9,7 +9,7 @@ export default function Home() {
           <h2 className="text-2xl">Safe House</h2>
           <div>
             Your personal Secure storage for passwords, banks, notes and more. All the data for your cards and passwords
-            are stored in an encrypted form. Only you can see your data
+            are stored in an encrypted form.
           </div>
         </div>
       </div>

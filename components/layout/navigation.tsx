@@ -42,13 +42,8 @@ const Storage: { title: string; href: string; description: string }[] = [
 
 export function Navigation() {
   return (
-    <NavigationMenu>
+    <NavigationMenu className="hidden lg:block">
       <NavigationMenuList>
-        <NavigationMenuItem>
-          <Link href="/" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Home</NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Storage</NavigationMenuTrigger>
           <NavigationMenuContent>

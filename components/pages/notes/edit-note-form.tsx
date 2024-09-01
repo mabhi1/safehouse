@@ -1,32 +1,33 @@
 "use client";
 
-import { AddNote } from "@/actions/notes";
+import { EditNote } from "@/actions/notes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { NotesType } from "@/lib/db-types";
 import { Loader2 } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 
-type CreateNoteFormValues = {
+type EditNoteFormValues = {
   title: string;
   description: string;
 };
 
-export default function CreateNoteForm({ uid }: { uid: string }) {
-  const initialFormValues: CreateNoteFormValues = {
-    title: "",
-    description: "",
+export function EditNoteForm({ note, uid }: { note: NotesType; uid: string }) {
+  const initialFormValues: EditNoteFormValues = {
+    title: note.title,
+    description: note.description,
   };
 
-  const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreateNoteFormValues>({
+  const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<EditNoteFormValues>({
     initialValues: initialFormValues,
-    onSubmit: async (values) => AddNote(values.title.trim(), values.description.trim(), uid),
+    onSubmit: async (values) => EditNote(note.id, values.title.trim(), values.description.trim(), uid),
     successRedirectUrl: "/notes",
   });
 
   return (
     <form id="form" className="flex flex-col gap-5 pl-5 w-96" onSubmit={handleSubmit}>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <label htmlFor="title">
           Title<span className="text-destructive">*</span>
         </label>
@@ -40,7 +41,7 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
           onChange={handleInputChange}
         />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         <label htmlFor="description">
           Description<span className="text-destructive">*</span>
         </label>

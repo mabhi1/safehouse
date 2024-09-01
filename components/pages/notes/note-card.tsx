@@ -2,18 +2,25 @@ import { Button } from "@/components/ui/button";
 import MarkedText from "@/components/ui/marked-text";
 import { NotesType } from "@/lib/db-types";
 import Link from "next/link";
-import DeleteButton from "./delete-button";
+import { dateFormatter } from "@/lib/date-formatter";
+import { DeleteButton } from "@/components/ui/delete-button";
+import { DeleteNote } from "@/actions/notes";
 
-export default function NoteCard({ note, searchTerm = "" }: { note: NotesType; searchTerm?: string }) {
-  const dateFormatter = new Intl.DateTimeFormat("en-us", { dateStyle: "long" });
+interface NoteCardProps {
+  note: NotesType;
+  searchTerm?: string;
+  uid: string;
+}
 
+export default function NoteCard({ note, searchTerm = "", uid }: NoteCardProps) {
+  const { id, title, description, updatedAt } = note;
   return (
-    <div className="flex flex-col gap-2 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-700 rounded p-2 justify-between overflow-hidden">
+    <div className="shadow transition-shadow duration-300 hover:shadow-lg flex flex-col gap-2 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-700 rounded p-2 justify-between overflow-hidden">
       <div className="text-base uppercase break-words">
-        <MarkedText text={note.title} searchTerm={searchTerm} />
+        <MarkedText text={title} searchTerm={searchTerm} />
       </div>
       <div className="overflow-y-auto min-h-[12rem] h-[12rem] p-1 bg-transparent">
-        {note.description.split("\n").map((i, key) => {
+        {description.split("\n").map((i, key) => {
           return (
             <div key={key} className="break-words">
               <MarkedText text={i} searchTerm={searchTerm} />
@@ -22,14 +29,19 @@ export default function NoteCard({ note, searchTerm = "" }: { note: NotesType; s
         })}
       </div>
       <div>
-        <div className="flex gap-2 justify-end my-2">
-          <Link href={`/notes/${note.id}`}>
+        <div className="flex justify-end my-2">
+          <Link href={`/notes/${id}`} passHref legacyBehavior>
             <Button variant="ghost">Edit</Button>
           </Link>
-          <DeleteButton noteId={note.id} />
+          <DeleteButton
+            id={id}
+            uid={uid}
+            deleteAction={DeleteNote}
+            dialogDescription="This action will permanently remove the note from our servers."
+          />
         </div>
         <div className="text-slate-500 text-xs border-t border-slate-500 pt-1">
-          Updated : {dateFormatter.format(new Date(note.updatedAt))}
+          Updated : {dateFormatter(new Date(updatedAt))}
         </div>
       </div>
     </div>
