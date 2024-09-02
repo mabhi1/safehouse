@@ -15,7 +15,7 @@ import {
 const Storage: { title: string; href: string; description: string }[] = [
   {
     title: "Documents",
-    href: "/docs",
+    href: "/documents",
     description: "Upload your documents and securely access from anywhere.",
   },
   {

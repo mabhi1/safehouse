@@ -4,7 +4,7 @@ import { NotesType } from "@/lib/db-types";
 import Link from "next/link";
 import { dateFormatter } from "@/lib/date-formatter";
 import { DeleteButton } from "@/components/ui/delete-button";
-import { DeleteNote } from "@/actions/notes";
+import { deleteNote } from "@/actions/notes";
 
 interface NoteCardProps {
   note: NotesType;
@@ -36,7 +36,7 @@ export default function NoteCard({ note, searchTerm = "", uid }: NoteCardProps) 
           <DeleteButton
             id={id}
             uid={uid}
-            deleteAction={DeleteNote}
+            deleteAction={deleteNote}
             dialogDescription="This action will permanently remove the note from our servers."
           />
         </div>

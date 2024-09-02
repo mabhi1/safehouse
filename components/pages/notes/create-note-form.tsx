@@ -1,11 +1,12 @@
 "use client";
 
-import { AddNote } from "@/actions/notes";
+import { addNote } from "@/actions/notes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
+import { Label } from "@/components/ui/label";
 
 type CreateNoteFormValues = {
   title: string;
@@ -20,16 +21,16 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
 
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreateNoteFormValues>({
     initialValues: initialFormValues,
-    onSubmit: async (values) => AddNote(values.title.trim(), values.description.trim(), uid),
+    onSubmit: async (values) => addNote(values.title.trim(), values.description.trim(), uid),
     successRedirectUrl: "/notes",
   });
 
   return (
     <form id="form" className="flex flex-col gap-5 pl-5 w-96" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-2">
-        <label htmlFor="title">
+        <Label htmlFor="title">
           Title<span className="text-destructive">*</span>
-        </label>
+        </Label>
         <Input
           name="title"
           id="title"
@@ -41,9 +42,9 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <label htmlFor="description">
+        <Label htmlFor="description">
           Description<span className="text-destructive">*</span>
-        </label>
+        </Label>
         <Textarea
           name="description"
           id="description"

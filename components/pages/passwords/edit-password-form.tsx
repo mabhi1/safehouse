@@ -1,11 +1,12 @@
 "use client";
 
-import { EditPassword } from "@/actions/passwords";
+import { editPassword } from "@/actions/passwords";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { PasswordType } from "@/lib/db-types";
+import { Label } from "@/components/ui/label";
 
 type CreatePasswordFormValues = {
   site: string;
@@ -23,14 +24,16 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreatePasswordFormValues>({
     initialValues: initialFormValues,
     onSubmit: async (values) =>
-      EditPassword(password.id, values.site.trim(), values.username.trim(), values.password.trim(), uid),
+      editPassword(password.id, values.site.trim(), values.username.trim(), values.password.trim(), uid),
     successRedirectUrl: "/passwords",
   });
 
   return (
     <form id="form" className="flex flex-col gap-5 pl-5 w-96" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-2">
-        <label htmlFor="site">Site</label>
+        <Label htmlFor="site">
+          Site<span className="text-destructive">*</span>
+        </Label>
         <Input
           id="site"
           type="text"
@@ -41,7 +44,9 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
         />
       </div>
       <div className="flex flex-col gap-2">
-        <label htmlFor="username">Username</label>
+        <Label htmlFor="username">
+          Username<span className="text-destructive">*</span>
+        </Label>
         <Input
           id="username"
           type="text"
@@ -51,7 +56,9 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
         />
       </div>
       <div className="flex flex-col gap-2">
-        <label htmlFor="password">Password</label>
+        <Label htmlFor="password">
+          Password<span className="text-destructive">*</span>
+        </Label>
         <Input
           id="password"
           type="text"

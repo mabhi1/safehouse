@@ -3,7 +3,7 @@ import MarkedText from "@/components/ui/marked-text";
 import { dateFormatter } from "@/lib/date-formatter";
 import { PasswordType } from "@/lib/db-types";
 import Link from "next/link";
-import { DeletePassword } from "@/actions/passwords";
+import { deletePassword } from "@/actions/passwords";
 import { DeleteButton } from "@/components/ui/delete-button";
 import PasswordText from "./password-text";
 
@@ -35,7 +35,7 @@ export default function PasswordCard({ password, searchTerm = "", uid }: Passwor
           <DeleteButton
             id={id}
             uid={uid}
-            deleteAction={DeletePassword}
+            deleteAction={deletePassword}
             dialogDescription="This action will permanently remove the password from our servers."
           />
         </div>

@@ -47,30 +47,28 @@ export function DeleteButton({
     });
   };
 
-  return (
-    <>
-      {isPending ? (
-        <Button variant="ghost" disabled>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          {loadingMessage}
+  return isPending ? (
+    <Button variant="ghost" disabled>
+      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      {loadingMessage}
+    </Button>
+  ) : (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" className="text-destructive hover:text-destructive">
+          Delete
         </Button>
-      ) : (
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="ghost">Delete</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
-              <AlertDialogDescription>{dialogDescription}</AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-    </>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{dialogTitle}</AlertDialogTitle>
+          <AlertDialogDescription>{dialogDescription}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
