@@ -36,22 +36,18 @@ interface Props {
     | undefined;
 }
 
-export const AddFolderButton = ({ folderId, folders, currentFolderPath, userId }: Props) => {
+export const AddFolderForm = ({ folderId, folders, currentFolderPath, userId }: Props) => {
   const [openDialog, setOpenDialog] = useState(false);
   const pathname = usePathname();
   const initialFormValues: AddFolderFormValues = {
     name: "",
   };
 
-  const onSubmit = async (values: AddFolderFormValues) => {
-    const res = await addFolder(values.name.trim(), folderId, currentFolderPath, userId, folders, pathname);
-    if (!res.error) setOpenDialog(false);
-    return res;
-  };
-
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<AddFolderFormValues>({
     initialValues: initialFormValues,
-    onSubmit,
+    onSubmit: async (values: AddFolderFormValues) =>
+      await addFolder(values.name.trim(), folderId, currentFolderPath, userId, folders, pathname),
+    onSuccess: () => setOpenDialog(false),
   });
 
   return (
@@ -62,7 +58,7 @@ export const AddFolderButton = ({ folderId, folders, currentFolderPath, userId }
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Create Folder</DialogTitle>
-          <DialogDescription>Enter name for your folder and click save when you're done.</DialogDescription>
+          <DialogDescription>Enter name for your folder and click save when you&apos;re done.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-2">

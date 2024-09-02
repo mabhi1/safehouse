@@ -2,6 +2,7 @@
 import { useState, useTransition } from "react";
 import { decrypt, encrypt } from "@/actions/encryption";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 export default function PasswordText({ password }: { password: string }) {
   const [visible, setVisible] = useState(false);
@@ -29,7 +30,7 @@ export default function PasswordText({ password }: { password: string }) {
         visible ? handleEncrypt() : handleDecrypt();
       }}
     >
-      {isPending ? "Wait..." : encryption}
+      {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : encryption}
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { Menu } from "lucide-react";
 
 const Header = () => {
   return (
-    <header className="flex items-center gap-1 md:gap-3 lg:gap-5 p-5 max-w-7xl mx-auto w-full h-fit top-0 sticky bg-background shadow-md shadow-background">
+    <header className="flex items-center gap-1 md:gap-3 lg:gap-5 p-5 max-w-7xl mx-auto w-full h-fit top-0 sticky bg-background z-10">
       <Menu className="lg:hidden" />
       <Image src="/logo.png" alt="Safe House" width={50} height={50} priority className="hidden lg:block" />
       <Link href="/">

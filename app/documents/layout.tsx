@@ -3,10 +3,5 @@ export const metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div>
-      <span className="uppercase text-lg">Documents</span>
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }

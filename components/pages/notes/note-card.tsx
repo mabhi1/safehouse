@@ -1,10 +1,9 @@
-import { Button } from "@/components/ui/button";
 import MarkedText from "@/components/ui/marked-text";
 import { NotesType } from "@/lib/db-types";
-import Link from "next/link";
 import { dateFormatter } from "@/lib/date-formatter";
 import { DeleteButton } from "@/components/ui/delete-button";
 import { deleteNote } from "@/actions/notes";
+import { EditNoteForm } from "./edit-note-form";
 
 interface NoteCardProps {
   note: NotesType;
@@ -30,9 +29,7 @@ export default function NoteCard({ note, searchTerm = "", uid }: NoteCardProps) 
       </div>
       <div>
         <div className="flex justify-end my-2">
-          <Link href={`/notes/${id}`} passHref legacyBehavior>
-            <Button variant="ghost">Edit</Button>
-          </Link>
+          <EditNoteForm note={note} uid={uid} />
           <DeleteButton
             id={id}
             uid={uid}

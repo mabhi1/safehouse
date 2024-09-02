@@ -28,7 +28,7 @@ interface Props {
   folderName: string;
 }
 
-export const RenameFolderButton = ({ userId, folderId, folderName }: Props) => {
+export const RenameFolderForm = ({ userId, folderId, folderName }: Props) => {
   const [openDialog, setOpenDialog] = useState(false);
   const pathname = usePathname();
   const initialFormValues: RenameFolderFormValues = {
@@ -52,7 +52,7 @@ export const RenameFolderButton = ({ userId, folderId, folderName }: Props) => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Rename Folder</DialogTitle>
-          <DialogDescription>Enter new name for your folder and click save when you're done.</DialogDescription>
+          <DialogDescription>Enter new name for your folder and click save when you&apos;re done.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-2">

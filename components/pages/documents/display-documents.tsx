@@ -13,7 +13,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import { AddFolderButton } from "./add-folder-button";
+import { AddFolderForm } from "./add-folder-form";
+import { Badge } from "@/components/ui/badge";
 
 interface Node {
   children: React.ReactNode;
@@ -67,8 +68,13 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
       {/* Folder Section */}
       <Section>
         <SectionHeader>
-          {folders.length === 1 ? <div>1 Folder</div> : <div>{folders.length.toString() + " Folders"}</div>}
-          <AddFolderButton
+          <span>
+            Folders
+            <Badge variant="secondary" className="text-base font-light ml-1">
+              {folders.length}
+            </Badge>
+          </span>
+          <AddFolderForm
             folderId={folderId}
             folders={folders.map((folder) => {
               return { id: folder.id, name: folder.name, path: folder.path };
@@ -89,7 +95,12 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
       {/* File Section */}
       <Section>
         <SectionHeader>
-          {files.length === 1 ? <div>1 File</div> : <div>{files.length.toString() + " Files"}</div>}
+          <span>
+            Files
+            <Badge variant="secondary" className="text-base font-light ml-1">
+              {files.length}
+            </Badge>
+          </span>
           <Button variant="secondary">Add Files</Button>
         </SectionHeader>
         <SectionBody>

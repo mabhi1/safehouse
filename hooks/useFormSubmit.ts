@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 type FormSubmitOptions<T extends Record<string, string>> = {
   initialValues: T;
   onSubmit: (values: T) => Promise<{ data: any; error: any }>;
+  onSuccess?: () => void;
+  onFailure?: () => void;
   successRedirectUrl?: string;
   resetOnSuccess?: boolean;
 };
@@ -12,6 +14,8 @@ type FormSubmitOptions<T extends Record<string, string>> = {
 export const useFormSubmit = <T extends Record<string, string>>({
   initialValues,
   onSubmit,
+  onSuccess,
+  onFailure,
   successRedirectUrl,
   resetOnSuccess = true,
 }: FormSubmitOptions<T>) => {
@@ -42,8 +46,10 @@ export const useFormSubmit = <T extends Record<string, string>>({
         if (resetOnSuccess) {
           setFormValues(initialValues);
         }
+        onFailure && onFailure();
         toast.error("Unable to complete the action");
       } else {
+        onSuccess && onSuccess();
         toast.success("Action completed successfully");
         successRedirectUrl && router.push(successRedirectUrl);
       }

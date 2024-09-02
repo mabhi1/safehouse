@@ -6,6 +6,7 @@ import Link from "next/link";
 import { deletePassword } from "@/actions/passwords";
 import { DeleteButton } from "@/components/ui/delete-button";
 import PasswordText from "./password-text";
+import { EditPasswordForm } from "./edit-password-form";
 
 interface PasswordCardProps {
   password: PasswordType;
@@ -29,9 +30,7 @@ export default function PasswordCard({ password, searchTerm = "", uid }: Passwor
       </div>
       <div>
         <div className="flex justify-end my-2">
-          <Link href={`/passwords/${id}`} passHref legacyBehavior>
-            <Button variant="ghost">Edit</Button>
-          </Link>
+          <EditPasswordForm uid={uid} password={password} />
           <DeleteButton
             id={id}
             uid={uid}

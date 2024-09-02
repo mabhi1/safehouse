@@ -27,7 +27,7 @@ export default function RootLayout({
         <body className={cn(heebo.className, "min-h-screen flex flex-col")}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <Header />
-            <main className="w-full max-w-7xl mx-auto pt-1 md:pt-5 px-5 pb-5 text-sm flex-1">{children}</main>
+            <main className="w-full max-w-7xl mx-auto pt-1 px-5 pb-5 text-sm flex-1">{children}</main>
             <Footer />
             <Toaster closeButton richColors position="top-right" />
           </ThemeProvider>

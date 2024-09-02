@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { DeleteFolderButton } from "./delete-folder-button";
-import { RenameFolderButton } from "./rename-folder-button";
+import { RenameFolderForm } from "./rename-folder-form";
 
 type Props = {
   folder: FolderType;
@@ -23,7 +23,7 @@ const IndividualFolder = ({ folder, userId }: Props) => {
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem asChild>
-          <RenameFolderButton userId={userId} folderId={folder.id} folderName={folder.name} />
+          <RenameFolderForm userId={userId} folderId={folder.id} folderName={folder.name} />
         </ContextMenuItem>
         <ContextMenuItem asChild>
           <DeleteFolderButton userId={userId} folderId={folder.id} />
