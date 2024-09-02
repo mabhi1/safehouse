@@ -1,7 +1,6 @@
 import prisma from "..";
 
 export async function getPasswordsByUser(uid: string, { key, type }: { key: string; type: string }) {
-  console.log(key, type, "abhi");
   try {
     const data = await prisma.passwords.findMany({
       where: {

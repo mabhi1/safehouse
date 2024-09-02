@@ -1,10 +1,11 @@
-import { ClerkLoading, SignedIn, UserButton } from "@clerk/nextjs";
+import { ClerkLoading, SignedIn } from "@clerk/nextjs";
 import { ModeToggle } from "../ui/theme-toggle";
 import Image from "next/image";
 import { Navigation } from "./navigation";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Menu } from "lucide-react";
+import UserProfileButton from "./user-button";
 
 const Header = () => {
   return (
@@ -25,11 +26,11 @@ const Header = () => {
               <span>&#8984;K</span>
             </div>
           </Button>
-          <UserButton appearance={{ elements: { userButtonAvatarBox: "w-8 h-8" } }} />
+          <UserProfileButton />
+          <ClerkLoading>
+            <Image src="/profile.png" width={35} height={35} priority alt="Sign-in" className="w-8 h-8" />
+          </ClerkLoading>
         </SignedIn>
-        <ClerkLoading>
-          <Image src="/profile.png" width={35} height={35} priority alt="Sign-in" className="w-8 h-8" />
-        </ClerkLoading>
         <ModeToggle />
       </div>
     </header>

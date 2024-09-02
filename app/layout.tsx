@@ -4,7 +4,6 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Header } from "@/components/layout/header";
-import { shadesOfPurple } from "@clerk/themes";
 import { Toaster } from "sonner";
 import Footer from "@/components/layout/footer";
 import { cn } from "@/lib/utils";
@@ -22,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider appearance={{ baseTheme: shadesOfPurple }}>
+    <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={cn(heebo.className, "min-h-screen flex flex-col")}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
