@@ -6,7 +6,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export type NotesSortValues = "lastUpdated" | "firstUpdated" | "titleAsc" | "titleDesc";
-
 export type PasswordSortValues =
   | "lastUpdated"
   | "firstUpdated"
@@ -14,7 +13,12 @@ export type PasswordSortValues =
   | "siteDesc"
   | "usernameAsc"
   | "usernameDesc";
-export function getSortKey(page: "notes" | "passwords", sortValue: NotesSortValues | PasswordSortValues) {
+export type CardsSortValues = "lastUpdated" | "firstUpdated" | "bankAsc" | "bankDesc";
+
+export function getSortKey(
+  page: "notes" | "passwords" | "cards",
+  sortValue: NotesSortValues | PasswordSortValues | CardsSortValues
+) {
   switch (page) {
     case "notes":
       switch (sortValue) {
@@ -43,6 +47,19 @@ export function getSortKey(page: "notes" | "passwords", sortValue: NotesSortValu
           return { key: "username", type: "asc" };
         case "usernameDesc":
           return { key: "username", type: "desc" };
+        default:
+          return { key: "updatedAt", type: "desc" };
+      }
+    case "cards":
+      switch (sortValue) {
+        case "lastUpdated":
+          return { key: "updatedAt", type: "desc" };
+        case "firstUpdated":
+          return { key: "updatedAt", type: "asc" };
+        case "bankAsc":
+          return { key: "bank", type: "asc" };
+        case "bankDesc":
+          return { key: "bank", type: "desc" };
         default:
           return { key: "updatedAt", type: "desc" };
       }

@@ -3,7 +3,7 @@
 import { addPassword } from "@/actions/passwords";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import { Eye, Loader2, LockIcon, UnlockIcon } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Label } from "@/components/ui/label";
 import {
@@ -25,6 +25,7 @@ type CreatePasswordFormValues = {
 
 export const CreatePasswordForm = ({ uid }: { uid: string }) => {
   const [openDialog, setOpenDialog] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const initialFormValues: CreatePasswordFormValues = {
     site: "",
     username: "",
@@ -78,13 +79,27 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
             <Label htmlFor="password">
               Password<span className="text-destructive">*</span>
             </Label>
-            <Input
-              id="password"
-              type="text"
-              placeholder="Enter Password"
-              value={formValues.password}
-              onChange={handleInputChange}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter Password"
+                value={formValues.password}
+                onChange={handleInputChange}
+                className="pr-8"
+              />
+              {showPassword ? (
+                <UnlockIcon
+                  className="absolute right-0 top-1/2 -translate-y-1/2 mr-1 cursor-pointer p-[0.4rem] w-8 h-8 border-l"
+                  onClick={() => setShowPassword(false)}
+                />
+              ) : (
+                <LockIcon
+                  className="absolute right-0 top-1/2 -translate-y-1/2 mr-1 cursor-pointer p-[0.4rem] w-8 h-8 border-l"
+                  onClick={() => setShowPassword(true)}
+                />
+              )}
+            </div>
           </div>
           <DialogFooter>
             <Button disabled={isPending}>

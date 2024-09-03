@@ -23,7 +23,9 @@ export const useFormSubmit = <T extends Record<string, string>>({
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { id: string; value: string } }
+  ) => {
     const { id, value } = e.target;
     setFormValues((prevValues) => ({
       ...prevValues,

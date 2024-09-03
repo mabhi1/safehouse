@@ -68,7 +68,7 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
       {/* Folder Section */}
       <Section>
         <SectionHeader>
-          <span>
+          <span className="text-base uppercase mr-auto">
             Folders
             <Badge variant="secondary" className="font-normal ml-1">
               {folders.length}
@@ -95,7 +95,7 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
       {/* File Section */}
       <Section>
         <SectionHeader>
-          <span>
+          <span className="text-base uppercase mr-auto">
             Files
             <Badge variant="secondary" className="font-normal ml-1">
               {files.length}

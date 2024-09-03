@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface DeleteButtonProps {
   id: string;
@@ -25,6 +26,8 @@ interface DeleteButtonProps {
   errorMessage?: string;
   dialogTitle?: string;
   dialogDescription?: string;
+  className?: string;
+  variant?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost";
 }
 
 export function DeleteButton({
@@ -36,6 +39,8 @@ export function DeleteButton({
   errorMessage = "Unable to delete item",
   dialogTitle = "Are you absolutely sure?",
   dialogDescription = "This action cannot be undone. This will permanently delete and remove the item from our servers.",
+  className,
+  variant = "ghost",
 }: DeleteButtonProps) {
   const [isPending, startTransition] = useTransition();
 
@@ -48,14 +53,14 @@ export function DeleteButton({
   };
 
   return isPending ? (
-    <Button variant="ghost" disabled>
+    <Button variant={variant} disabled className={className}>
       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
       {loadingMessage}
     </Button>
   ) : (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" className="text-destructive hover:text-destructive">
+        <Button variant={variant} className={cn("text-destructive hover:text-destructive", className)}>
           Delete
         </Button>
       </AlertDialogTrigger>
