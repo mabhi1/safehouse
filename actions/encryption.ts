@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 
 const encrypt = async (plainText: string) => {
   const encryptedPassword = crypto.AES.encrypt(plainText, `${process.env.PASSWORD_SECRET_KEY}`).toString();
-  revalidatePath("passwords");
   return encryptedPassword;
 };
 
@@ -13,7 +12,6 @@ const decrypt = async (encrypted: string) => {
   const decryptedPassword = crypto.AES.decrypt(encrypted, `${process.env.PASSWORD_SECRET_KEY}`).toString(
     crypto.enc.Utf8
   );
-  revalidatePath("passwords");
   return decryptedPassword;
 };
 

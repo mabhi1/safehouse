@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
 import MarkedText from "@/components/ui/marked-text";
 import { dateFormatter } from "@/lib/date-formatter";
 import { PasswordType } from "@/lib/db-types";
-import Link from "next/link";
 import { deletePassword } from "@/actions/passwords";
 import { DeleteButton } from "@/components/ui/delete-button";
 import PasswordText from "./password-text";
@@ -29,7 +27,7 @@ export default function PasswordCard({ password, searchTerm = "", uid }: Passwor
         <PasswordText password={password.password} />
       </div>
       <div>
-        <div className="flex justify-end my-2">
+        <div className="flex justify-end my-1">
           <EditPasswordForm uid={uid} password={password} />
           <DeleteButton
             id={id}

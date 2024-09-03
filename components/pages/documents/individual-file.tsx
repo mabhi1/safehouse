@@ -1,6 +1,7 @@
 import { FileType } from "@/lib/db-types";
 import Image from "next/image";
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
+import { DeleteFileButton } from "./delete-file-button";
 
 type Props = {
   file: FileType;
@@ -19,8 +20,9 @@ const IndividualFile = ({ file }: Props) => {
         </a>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem>Rename</ContextMenuItem>
-        <ContextMenuItem className="text-destructive focus:text-destructive">Delete</ContextMenuItem>
+        <ContextMenuItem asChild>
+          <DeleteFileButton fileId={file.id} fileDbId={file.dbId} />
+        </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   );

@@ -20,7 +20,7 @@ export default async function Notes({ searchParams }: { searchParams: { [key: st
       <div className="flex items-center gap-5">
         <span className="text-base uppercase mr-auto">
           Notes
-          <Badge variant="secondary" className="text-base font-light ml-1">
+          <Badge variant="secondary" className="font-normal ml-1">
             {data.length}
           </Badge>
         </span>

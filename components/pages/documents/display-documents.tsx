@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import IndividualFolder from "./individual-folder";
 import IndividualFile from "./individual-file";
 import { auth } from "@clerk/nextjs/server";
@@ -15,6 +14,7 @@ import {
 import Link from "next/link";
 import { AddFolderForm } from "./add-folder-form";
 import { Badge } from "@/components/ui/badge";
+import { AddFileForm } from "./add-file-form";
 
 interface Node {
   children: React.ReactNode;
@@ -70,7 +70,7 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
         <SectionHeader>
           <span>
             Folders
-            <Badge variant="secondary" className="text-base font-light ml-1">
+            <Badge variant="secondary" className="font-normal ml-1">
               {folders.length}
             </Badge>
           </span>
@@ -97,11 +97,18 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
         <SectionHeader>
           <span>
             Files
-            <Badge variant="secondary" className="text-base font-light ml-1">
+            <Badge variant="secondary" className="font-normal ml-1">
               {files.length}
             </Badge>
           </span>
-          <Button variant="secondary">Add Files</Button>
+          <AddFileForm
+            folderId={folderId}
+            allFiles={files.map((file) => {
+              return { dbId: file.dbId, id: file.id, name: file.name, uid: file.uid, url: file.url };
+            })}
+            currentFilePath={currentFolderPath}
+            userId={userId}
+          />
         </SectionHeader>
         <SectionBody>
           {files.map((file) => (
