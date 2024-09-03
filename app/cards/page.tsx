@@ -1,5 +1,6 @@
 import CardsCard from "@/components/pages/cards/cards-card";
 import CreateCardForm from "@/components/pages/cards/create-card-form";
+import SortCards from "@/components/pages/cards/sort-cards";
 import { Badge } from "@/components/ui/badge";
 import { CardsSortValues, getSortKey } from "@/lib/utils";
 import { GetCardsByUser } from "@/prisma/db/cards";
@@ -17,12 +18,13 @@ export default async function Cards({ searchParams }: { searchParams: { [key: st
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-5">
-        <span className="text-base uppercase mr-auto">
-          Cards
-          <Badge variant="secondary" className="font-normal ml-1">
+        <div className="flex items-center mr-auto gap-1">
+          <span className="text-base uppercase">Cards</span>
+          <Badge variant="secondary" className="font-normal">
             {data.length}
           </Badge>
-        </span>
+        </div>
+        <SortCards />
         <CreateCardForm uid={userId} />
       </div>
       <ul className="grid grid-cols-1 md:grid-cols-4 gap-5">

@@ -21,12 +21,12 @@ export default async function Passwords({ searchParams }: { searchParams: { [key
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-5">
-        <span className="text-base uppercase mr-auto">
-          Passwords
-          <Badge variant="secondary" className="font-normal ml-1">
+        <div className="flex items-center mr-auto gap-1">
+          <span className="text-base uppercase">Passwords</span>
+          <Badge variant="secondary" className="font-normal">
             {data.length}
           </Badge>
-        </span>
+        </div>
         <SortPasswords />
         <CreatePasswordForm uid={userId} />
       </div>

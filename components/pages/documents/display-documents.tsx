@@ -68,12 +68,12 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
       {/* Folder Section */}
       <Section>
         <SectionHeader>
-          <span className="text-base uppercase mr-auto">
-            Folders
-            <Badge variant="secondary" className="font-normal ml-1">
+          <div className="flex items-center mr-auto gap-1">
+            <span className="text-base uppercase">Folders</span>
+            <Badge variant="secondary" className="font-normal">
               {folders.length}
             </Badge>
-          </span>
+          </div>
           <AddFolderForm
             folderId={folderId}
             folders={folders.map((folder) => {
@@ -95,12 +95,12 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
       {/* File Section */}
       <Section>
         <SectionHeader>
-          <span className="text-base uppercase mr-auto">
-            Files
-            <Badge variant="secondary" className="font-normal ml-1">
+          <div className="flex items-center mr-auto gap-1">
+            <span className="text-base uppercase">Files</span>
+            <Badge variant="secondary" className="font-normal">
               {files.length}
             </Badge>
-          </span>
+          </div>
           <AddFileForm
             folderId={folderId}
             allFiles={files.map((file) => {

@@ -63,7 +63,7 @@ export default function CardsCard({
           {isPending ? <Loader2 className="mr-2 h-4 w-4 mb-1 animate-spin" /> : encryptedDetails.number}
         </div>
         <div className="flex justify-between">
-          <div className={isVisible ? "break-words" : "truncate"}>{encryptedDetails.expiry}</div>
+          <div>{encryptedDetails.expiry}</div>
           <div className={isVisible ? "break-words" : "truncate"}>
             {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : encryptedDetails.cvv}
           </div>
