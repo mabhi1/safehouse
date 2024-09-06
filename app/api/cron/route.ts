@@ -1,13 +1,15 @@
 import { sendMessageEmail } from "@/actions/emails";
 import { getEventsByDate } from "@/prisma/db/events";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const key = searchParams.get("key");
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response("Unauthorized", {
+      status: 401,
+    });
+  }
   try {
-    if (!key || key !== process.env.CRON_SECRET) throw new Error("Invalid Key");
-
     const today = new Date();
     today.setDate(today.getDate() + 1);
     const startTime = new Date(today.setHours(0, 0, 0, 0));
@@ -26,9 +28,11 @@ export async function GET(request: NextRequest) {
       const { data, error } = await sendMessageEmail(event, email);
       if (!data || error) throw new Error(`Failed to send email for ${event.id} at ${email}`);
     }
-    return NextResponse.json({ data: "Email Triggered", error: null });
+    return Response.json({ success: true });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ data: null, error: "Not Found" }, { status: 404, statusText: "Not Found" });
+    return new Response("Not Found", {
+      status: 404,
+    });
   }
 }
