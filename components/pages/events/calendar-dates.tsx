@@ -14,7 +14,7 @@ export default function CalendarDates({ dateSelected }: { dateSelected: Date }) 
   useEffect(() => {
     if (current)
       router.push(`${pathname}?month=${current?.getMonth()}&date=${current?.getDate()}&year=${current?.getFullYear()}`);
-  }, [current]);
+  }, [current, pathname, router]);
 
   useEffect(() => {
     setCurrent(dateSelected);
