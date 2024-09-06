@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function dateFormatter(date: Date) {
+  const dateFormatter = new Intl.DateTimeFormat("en-us", { dateStyle: "long" });
+  return dateFormatter.format(new Date(date));
+}
+
 export type NotesSortValues = "lastUpdated" | "firstUpdated" | "titleAsc" | "titleDesc";
 export type PasswordSortValues =
   | "lastUpdated"

@@ -2,7 +2,7 @@ import { useState, useTransition, FormEvent } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-type FormSubmitOptions<T extends Record<string, string>> = {
+type FormSubmitOptions<T extends Record<string, string | Date>> = {
   initialValues: T;
   onSubmit: (values: T) => Promise<{ data: any; error: any }>;
   onSuccess?: () => void;
@@ -11,7 +11,7 @@ type FormSubmitOptions<T extends Record<string, string>> = {
   resetOnSuccess?: boolean;
 };
 
-export const useFormSubmit = <T extends Record<string, string>>({
+export const useFormSubmit = <T extends Record<string, string | Date>>({
   initialValues,
   onSubmit,
   onSuccess,
@@ -24,7 +24,7 @@ export const useFormSubmit = <T extends Record<string, string>>({
   const router = useRouter();
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { id: string; value: string } }
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { id: string; value: string | Date } }
   ) => {
     const { id, value } = e.target;
     setFormValues((prevValues) => ({
@@ -37,7 +37,7 @@ export const useFormSubmit = <T extends Record<string, string>>({
     e.preventDefault();
 
     if (
-      Object.values(formValues).some((value) => !value.trim()) ||
+      Object.values(formValues).some((value) => typeof value === "string" && !value.trim()) ||
       Object.keys(formValues).every((key) => formValues[key] === initialValues[key])
     )
       return;

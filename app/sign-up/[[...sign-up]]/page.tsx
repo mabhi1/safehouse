@@ -6,6 +6,7 @@ import { dark } from "@clerk/themes";
 
 export default function Page() {
   const { theme } = useTheme();
+
   return (
     <div className="flex justify-center mt-10">
       <SignUp

@@ -1,9 +1,9 @@
 import MarkedText from "@/components/ui/marked-text";
 import { NotesType } from "@/lib/db-types";
-import { dateFormatter } from "@/lib/date-formatter";
 import { DeleteButton } from "@/components/ui/delete-button";
 import { deleteNote } from "@/actions/notes";
 import { EditNoteForm } from "./edit-note-form";
+import { dateFormatter } from "@/lib/utils";
 
 interface NoteCardProps {
   note: NotesType;
@@ -14,7 +14,7 @@ interface NoteCardProps {
 export default function NoteCard({ note, searchTerm = "", uid }: NoteCardProps) {
   const { id, title, description, updatedAt } = note;
   return (
-    <div className="shadow transition-shadow duration-300 hover:shadow-lg flex flex-col gap-2 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-700 rounded p-2 justify-between overflow-hidden">
+    <li className="shadow transition-shadow duration-300 hover:shadow-lg flex flex-col gap-2 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-700 rounded p-2 justify-between overflow-hidden">
       <div className="text-base uppercase break-words">
         <MarkedText text={title} searchTerm={searchTerm} />
       </div>
@@ -41,6 +41,6 @@ export default function NoteCard({ note, searchTerm = "", uid }: NoteCardProps) 
           Updated : {dateFormatter(new Date(updatedAt))}
         </div>
       </div>
-    </div>
+    </li>
   );
 }

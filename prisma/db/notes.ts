@@ -50,8 +50,8 @@ export async function updateNoteById(id: string, title: string, description: str
         uid,
       },
       data: {
-        title: title,
-        description: description,
+        title,
+        description,
       },
     });
     return { data, error: null };

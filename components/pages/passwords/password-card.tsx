@@ -1,10 +1,10 @@
 import MarkedText from "@/components/ui/marked-text";
-import { dateFormatter } from "@/lib/date-formatter";
 import { PasswordType } from "@/lib/db-types";
 import { deletePassword } from "@/actions/passwords";
 import { DeleteButton } from "@/components/ui/delete-button";
 import PasswordText from "./password-text";
 import { EditPasswordForm } from "./edit-password-form";
+import { dateFormatter } from "@/lib/utils";
 
 interface PasswordCardProps {
   password: PasswordType;

@@ -24,8 +24,8 @@ const Storage: { title: string; href: string; description: string }[] = [
     description: "Create important notes from anywhere. Edit and Delete them.",
   },
   {
-    title: "Calendar",
-    href: "/calendar",
+    title: "Events",
+    href: "/events",
     description: "Go through the calendar. Add or Remove daily events.",
   },
   {

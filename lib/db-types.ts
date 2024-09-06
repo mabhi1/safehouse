@@ -33,12 +33,11 @@ type FileType = {
   uid: string;
 };
 
-type TaskType = {
+type EventType = {
   id: string;
   title: string;
   description: string;
-  from: string;
-  to: string;
+  date: Date;
   uid: string;
   updatedAt: Date;
 };
@@ -54,4 +53,4 @@ type CardType = {
   updatedAt: Date;
 };
 
-export type { NotesType, PasswordType, FolderType, FileType, TaskType, CardType };
+export type { NotesType, PasswordType, FolderType, FileType, EventType, CardType };

@@ -53,13 +53,12 @@ model shortcuts {
   url       String
 }
 
-model tasks {
+model events {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime @default(now())
   description String
-  from        String
+  date        DateTime
   title       String
-  to          String
   uid         String
   updatedAt   DateTime @updatedAt
 }
