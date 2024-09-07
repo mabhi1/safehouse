@@ -60,6 +60,7 @@ export default function CreateCardForm({ uid }: { uid: string }) {
               Card Type<span className="text-destructive">*</span>
             </Label>
             <RadioGroup
+              required
               defaultValue="credit"
               className="flex items-center gap-5"
               value={formValues.type}
@@ -83,10 +84,11 @@ export default function CreateCardForm({ uid }: { uid: string }) {
               name="bank"
               id="bank"
               type="text"
-              autoFocus={true}
+              autoFocus
               placeholder="Enter Bank Name"
               value={formValues.bank}
               onChange={handleInputChange}
+              required
             />
           </div>
           <div className="flex flex-col gap-2">
@@ -97,7 +99,7 @@ export default function CreateCardForm({ uid }: { uid: string }) {
               name="number"
               id="number"
               type="number"
-              autoFocus={true}
+              required
               placeholder="Enter Card Number"
               value={formValues.number}
               onChange={handleInputChange}
@@ -112,7 +114,7 @@ export default function CreateCardForm({ uid }: { uid: string }) {
                 name="expiry"
                 id="expiry"
                 type="month"
-                autoFocus={true}
+                required
                 placeholder="Enter Expiry Date"
                 value={formValues.expiry}
                 onChange={handleInputChange}
@@ -126,7 +128,7 @@ export default function CreateCardForm({ uid }: { uid: string }) {
                 name="cvv"
                 id="cvv"
                 type="number"
-                autoFocus={true}
+                required
                 placeholder="Enter CVV"
                 value={formValues.cvv}
                 onChange={handleInputChange}

@@ -16,7 +16,10 @@ export default function PasswordCard({ password, searchTerm = "", uid }: Passwor
   const { id, site, username, updatedAt } = password;
 
   return (
-    <div className="flex flex-col justify-between shadow transition-shadow duration-300 hover:shadow-lg border rounded p-2 overflow-hidden">
+    <li
+      key={password.id}
+      className="flex flex-col justify-between shadow transition-shadow duration-300 hover:shadow-lg border rounded p-2 overflow-hidden"
+    >
       <div className="flex flex-col gap-2">
         <div className="break-words">
           <MarkedText text={site} searchTerm={searchTerm} />
@@ -40,6 +43,6 @@ export default function PasswordCard({ password, searchTerm = "", uid }: Passwor
           Updated : {dateFormatter(updatedAt)}
         </div>
       </div>
-    </div>
+    </li>
   );
 }

@@ -125,7 +125,7 @@ export const AddFileForm = ({ folderId, currentFilePath, userId, allFiles }: Pro
             <Label htmlFor="name">
               Name<span className="text-destructive">*</span>
             </Label>
-            <Input type="file" multiple={true} id="files" name="file" />
+            <Input type="file" multiple={true} id="files" name="file" autoFocus required />
           </div>
           <DialogFooter>
             <Button disabled={isPending} type="submit">

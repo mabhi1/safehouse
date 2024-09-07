@@ -47,7 +47,8 @@ export default function CardsCard({
   };
 
   return (
-    <div
+    <li
+      key={card.id}
       className={cn(
         "flex flex-col aspect-video p-2 md:p-4 text-slate-50 gap-2 justify-between rounded select-none shadow transition-shadow duration-300 hover:shadow-lg",
         styles[encryptedDetails.type]
@@ -77,6 +78,6 @@ export default function CardsCard({
         className="text-white hover:text-white m-0 p-0 ml-auto h-auto"
         variant="link"
       />
-    </div>
+    </li>
   );
 }

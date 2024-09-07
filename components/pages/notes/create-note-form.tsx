@@ -56,6 +56,7 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
               id="title"
               type="text"
               autoFocus={true}
+              required
               placeholder="Enter Title"
               value={formValues.title}
               onChange={handleInputChange}
@@ -70,6 +71,7 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
               id="description"
               placeholder="Enter Description"
               value={formValues.description}
+              required
               onChange={handleInputChange}
               rows={7}
               cols={45}

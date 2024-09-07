@@ -57,6 +57,7 @@ export function EditNoteForm({ note, uid }: { note: NotesType; uid: string }) {
               id="title"
               type="text"
               autoFocus={true}
+              required
               placeholder="Enter Title"
               value={formValues.title}
               onChange={handleInputChange}
@@ -71,6 +72,7 @@ export function EditNoteForm({ note, uid }: { note: NotesType; uid: string }) {
               id="description"
               placeholder="Enter Description"
               value={formValues.description}
+              required
               onChange={handleInputChange}
               rows={7}
               cols={45}

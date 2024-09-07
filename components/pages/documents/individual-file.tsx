@@ -8,7 +8,7 @@ type Props = {
 };
 const IndividualFile = ({ file }: Props) => {
   return (
-    <ContextMenu>
+    <ContextMenu key={file.id}>
       <ContextMenuTrigger>
         <a
           href={file.url}

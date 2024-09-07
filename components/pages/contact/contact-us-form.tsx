@@ -69,6 +69,7 @@ export default function ContactUsForm() {
             id="firstName"
             type="text"
             autoFocus={true}
+            required
             placeholder="Enter First Name"
             value={formValues.firstName}
             onChange={handleInputChange}
@@ -83,6 +84,7 @@ export default function ContactUsForm() {
             id="lastName"
             type="text"
             placeholder="Enter Last Name"
+            required
             value={formValues.lastName}
             onChange={handleInputChange}
           />
@@ -97,6 +99,7 @@ export default function ContactUsForm() {
           id="email"
           type="email"
           placeholder="Enter Email"
+          required
           value={formValues.email}
           onChange={handleInputChange}
         />
@@ -111,6 +114,7 @@ export default function ContactUsForm() {
           placeholder="Enter message"
           rows={7}
           cols={45}
+          required
           value={formValues.message}
           onChange={handleInputChange}
         />

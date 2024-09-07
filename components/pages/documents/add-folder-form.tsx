@@ -69,6 +69,8 @@ export const AddFolderForm = ({ folderId, folders, currentFolderPath, userId }: 
               id="name"
               type="text"
               placeholder="Enter Folder Name"
+              autoFocus
+              required
               value={formValues.name}
               onChange={handleInputChange}
             />

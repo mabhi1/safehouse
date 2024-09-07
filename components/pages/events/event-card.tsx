@@ -23,17 +23,23 @@ export default function EventCard({
     const year = event.date.getFullYear();
 
     return (
-      <Link
-        className="flex flex-col shadow transition-shadow duration-300 hover:shadow-lg border rounded p-5 overflow-hidden"
-        href={`/events?month=${month}&date=${date}&year=${year}`}
-      >
-        <div>{dateFormatter(event.date)}</div>
-        <div className="break-words text-xl font-medium">{event.title}</div>
-      </Link>
+      <li>
+        <Link
+          key={event.id}
+          className="flex flex-col shadow transition-shadow duration-300 hover:shadow-lg border rounded p-5 overflow-hidden"
+          href={`/events?month=${month}&date=${date}&year=${year}`}
+        >
+          <div>{dateFormatter(event.date)}</div>
+          <div className="break-words text-lg font-medium">{event.title}</div>
+        </Link>
+      </li>
     );
   }
   return (
-    <div className="flex flex-col shadow transition-shadow duration-300 hover:shadow-lg border rounded p-5 overflow-hidden">
+    <li
+      key={event.id}
+      className="flex flex-col shadow transition-shadow duration-300 hover:shadow-lg border rounded p-5 overflow-hidden"
+    >
       <div className="flex items-center justify-between">
         <div className="break-words text-xl font-medium w-2/3">
           <MarkedText text={event.title} searchTerm={searchTerm} />
@@ -57,6 +63,6 @@ export default function EventCard({
           Updated : {dateFormatter(event.updatedAt)}
         </div>
       </div>
-    </div>
+    </li>
   );
 }

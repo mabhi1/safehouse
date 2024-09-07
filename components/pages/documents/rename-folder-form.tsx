@@ -63,6 +63,8 @@ export const RenameFolderForm = ({ userId, folderId, folderName }: Props) => {
               id="name"
               type="text"
               placeholder="Enter Folder Name"
+              autoFocus
+              required
               value={formValues.name}
               onChange={handleInputChange}
             />

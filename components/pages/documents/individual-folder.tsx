@@ -11,7 +11,7 @@ type Props = {
 };
 const IndividualFolder = ({ folder, userId }: Props) => {
   return (
-    <ContextMenu>
+    <ContextMenu key={folder.id}>
       <ContextMenuTrigger>
         <Link
           href={`/documents/${folder.id}`}

@@ -14,12 +14,12 @@ export default async function UpcomingEvents({
   if (!data || error) throw new Error("User not found");
 
   return (
-    <div className="space-y-3">
+    <ul className="space-y-3">
       <span className="text-base uppercase">Upcoming Events</span>
       {data.length <= 0 && <div>No upcoming events</div>}
       {data.map((event) => (
         <EventCard event={event} key={event.id} upcoming={true} />
       ))}
-    </div>
+    </ul>
   );
 }

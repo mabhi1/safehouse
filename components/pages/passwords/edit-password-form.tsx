@@ -34,11 +34,15 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
     password: password.password,
   };
 
+  const onSubmit = async (values: CreatePasswordFormValues) => {
+    if (!showPassword) toggleVisibility();
+    return editPassword(password.id, values.site.trim(), values.username.trim(), values.password.trim(), uid);
+  };
+
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreatePasswordFormValues>({
     initialValues: initialFormValues,
-    onSubmit: async (values) =>
-      editPassword(password.id, values.site.trim(), values.username.trim(), values.password.trim(), uid),
-    successRedirectUrl: "/passwords",
+    onSubmit: onSubmit,
+    onSuccess: () => setOpenDialog(false),
   });
 
   const toggleVisibility = async () => {
@@ -68,6 +72,7 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
               type="text"
               autoFocus={true}
               placeholder="Enter Site"
+              required
               value={formValues.site}
               onChange={handleInputChange}
             />
@@ -81,6 +86,7 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
               type="text"
               placeholder="Enter Username"
               value={formValues.username}
+              required
               onChange={handleInputChange}
             />
           </div>
@@ -94,6 +100,7 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter Password"
                 value={formValues.password}
+                required
                 onChange={handleInputChange}
               />
               {showPassword ? (

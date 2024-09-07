@@ -59,6 +59,7 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
               type="text"
               autoFocus={true}
               placeholder="Enter Site"
+              required
               value={formValues.site}
               onChange={handleInputChange}
             />
@@ -72,6 +73,7 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
               type="text"
               placeholder="Enter Username"
               value={formValues.username}
+              required
               onChange={handleInputChange}
             />
           </div>
@@ -85,6 +87,7 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter Password"
                 value={formValues.password}
+                required
                 onChange={handleInputChange}
                 className="pr-8"
               />
