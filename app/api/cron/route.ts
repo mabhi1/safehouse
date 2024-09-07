@@ -1,4 +1,4 @@
-import { sendMessageEmail } from "@/actions/emails";
+import { sendAlertMessageEmail } from "@/actions/emails";
 import { getEventsByDate } from "@/prisma/db/events";
 import { NextRequest } from "next/server";
 
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
       });
       const user = await res.json();
       const email = user.email_addresses[0].email_address;
-      const { data, error } = await sendMessageEmail(event, email);
+      const { data, error } = await sendAlertMessageEmail(event, email);
       if (!data || error) throw new Error(`Failed to send email for ${event.id} at ${email}`);
     }
     return Response.json({ success: true });
