@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,10 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-export default function SortNotes() {
+export default function SortNotes({ isSearching }: { isSearching: boolean }) {
   const sortValue = useSearchParams().get("sort");
   const [value, setValue] = useState(sortValue || "lastUpdated");
   const router = useRouter();
@@ -23,10 +25,14 @@ export default function SortNotes() {
     router.push(`${pathname}?sort=${newSortValue}`);
   };
 
-  return (
+  return isSearching ? (
+    <Link href="/passwords" passHref legacyBehavior>
+      <Button variant="secondary">Remove Search</Button>
+    </Link>
+  ) : (
     <Select defaultValue={value} onValueChange={handleValueChange}>
       <SelectTrigger className="w-52">
-        <SelectValue placeholder="Sort Notes" />
+        <SelectValue placeholder="Sort Passwords" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

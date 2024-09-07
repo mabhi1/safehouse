@@ -1,6 +1,6 @@
 "use server";
 
-import { createEventByUser, deleteEventById, updateEventById } from "@/prisma/db/events";
+import { createEventByUser, deleteEventById, searchEventsByText, updateEventById } from "@/prisma/db/events";
 import { revalidatePath } from "next/cache";
 
 export async function addEvent(title: string, description: string, date: Date, uid: string) {
@@ -24,5 +24,10 @@ export async function updateEvent(eventId: string, title: string, description: s
   const date = res.data?.date.getDate();
   const year = res.data?.date.getFullYear();
   revalidatePath(`/events?month=${month}&date=${date}&year=${year}`);
+  return res;
+}
+
+export async function searchEvents(text: string, userId: string) {
+  const res = await searchEventsByText(text, userId);
   return res;
 }

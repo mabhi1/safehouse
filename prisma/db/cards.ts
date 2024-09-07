@@ -40,6 +40,21 @@ export async function createCardByUser(
   }
 }
 
+export async function searchCardsByText(text: string, userId: string) {
+  try {
+    if (text.trim().length < 3) return { data: [], error: null };
+    const data = await prisma.cards.findMany({
+      where: {
+        bank: { contains: text, mode: "insensitive" },
+        uid: userId,
+      },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function deleteCardById(id: string, uid: string) {
   try {
     const data = await prisma.cards.delete({

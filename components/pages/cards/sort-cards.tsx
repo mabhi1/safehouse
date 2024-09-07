@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -9,10 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-export default function SortCards() {
+export default function SortCards({ isSearching }: { isSearching: boolean }) {
   const sortValue = useSearchParams().get("sort");
   const [value, setValue] = useState(sortValue || "lastUpdated");
   const router = useRouter();
@@ -23,7 +25,11 @@ export default function SortCards() {
     router.push(`${pathname}?sort=${newSortValue}`);
   };
 
-  return (
+  return isSearching ? (
+    <Link href="/cards" passHref legacyBehavior>
+      <Button variant="secondary">Remove Search</Button>
+    </Link>
+  ) : (
     <Select defaultValue={value} onValueChange={handleValueChange}>
       <SelectTrigger className="w-52">
         <SelectValue placeholder="Sort Cards" />

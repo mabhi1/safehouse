@@ -10,6 +10,10 @@ export function dateFormatter(date: Date) {
   return dateFormatter.format(new Date(date));
 }
 
+export function isMatching(text1: string, text2: string) {
+  return text1.toLowerCase().includes(text2.toLowerCase());
+}
+
 export type NotesSortValues = "lastUpdated" | "firstUpdated" | "titleAsc" | "titleDesc";
 export type PasswordSortValues =
   | "lastUpdated"

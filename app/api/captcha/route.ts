@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
     })
       .then((reCaptchaRes) => reCaptchaRes.json())
       .then((reCaptchaRes) => {
-        console.log(reCaptchaRes, "Response from Google reCatpcha verification API");
         if (reCaptchaRes?.score > 0.5) {
           // Save data to the database from here
           return new Response("Success", {

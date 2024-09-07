@@ -5,7 +5,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function CalendarDates({ dateSelected }: { dateSelected: Date }) {
+export default function CalendarDates({ dateSelected, searchText = "" }: { dateSelected: Date; searchText?: string }) {
   const [current, setCurrent] = useState<Date | undefined>(dateSelected);
   const [month, setMonth] = useState(dateSelected);
   const router = useRouter();
@@ -13,8 +13,12 @@ export default function CalendarDates({ dateSelected }: { dateSelected: Date }) 
 
   useEffect(() => {
     if (current)
-      router.push(`${pathname}?month=${current?.getMonth()}&date=${current?.getDate()}&year=${current?.getFullYear()}`);
-  }, [current, pathname, router]);
+      router.push(
+        `${pathname}?month=${current?.getMonth()}&date=${current?.getDate()}&year=${current?.getFullYear()}${
+          searchText.length ? `&search=${searchText}` : ""
+        }`
+      );
+  }, [current, pathname, router, searchText]);
 
   useEffect(() => {
     setCurrent(dateSelected);

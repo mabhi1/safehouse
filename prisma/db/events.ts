@@ -49,6 +49,24 @@ export async function createEventByUser(title: string, description: string, date
   }
 }
 
+export async function searchEventsByText(text: string, userId: string) {
+  try {
+    if (text.trim().length < 3) return { data: [], error: null };
+    const data = await prisma.events.findMany({
+      where: {
+        OR: [
+          { title: { contains: text, mode: "insensitive" } },
+          { description: { contains: text, mode: "insensitive" } },
+        ],
+        uid: userId,
+      },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function updateEventById(id: string, title: string, description: string, date: Date, uid: string) {
   try {
     const data = await prisma.events.update({

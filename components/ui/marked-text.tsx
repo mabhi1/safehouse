@@ -9,7 +9,7 @@ const MarkedText = ({ searchTerm, text }: Props) => {
   return (
     <>
       <>{text.substring(0, idx)}</>
-      <span className="bg-fuchsia-200">{text.substring(idx, idx + searchTerm.length)}</span>
+      <span className="bg-fuchsia-300">{text.substring(idx, idx + searchTerm.length)}</span>
       <>{text.substring(idx + searchTerm.length)}</>
     </>
   );

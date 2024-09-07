@@ -1,6 +1,11 @@
 "use server";
 
-import { createPasswordByUser, deletePasswordById, updatePasswordById } from "@/prisma/db/passwords";
+import {
+  createPasswordByUser,
+  deletePasswordById,
+  searchPasswordsByText,
+  updatePasswordById,
+} from "@/prisma/db/passwords";
 import { revalidatePath } from "next/cache";
 import { encrypt } from "./encryption";
 
@@ -19,5 +24,10 @@ export async function addPassword(site: string, username: string, password: stri
 export async function editPassword(passwordId: string, site: string, username: string, password: string, uid: string) {
   const res = await updatePasswordById(passwordId, site, username, await encrypt(password), uid);
   revalidatePath("/passwords");
+  return res;
+}
+
+export async function searchPasswords(text: string, userId: string) {
+  const res = await searchPasswordsByText(text, userId);
   return res;
 }

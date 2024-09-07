@@ -43,6 +43,21 @@ export async function getPasswordById(id: string) {
   }
 }
 
+export async function searchPasswordsByText(text: string, userId: string) {
+  try {
+    if (text.trim().length < 3) return { data: [], error: null };
+    const data = await prisma.passwords.findMany({
+      where: {
+        OR: [{ site: { contains: text, mode: "insensitive" } }, { username: { contains: text, mode: "insensitive" } }],
+        uid: userId,
+      },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function updatePasswordById(id: string, site: string, username: string, password: string, uid: string) {
   try {
     const data = await prisma.passwords.update({
