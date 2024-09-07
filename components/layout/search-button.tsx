@@ -102,7 +102,7 @@ export default function SearchButton() {
       debounce((text: string) => {
         handleSearch(text);
       }, 300),
-    [storageSelect, handleSearch]
+    [storageSelect]
   );
 
   useEffect(() => {
@@ -115,7 +115,7 @@ export default function SearchButton() {
     if (searchText.trim().length >= 3) {
       handleSearch(searchText);
     }
-  }, [storageSelect, handleSearch, searchText]);
+  }, [storageSelect, searchText]);
 
   const handleRoute = (route: string) => {
     router.push(route);
