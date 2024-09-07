@@ -4,6 +4,7 @@ import { renameFolder } from "@/actions/documents";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -70,6 +71,9 @@ export const RenameFolderForm = ({ userId, folderId, folderName }: Props) => {
             />
           </div>
           <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">Cancel</Button>
+            </DialogClose>
             <Button disabled={isPending} type="submit">
               {isPending ? (
                 <>

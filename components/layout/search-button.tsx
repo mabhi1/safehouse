@@ -52,15 +52,6 @@ export default function SearchButton() {
   const [storageSelect, setStorageSelect] = useState("all");
   const router = useRouter();
 
-  // Memoize the debounced search function
-  const debouncedSearch = useMemo(
-    () =>
-      debounce((text: string) => {
-        handleSearch(text);
-      }, 300),
-    [storageSelect]
-  );
-
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value;
     setSearchText(text);
@@ -106,7 +97,14 @@ export default function SearchButton() {
     });
   };
 
-  // Cleanup the debounce function on unmount
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((text: string) => {
+        handleSearch(text);
+      }, 300),
+    [storageSelect, handleSearch]
+  );
+
   useEffect(() => {
     return () => {
       debouncedSearch.cancel();
@@ -114,11 +112,10 @@ export default function SearchButton() {
   }, [debouncedSearch]);
 
   useEffect(() => {
-    // Re-run search when storage category changes if searchText is valid
     if (searchText.trim().length >= 3) {
       handleSearch(searchText);
     }
-  }, [storageSelect]);
+  }, [storageSelect, handleSearch, searchText]);
 
   const handleRoute = (route: string) => {
     router.push(route);

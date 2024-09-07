@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -128,6 +129,9 @@ export const AddFileForm = ({ folderId, currentFilePath, userId, allFiles }: Pro
             <Input type="file" multiple={true} id="files" name="file" autoFocus required />
           </div>
           <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">Cancel</Button>
+            </DialogClose>
             <Button disabled={isPending} type="submit">
               {isPending ? (
                 <>

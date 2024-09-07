@@ -9,6 +9,7 @@ import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Label } from "@/components/ui/label";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -136,6 +137,9 @@ export default function CreateCardForm({ uid }: { uid: string }) {
             </div>
           </div>
           <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">Cancel</Button>
+            </DialogClose>
             <Button disabled={isPending}>
               {isPending ? (
                 <>

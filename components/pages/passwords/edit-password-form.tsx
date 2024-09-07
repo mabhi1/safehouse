@@ -9,6 +9,7 @@ import { PasswordType } from "@/lib/db-types";
 import { Label } from "@/components/ui/label";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -117,6 +118,9 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
             </div>
           </div>
           <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">Cancel</Button>
+            </DialogClose>
             <Button disabled={isPending}>
               {isPending ? (
                 <>

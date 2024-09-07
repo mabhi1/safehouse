@@ -4,6 +4,7 @@ import { addFolder } from "@/actions/documents";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -76,6 +77,9 @@ export const AddFolderForm = ({ folderId, folders, currentFolderPath, userId }: 
             />
           </div>
           <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">Cancel</Button>
+            </DialogClose>
             <Button disabled={isPending} type="submit">
               {isPending ? (
                 <>
