@@ -33,6 +33,7 @@ import { searchCards } from "@/actions/cards";
 import { Search } from "lucide-react";
 import Spinner from "./spinner";
 import debounce from "lodash/debounce";
+import { useSearch } from "../providers/search-provider";
 
 const defaultStorageValue = {
   notes: [] as NotesType[],
@@ -44,7 +45,8 @@ const defaultStorageValue = {
 export default function SearchButton() {
   const { userId } = useAuth();
   if (!userId) throw new Error("Unauthorized Access");
-
+  const { isSearchOpen } = useSearch();
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [cache, setCache] = useState(defaultStorageValue);
   const [isPending, startTransition] = useTransition();
@@ -52,7 +54,22 @@ export default function SearchButton() {
   const [storageSelect, setStorageSelect] = useState("all");
   const router = useRouter();
 
-  console.log(searchText, "abhi");
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+        event.preventDefault();
+        setDialogOpen(true);
+      } else return true;
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    setDialogOpen(isSearchOpen);
+  }, [isSearchOpen]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value;
@@ -124,7 +141,7 @@ export default function SearchButton() {
   };
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={setDialogOpen} open={dialogOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary" className="flex-1 w-48 lg:w-80 text-muted-foreground cursor-pointer">
           <div className="w-full flex justify-between">
@@ -167,7 +184,7 @@ export default function SearchButton() {
             <Spinner size="small" />
           </div>
         ) : (
-          <div className="h-96 overflow-y-auto">
+          <div className="h-96 overflow-y-auto px-1">
             {searchText.length >= 3 ? (
               <div className="space-y-2">
                 {["all", "notes"].includes(storageSelect) && (
@@ -179,7 +196,7 @@ export default function SearchButton() {
                           <DialogClose key={note.id} asChild>
                             <Button
                               variant="ghost"
-                              className="w-full font-normal justify-start"
+                              className="w-full font-normal justify-start h-fit"
                               onClick={() => handleRoute(`/notes?search=${searchText}`)}
                             >
                               <MarkedText
@@ -204,7 +221,7 @@ export default function SearchButton() {
                           <DialogClose key={event.id} asChild>
                             <Button
                               variant="ghost"
-                              className="w-full font-normal justify-start"
+                              className="w-full font-normal justify-start h-fit"
                               onClick={() =>
                                 handleRoute(
                                   `/events?month=${event.date.getMonth()}&date=${event.date.getDate()}&year=${event.date.getFullYear()}&search=${searchText}`
@@ -233,7 +250,7 @@ export default function SearchButton() {
                           <DialogClose key={password.id} asChild>
                             <Button
                               variant="ghost"
-                              className="w-full font-normal justify-start"
+                              className="w-full font-normal justify-start h-fit"
                               onClick={() => handleRoute(`/passwords?search=${searchText}`)}
                             >
                               <MarkedText
@@ -258,7 +275,7 @@ export default function SearchButton() {
                           <DialogClose key={card.id} asChild>
                             <Button
                               variant="ghost"
-                              className="w-full font-normal justify-start"
+                              className="w-full font-normal justify-start h-fit"
                               onClick={() => handleRoute(`/cards?search=${searchText}`)}
                             >
                               <MarkedText searchTerm={searchText} text={card.bank} />
