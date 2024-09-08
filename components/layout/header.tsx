@@ -18,9 +18,9 @@ const Header = () => {
         </Link>
       </SignedIn>
       <SignedOut>
-        <Image src="/logo.png" alt="Safe House" width={50} height={50} priority className="lg:hidden" />
+        <Image src="/logo.png" alt="Safe House" width={50} height={50} priority />
         <Link href="/">
-          <h1 className="uppercase text-xl lg:hidden">Safehouse</h1>
+          <h1 className="uppercase text-xl">Safehouse</h1>
         </Link>
       </SignedOut>
       <SignedIn>
