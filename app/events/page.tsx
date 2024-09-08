@@ -28,8 +28,10 @@ export default function CalendarPage({ searchParams }: { searchParams: { [key: s
         userId={userId}
         searchText={searchText}
         dateSelected={dateSelected}
+        nextMonthStart={today}
+        nextMonthEnd={nextMonthEnd}
       />
-      <div className="flex flex-col gap-5">
+      <div className="flex-col gap-5 hidden md:flex">
         <CalendarDates dateSelected={dateSelected} searchText={searchText} />
         <UpcomingEvents nextMonthStart={today} nextMonthEnd={nextMonthEnd} userId={userId} />
       </div>

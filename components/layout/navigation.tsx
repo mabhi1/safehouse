@@ -11,44 +11,55 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { CalendarCog, CreditCard, FolderOpen, NotebookPen, ShieldCheck } from "lucide-react";
 
-const Storage: { title: string; href: string; description: string }[] = [
+export const storageLinks: {
+  title: string;
+  href: string;
+  description: string;
+  icon: (className: string) => React.JSX.Element;
+}[] = [
   {
     title: "Documents",
     href: "/documents",
     description: "Upload your documents and securely access from anywhere.",
+    icon: (className: string) => <FolderOpen className={className} />,
   },
   {
     title: "Notes",
     href: "/notes",
     description: "Create important notes from anywhere. Edit and Delete them.",
+    icon: (className: string) => <NotebookPen className={className} />,
   },
   {
     title: "Events",
     href: "/events",
     description: "Go through the calendar. Add or Remove daily events.",
+    icon: (className: string) => <CalendarCog className={className} />,
   },
   {
     title: "Cards",
     href: "/cards",
     description: "Add Debit or Credit Cards. All the data is encrypted and stored.",
+    icon: (className: string) => <CreditCard className={className} />,
   },
   {
     title: "Passwords",
     href: "/passwords",
     description: "Store encrypted login credentials for any website.",
+    icon: (className: string) => <ShieldCheck className={className} />,
   },
 ];
 
-export function Navigation() {
+export function Navigation({ className }: { className?: string }) {
   return (
-    <NavigationMenu className="hidden lg:block">
+    <NavigationMenu className={className}>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Storage</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-              {Storage.map((component) => (
+              {storageLinks.map((component) => (
                 <ListItem key={component.title} title={component.title} href={component.href}>
                   {component.description}
                 </ListItem>

@@ -23,7 +23,7 @@ export default async function Cards({ searchParams }: { searchParams: { [key: st
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-3 md:gap-5">
         <div className="flex items-center mr-auto gap-1">
           <span className="text-base uppercase">Cards</span>
           <Badge variant="secondary" className="font-normal">
@@ -33,7 +33,7 @@ export default async function Cards({ searchParams }: { searchParams: { [key: st
         <SortCards isSearching={!!searchText?.trim().length} />
         <CreateCardForm uid={userId} />
       </div>
-      <ul className="grid grid-cols-1 md:grid-cols-4 gap-5">
+      <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {data.length <= 0 && <div className="text-lg">No Saved Cards</div>}
         {getFilteredList()!.map((card) => (
           <CardsCard key={card.id} card={card} uid={userId} searchTerm={searchText} />

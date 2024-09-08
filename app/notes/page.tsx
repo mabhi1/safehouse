@@ -24,7 +24,7 @@ export default async function Notes({ searchParams }: { searchParams: { [key: st
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-3 md:gap-5">
         <div className="flex items-center mr-auto gap-1">
           <span className="text-base uppercase">Notes</span>
           <Badge variant="secondary" className="font-normal">

@@ -5,6 +5,9 @@ import EventCard from "./event-card";
 import { dateFormatter, isMatching } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { MobileCalendar } from "./mobile-calendar";
+import { MobileUpcomingEvents } from "./mobile-upcoming-events";
+import { SearchX } from "lucide-react";
 
 export default async function Events({
   startTime,
@@ -12,12 +15,16 @@ export default async function Events({
   userId,
   searchText,
   dateSelected,
+  nextMonthStart,
+  nextMonthEnd,
 }: {
   startTime: Date;
   endTime: Date;
   userId: string;
   searchText?: string;
   dateSelected: Date;
+  nextMonthStart: Date;
+  nextMonthEnd: Date;
 }) {
   const { data, error } = await getEventsByDateAndUser(startTime, endTime, userId);
   if (!data || error) throw new Error("User not found");
@@ -29,7 +36,7 @@ export default async function Events({
   }
   return (
     <div className="space-y-5 w-full">
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-3 md:gap-5">
         <div className="flex items-center mr-auto gap-1">
           <span className="text-base uppercase">Events</span>
           <Badge variant="secondary" className="font-normal">
@@ -37,17 +44,33 @@ export default async function Events({
           </Badge>
         </div>
         {searchText && (
-          <Link
-            href={`events?month=${dateSelected?.getMonth()}&date=${dateSelected?.getDate()}&year=${dateSelected?.getFullYear()}`}
-            passHref
-            legacyBehavior
-          >
-            <Button variant="secondary">Remove Search</Button>
-          </Link>
+          <>
+            <Link
+              href={`events?month=${dateSelected?.getMonth()}&date=${dateSelected?.getDate()}&year=${dateSelected?.getFullYear()}`}
+              passHref
+              legacyBehavior
+            >
+              <Button variant="outline" size="icon" className="md:hidden">
+                <SearchX className="w-[1.2rem] h-[1.2rem]" />
+              </Button>
+            </Link>
+            <Link
+              href={`events?month=${dateSelected?.getMonth()}&date=${dateSelected?.getDate()}&year=${dateSelected?.getFullYear()}`}
+              passHref
+              legacyBehavior
+            >
+              <Button variant="secondary" className="hidden md:block">
+                Remove Search
+              </Button>
+            </Link>
+          </>
         )}
+        <MobileCalendar dateSelected={dateSelected} searchText={searchText} />
+        <MobileUpcomingEvents nextMonthStart={nextMonthStart} nextMonthEnd={nextMonthEnd} userId={userId} />
         <CreateEventForm uid={userId} />
       </div>
-      <ul className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div className="md:hidden"></div>
+      <ul className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {data.length <= 0 && <div className="text-lg">No events for {dateFormatter(startTime)}</div>}
         {getFilteredList()!.map((event) => (
           <EventCard event={event} key={event.id} userId={userId} searchTerm={searchText} />

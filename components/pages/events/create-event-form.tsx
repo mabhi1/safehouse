@@ -4,7 +4,7 @@ import { addEvent } from "@/actions/events";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Label } from "@/components/ui/label";
 import {
@@ -43,7 +43,12 @@ export default function CreateEventForm({ uid }: { uid: string }) {
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button>Add Event</Button>
+        <div>
+          <Button className="hidden md:block">Add Event</Button>
+          <Button variant="outline" size="icon" className="md:hidden">
+            <Plus className="w-[1.2rem] h-[1.2rem]" />
+          </Button>
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

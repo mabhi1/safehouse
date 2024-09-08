@@ -44,7 +44,6 @@ const defaultStorageValue = {
 
 export default function SearchButton() {
   const { userId } = useAuth();
-  if (!userId) throw new Error("Unauthorized Access");
   const { isSearchOpen } = useSearch();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -92,22 +91,22 @@ export default function SearchButton() {
         ["all", key].includes(storageSelect) && (text !== searchText || !newResults[key].length);
 
       if (notCached("notes")) {
-        const notesData = await searchNotes(text, userId);
+        const notesData = await searchNotes(text, userId!);
         if (notesData.data) newResults.notes = notesData.data;
       }
 
       if (notCached("events")) {
-        const eventsData = await searchEvents(text, userId);
+        const eventsData = await searchEvents(text, userId!);
         if (eventsData.data) newResults.events = eventsData.data;
       }
 
       if (notCached("passwords")) {
-        const passwordsData = await searchPasswords(text, userId);
+        const passwordsData = await searchPasswords(text, userId!);
         if (passwordsData.data) newResults.passwords = passwordsData.data;
       }
 
       if (notCached("cards")) {
-        const cardsData = await searchCards(text, userId);
+        const cardsData = await searchCards(text, userId!);
         if (cardsData.data) newResults.cards = cardsData.data;
       }
 
@@ -150,7 +149,7 @@ export default function SearchButton() {
           </div>
         </Button>
       </DialogTrigger>
-      <DialogContent className="p-4 max-w-[40rem]">
+      <DialogContent className="p-4 md:max-w-[40rem]">
         <DialogHeader>
           <DialogTitle className="m-2 font-light uppercase">Search Site</DialogTitle>
           <DialogDescription className="hidden">Type at least 3 letters to search...</DialogDescription>

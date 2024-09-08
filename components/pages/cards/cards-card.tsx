@@ -6,9 +6,8 @@ import { DeleteButton } from "@/components/ui/delete-button";
 import MarkedText from "@/components/ui/marked-text";
 import { CardType } from "@/lib/db-types";
 import { cn } from "@/lib/utils";
-import { EyeIcon, Loader2, Trash2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
 
 const styles = {
   credit: "bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800",
@@ -50,14 +49,13 @@ export default function CardsCard({
     <li
       key={card.id}
       className={cn(
-        "flex flex-col aspect-video p-2 md:p-4 text-slate-50 gap-2 justify-between rounded select-none shadow transition-shadow duration-300 hover:shadow-lg",
+        "flex flex-col aspect-video p-4 text-slate-50 gap-2 justify-between rounded select-none shadow transition-shadow duration-300 hover:shadow-lg",
         styles[encryptedDetails.type]
       )}
     >
-      <div className="flex flex-nowrap gap-1 text-lg uppercase font-light">
-        <span>{<MarkedText searchTerm={searchTerm} text={encryptedDetails.bank} />}</span>
-        <span>{<MarkedText searchTerm={searchTerm} text={encryptedDetails.type} />}</span>
-        <span>Card</span>
+      <div className="text-lg uppercase font-light truncate">
+        <>{<MarkedText searchTerm={searchTerm} text={encryptedDetails.bank} />}</>{" "}
+        <>{<MarkedText searchTerm={searchTerm} text={encryptedDetails.type} />}</> <>Card</>
       </div>
       <div className="flex flex-col gap-1" onClick={toggleVisibility}>
         <div className={cn("break-words", isVisible ? "break-words" : "truncate")}>

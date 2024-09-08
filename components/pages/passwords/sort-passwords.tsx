@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SearchX } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -26,9 +27,18 @@ export default function SortNotes({ isSearching }: { isSearching: boolean }) {
   };
 
   return isSearching ? (
-    <Link href="/passwords" passHref legacyBehavior>
-      <Button variant="secondary">Remove Search</Button>
-    </Link>
+    <>
+      <Link href="/passwords" passHref legacyBehavior>
+        <Button variant="outline" size="icon" className="md:hidden">
+          <SearchX className="w-[1.2rem] h-[1.2rem]" />
+        </Button>
+      </Link>
+      <Link href="/passwords" passHref legacyBehavior>
+        <Button variant="secondary" className="hidden md:block">
+          Remove Search
+        </Button>
+      </Link>
+    </>
   ) : (
     <Select defaultValue={value} onValueChange={handleValueChange}>
       <SelectTrigger className="w-52">

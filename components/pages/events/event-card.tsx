@@ -40,7 +40,7 @@ export default function EventCard({
       key={event.id}
       className="flex flex-col shadow transition-shadow duration-300 hover:shadow-lg border rounded p-5 overflow-hidden"
     >
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
         <div className="break-words text-xl font-medium w-2/3">
           <MarkedText text={event.title} searchTerm={searchTerm} />
         </div>

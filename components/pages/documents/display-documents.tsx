@@ -23,10 +23,10 @@ const SectionHeader = ({ children }: Node) => {
   return <div className="flex justify-between items-center gap-5">{children}</div>;
 };
 const SectionBody = ({ children }: Node) => {
-  return <div className="flex flex-wrap gap-5">{children}</div>;
+  return <div className="flex flex-wrap gap-2 md:gap-5">{children}</div>;
 };
 const Section = ({ children }: Node) => {
-  return <div className="flex flex-col gap-1 w-full">{children}</div>;
+  return <div className="flex flex-col gap-2 w-full">{children}</div>;
 };
 
 const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
@@ -38,7 +38,7 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
   const currentFolderPath = await getCurrentFolder({ folderId, currentUser: userId });
 
   return (
-    <div className="flex flex-col gap-8 flex-1">
+    <div className="flex flex-col gap-5 md:gap-8 flex-1">
       <Breadcrumb>
         <BreadcrumbList>
           {currentFolderPath ? (

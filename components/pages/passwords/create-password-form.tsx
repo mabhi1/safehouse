@@ -3,7 +3,7 @@
 import { addPassword } from "@/actions/passwords";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, Loader2, LockIcon, UnlockIcon } from "lucide-react";
+import { Loader2, LockIcon, Plus, UnlockIcon } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Label } from "@/components/ui/label";
 import {
@@ -43,7 +43,12 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button>Add Password</Button>
+        <div>
+          <Button className="hidden md:block">Add Password</Button>
+          <Button variant="outline" size="icon" className="md:hidden">
+            <Plus className="w-[1.2rem] h-[1.2rem]" />
+          </Button>
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
