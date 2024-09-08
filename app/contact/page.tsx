@@ -12,7 +12,7 @@ export default function ContactPage() {
           <ContactUsForm />
         </RecaptchaProvider>
       </div>
-      <Image src="/contact-us.svg" width={300} height={300} alt="Contact Us" priority />
+      <Image src="/contact-us.svg" width={300} height={300} alt="Contact Us" priority className="hidden md:block" />
     </div>
   );
 }

@@ -58,7 +58,7 @@ export default function ContactUsForm() {
   });
 
   return (
-    <form className="space-y-5 w-3/5" onSubmit={handleSubmit}>
+    <form className="space-y-5 w-full lg:w-3/5" onSubmit={handleSubmit}>
       <div className="grid grid-cols-2 gap-5">
         <div className="flex flex-col gap-2">
           <Label htmlFor="firstName">
