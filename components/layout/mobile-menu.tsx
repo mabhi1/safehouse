@@ -1,7 +1,7 @@
 "use client";
 
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, SquareUser } from "lucide-react";
 import { Button } from "../ui/button";
 import { storageLinks } from "./navigation";
 import Link from "next/link";
@@ -27,11 +27,17 @@ export default function MobileMenu() {
             </SheetClose>
           </SheetTitle>
         </SheetHeader>
+        <div className="ml-2 font-medium">
+          <SheetClose asChild>
+            <Link href="/contact">Contact</Link>
+          </SheetClose>
+        </div>
         <ul className="space-y-5 ml-2">
+          <div className="font-medium">Storage</div>
           {storageLinks.map((storage) => (
             <li key={storage.title}>
               <SheetClose asChild>
-                <Link href={storage.href} className="flex gap-3 items-center">
+                <Link href={storage.href} className="flex gap-3 items-center ml-2">
                   {storage.icon("w-4 h-4")}
                   <span className="text-sm">{storage.title}</span>
                 </Link>
