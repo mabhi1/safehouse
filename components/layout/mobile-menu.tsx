@@ -1,7 +1,7 @@
 "use client";
 
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
+import { Menu, SquareUser } from "lucide-react";
 import { Button } from "../ui/button";
 import { storageLinks } from "./navigation";
 import Link from "next/link";
