@@ -52,6 +52,8 @@ export default function SearchButton() {
   const [storageSelect, setStorageSelect] = useState("all");
   const router = useRouter();
 
+  console.log(searchText, "abhi");
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value;
     setSearchText(text);
@@ -115,7 +117,7 @@ export default function SearchButton() {
     if (searchText.trim().length >= 3) {
       handleSearch(searchText);
     }
-  }, [storageSelect, searchText]);
+  }, [storageSelect]);
 
   const handleRoute = (route: string) => {
     router.push(route);
