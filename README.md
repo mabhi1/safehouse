@@ -18,7 +18,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Live Preview
 
-This project is deployed on vercel with the URL [https://safehouse-2024.vercel.app/passwords](https://safehouse-2024.vercel.app/passwords)
+This project is deployed on vercel with the URL [https://safehouse-2024.vercel.app](https://safehouse-2024.vercel.app)
 
 ## Test User
 
