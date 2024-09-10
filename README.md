@@ -23,5 +23,5 @@ This project is deployed on vercel with the URL [https://safehouse-2024.vercel.a
 ## Test User
 
 Use the following credentials to test the application\
-Username - mabhishek0221@gmail.com
+Username - mabhishek0221@gmail.com\
 Password - dixfy6-pucvAk-qojhuh
