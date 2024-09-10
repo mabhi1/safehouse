@@ -1,0 +1,65 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model cards {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  bank      String
+  createdAt DateTime @default(now())
+  cvv       String
+  expiry    String
+  number    String
+  type      CardType
+  uid       String
+  updatedAt DateTime @updatedAt
+}
+
+enum CardType {
+  credit
+  debit
+}
+
+model notes {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  description String
+  title       String
+  uid         String
+  updatedAt   DateTime @updatedAt
+}
+
+model passwords {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  password  String
+  site      String
+  uid       String
+  updatedAt DateTime @updatedAt
+  username  String
+}
+
+model shortcuts {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  image     String
+  name      String
+  uid       String
+  updatedAt DateTime @updatedAt
+  url       String
+}
+
+model events {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  description String
+  date        DateTime
+  title       String
+  uid         String
+  updatedAt   DateTime @updatedAt
+}
