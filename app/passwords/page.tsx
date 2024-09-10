@@ -1,48 +1,50 @@
-"use client";
-import useAuth from "@/components/auth/AuthProvider";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Loading from "../loading";
-import { PasswordType } from "@/lib/types/dbTypes";
-import IndividualPassword from "@/components/passwords/IndividualPassword";
-import { useState } from "react";
-import Link from "next/link";
-import Button from "@/components/ui/Button";
+import { CreatePasswordForm } from "@/components/pages/passwords/create-password-form";
+import PasswordCard from "@/components/pages/passwords/password-card";
+import { Badge } from "@/components/ui/badge";
+import { getPasswordsByUser } from "@/prisma/db/passwords";
+import { auth } from "@clerk/nextjs/server";
+import SortPasswords from "@/components/pages/passwords/sort-passwords";
+import { getSortKey, isMatching, PasswordSortValues } from "@/lib/utils";
 
-type Props = {};
-const Passwords = (props: Props) => {
-  const auth = useAuth();
-  const [passwords, setPasswords] = useState<PasswordType[]>([]);
+export const dynamic = "force-dynamic";
 
-  const passwordsQuery = useQuery({
-    queryKey: ["passwords"],
-    queryFn: async () => {
-      const { data } = await axios.get(`/api/passwords?uid=${auth?.currentUser?.uid}`);
-      setPasswords(data.passwords);
-      return data;
-    },
-  });
+export default async function Passwords({ searchParams }: { searchParams: { [key: string]: string } }) {
+  const { userId } = auth();
+  if (!userId) throw new Error("Unauthorized Access");
 
-  const showPasswords = (passList: PasswordType[]) => {
-    if (passList.length === 0) return <div>No Passwords to display</div>;
-    return passList.map((pass: PasswordType) => {
-      return <IndividualPassword password={pass} key={pass.id} searchTerm={""} setPasswords={setPasswords} />;
-    });
-  };
+  const searchText = searchParams["search"];
+  const { data, error } = await getPasswordsByUser(
+    userId,
+    getSortKey("passwords", searchParams["sort"] as PasswordSortValues)
+  );
+  if (!data || error) throw new Error("User not found");
 
-  if (passwordsQuery.isLoading) return <Loading />;
-  if (passwordsQuery.isError) throw passwordsQuery.error;
+  function getFilteredList() {
+    if (searchText && searchText.trim().length)
+      return data!.filter(
+        (password) => isMatching(password.site, searchText) || isMatching(password.username, searchText)
+      );
+    else return data;
+  }
 
   return (
-    <>
-      <div className="flex md:hidden items-center justify-between mb-3">
-        <div>Passwords</div>
-        <Link href={"/passwords/create"}>
-          <Button variant={"outline"}>Add Password</Button>
-        </Link>
+    <div className="space-y-5">
+      <div className="flex items-center gap-3 md:gap-5">
+        <div className="flex items-center mr-auto gap-1">
+          <span className="text-base uppercase">Passwords</span>
+          <Badge variant="secondary" className="font-normal">
+            {data.length}
+          </Badge>
+        </div>
+        <SortPasswords isSearching={!!searchText?.trim().length} />
+        <CreatePasswordForm uid={userId} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">{showPasswords(passwords)}</div>
-    </>
+      <ul className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
+        {data.length <= 0 && <div className="text-lg">No Saved Passwords</div>}
+        {getFilteredList()!.map((password) => (
+          <PasswordCard key={password.id} password={password} uid={userId} searchTerm={searchText} />
+        ))}
+      </ul>
+    </div>
   );
-};
-export default Passwords;
+}

@@ -1,48 +1,44 @@
-"use client";
-import useAuth from "@/components/auth/AuthProvider";
-import { CardType } from "@/lib/types/dbTypes";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useState } from "react";
-import Loading from "../loading";
-import IndividualCards from "@/components/bank/IndividualCards";
-import Link from "next/link";
-import Button from "@/components/ui/Button";
+import CardsCard from "@/components/pages/cards/cards-card";
+import CreateCardForm from "@/components/pages/cards/create-card-form";
+import SortCards from "@/components/pages/cards/sort-cards";
+import { Badge } from "@/components/ui/badge";
+import { CardsSortValues, getSortKey, isMatching } from "@/lib/utils";
+import { GetCardsByUser } from "@/prisma/db/cards";
+import { auth } from "@clerk/nextjs/server";
 
-type Props = {};
-const Cards = (props: Props) => {
-  const auth = useAuth();
-  const [cards, setCards] = useState<CardType[]>([]);
+export const dynamic = "force-dynamic";
 
-  const cardsQuery = useQuery({
-    queryKey: ["cards"],
-    queryFn: async () => {
-      const { data } = await axios.get(`/api/cards?uid=${auth?.currentUser?.uid}`);
-      setCards(data.cards);
-      return data;
-    },
-  });
+export default async function Cards({ searchParams }: { searchParams: { [key: string]: string } }) {
+  const { userId } = auth();
+  if (!userId) throw new Error("Unauthorized Access");
 
-  const showCards = () => {
-    if (cards.length === 0) return <div>No Cards to display</div>;
-    return cards.map((card: CardType) => {
-      return <IndividualCards card={card} key={card.id} searchTerm={""} setCards={setCards} />;
-    });
-  };
+  const searchText = searchParams["search"];
+  const { data, error } = await GetCardsByUser(userId, getSortKey("cards", searchParams["sort"] as CardsSortValues));
+  if (!data || error) throw new Error("User not found");
 
-  if (cardsQuery.isLoading) return <Loading />;
-  if (cardsQuery.isError) throw cardsQuery.error;
+  function getFilteredList() {
+    if (searchText && searchText.trim().length) return data!.filter((card) => isMatching(card.bank, searchText));
+    else return data;
+  }
 
   return (
-    <>
-      <div className="flex md:hidden items-center justify-between mb-3">
-        <div>Cards</div>
-        <Link href={"/cards/create"}>
-          <Button variant={"outline"}>Add Card</Button>
-        </Link>
+    <div className="space-y-5">
+      <div className="flex items-center gap-3 md:gap-5">
+        <div className="flex items-center mr-auto gap-1">
+          <span className="text-base uppercase">Cards</span>
+          <Badge variant="secondary" className="font-normal">
+            {data.length}
+          </Badge>
+        </div>
+        <SortCards isSearching={!!searchText?.trim().length} />
+        <CreateCardForm uid={userId} />
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5">{showCards()}</div>
-    </>
+      <ul className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {data.length <= 0 && <div className="text-lg">No Saved Cards</div>}
+        {getFilteredList()!.map((card) => (
+          <CardsCard key={card.id} card={card} uid={userId} searchTerm={searchText} />
+        ))}
+      </ul>
+    </div>
   );
-};
-export default Cards;
+}

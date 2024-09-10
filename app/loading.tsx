@@ -1,11 +1,6 @@
-import Spinner from "@/components/ui/Spinner";
+import Spinner from "@/components/layout/spinner";
 
 const Loading = () => {
-  return (
-    <div className="flex-1 flex flex-col items-center gap-5 pt-20">
-      <Spinner size="xl" />
-      <span>Please Wait...</span>
-    </div>
-  );
+  return <Spinner />;
 };
 export default Loading;
