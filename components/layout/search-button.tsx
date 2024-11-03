@@ -34,6 +34,7 @@ import { Search } from "lucide-react";
 import Spinner from "./spinner";
 import debounce from "lodash/debounce";
 import { useSearch } from "../providers/search-provider";
+import { Separator } from "../ui/separator";
 
 const defaultStorageValue = {
   notes: [] as NotesType[],
@@ -190,7 +191,7 @@ export default function SearchButton() {
                   <div>
                     {results.notes.length ? (
                       <div>
-                        <DialogDescription className="pl-4 pb-2">Notes</DialogDescription>
+                        <DialogDescription className="pl-4 py-2">Notes</DialogDescription>
                         {results.notes.map((note) => (
                           <DialogClose key={note.id} asChild>
                             <Button
@@ -211,11 +212,12 @@ export default function SearchButton() {
                     )}
                   </div>
                 )}
+                <Separator />
                 {["all", "events"].includes(storageSelect) && (
                   <div>
                     {results.events.length ? (
                       <div>
-                        <DialogDescription className="pl-4 pb-2">Events</DialogDescription>
+                        <DialogDescription className="pl-4 py-2">Events</DialogDescription>
                         {results.events.map((event) => (
                           <DialogClose key={event.id} asChild>
                             <Button
@@ -240,11 +242,12 @@ export default function SearchButton() {
                     )}
                   </div>
                 )}
+                <Separator />
                 {["all", "passwords"].includes(storageSelect) && (
                   <div>
                     {results.passwords.length ? (
                       <div>
-                        <DialogDescription className="pl-4 pb-2">Passwords</DialogDescription>
+                        <DialogDescription className="pl-4 py-2">Passwords</DialogDescription>
                         {results.passwords.map((password) => (
                           <DialogClose key={password.id} asChild>
                             <Button
@@ -265,11 +268,12 @@ export default function SearchButton() {
                     )}
                   </div>
                 )}
+                <Separator />
                 {["all", "cards"].includes(storageSelect) && (
                   <div>
                     {results.cards.length ? (
                       <div>
-                        <DialogDescription className="pl-4 pb-2">Cards</DialogDescription>
+                        <DialogDescription className="pl-4 py-2">Cards</DialogDescription>
                         {results.cards.map((card) => (
                           <DialogClose key={card.id} asChild>
                             <Button

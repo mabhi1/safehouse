@@ -18,7 +18,7 @@ import { FileType } from "@/lib/db-types";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { Loader2 } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import { v4 as uuidV4 } from "uuid";
@@ -44,6 +44,11 @@ export const AddFileForm = ({ folderId, currentFilePath, userId, allFiles }: Pro
   const router = useRouter();
   const storage = getStorage();
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setProgressValue(0);
+    setUploadMessage("");
+  }, [openDialog]);
 
   const handleFileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,10 +104,10 @@ export const AddFileForm = ({ folderId, currentFilePath, userId, allFiles }: Pro
                 });
                 setUploadMessage(`Uploading Done`);
                 setOpenDialog(false);
-                toast.success("Action completed successfully");
+                toast.success(`${files[i].name} uploaded successfully`);
                 router.refresh();
               } catch (error) {
-                toast.error("Unable to complete the action");
+                toast.error(`Unable to upload ${files[i].name}`);
               }
             });
           }

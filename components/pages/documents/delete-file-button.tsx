@@ -27,17 +27,17 @@ export function DeleteFileButton({ fileId, fileDbId }: { fileId: string; fileDbI
   const handleDeleteFile = () => {
     const fileRef = ref(storage, fileDbId);
     // Delete the file
-    deleteObject(fileRef)
-      .then(async () => {
-        startTransition(async () => {
+    startTransition(async () => {
+      deleteObject(fileRef)
+        .then(async () => {
           await deleteDoc(doc(db, "files", fileId));
+          toast.success("Action completed successfully");
+          router.refresh();
+        })
+        .catch((error) => {
+          toast.error("Unable to complete the action");
         });
-        toast.success("Action completed successfully");
-        router.refresh();
-      })
-      .catch((error) => {
-        toast.error("Unable to complete the action");
-      });
+    });
   };
 
   return isPending ? (
