@@ -15,7 +15,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-export default function SortNotes({ isSearching }: { isSearching: boolean }) {
+export default function SortPasswords({ isSearching }: { isSearching: boolean }) {
   const sortValue = useSearchParams().get("sort");
   const [value, setValue] = useState(sortValue || "lastUpdated");
   const router = useRouter();

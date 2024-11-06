@@ -56,7 +56,7 @@ export function Navigation({ className }: { className?: string }) {
     <NavigationMenu className={className}>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Storage</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="bg-transparent">Storage</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {storageLinks.map((component) => (
@@ -69,7 +69,9 @@ export function Navigation({ className }: { className?: string }) {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link href="/contact" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>Contact</NavigationMenuLink>
+            <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>
+              Contact
+            </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
