@@ -7,6 +7,8 @@ type FormSubmitOptions<T extends Record<string, string | Date>> = {
   onSubmit: (values: T) => Promise<{ data: any; error: any }>;
   onSuccess?: () => void;
   onFailure?: () => void;
+  successMessage?: string;
+  failureMessage?: string;
   successRedirectUrl?: string;
   resetOnSuccess?: boolean;
 };
@@ -17,6 +19,8 @@ export const useFormSubmit = <T extends Record<string, string | Date>>({
   onSuccess,
   onFailure,
   successRedirectUrl,
+  successMessage = "Action completed successfully",
+  failureMessage = "Unable to complete the action",
   resetOnSuccess = true,
 }: FormSubmitOptions<T>) => {
   const [formValues, setFormValues] = useState<T>(initialValues);
@@ -45,14 +49,14 @@ export const useFormSubmit = <T extends Record<string, string | Date>>({
     startTransition(async () => {
       const { data, error } = await onSubmit(formValues);
       if (error || !data) {
+        onFailure && onFailure();
+        toast.error(failureMessage);
+      } else {
+        onSuccess && onSuccess();
+        toast.success(successMessage);
         if (resetOnSuccess) {
           setFormValues(initialValues);
         }
-        onFailure && onFailure();
-        toast.error("Unable to complete the action");
-      } else {
-        onSuccess && onSuccess();
-        toast.success("Action completed successfully");
         successRedirectUrl && router.push(successRedirectUrl);
       }
     });

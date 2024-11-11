@@ -9,8 +9,8 @@ import { auth } from "@clerk/nextjs/server";
 export const dynamic = "force-dynamic";
 
 export default async function Cards({ searchParams }: { searchParams: { [key: string]: string } }) {
-  const { userId } = auth();
-  if (!userId) throw new Error("Unauthorized Access");
+  const { userId, redirectToSignIn } = auth();
+  if (!userId) return redirectToSignIn();
 
   const searchText = searchParams["search"];
   const { data, error } = await GetCardsByUser(userId, getSortKey("cards", searchParams["sort"] as CardsSortValues));

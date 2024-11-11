@@ -9,8 +9,8 @@ import { getSortKey, isMatching, NotesSortValues } from "@/lib/utils";
 export const dynamic = "force-dynamic";
 
 export default async function Notes({ searchParams }: { searchParams: { [key: string]: string } }) {
-  const { userId } = auth();
-  if (!userId) throw new Error("Unauthorized Access");
+  const { userId, redirectToSignIn } = auth();
+  if (!userId) return redirectToSignIn();
 
   const searchText = searchParams["search"];
   const { data, error } = await getNotesByUser(userId, getSortKey("notes", searchParams["sort"] as NotesSortValues));

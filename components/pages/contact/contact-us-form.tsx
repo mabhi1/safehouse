@@ -55,6 +55,8 @@ export default function ContactUsForm() {
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<ContactUsFormValues>({
     initialValues: initialFormValues,
     onSubmit: onSubmit,
+    successMessage: "Email sent successfully",
+    failureMessage: "Unable to send email",
   });
 
   return (

@@ -6,8 +6,8 @@ import { auth } from "@clerk/nextjs/server";
 export const dynamic = "force-dynamic";
 
 export default function CalendarPage({ searchParams }: { searchParams: { [key: string]: string } }) {
-  const { userId } = auth();
-  if (!userId) throw new Error("Unauthorized Access");
+  const { userId, redirectToSignIn } = auth();
+  if (!userId) return redirectToSignIn();
 
   const searchText = searchParams["search"];
   const today = new Date();

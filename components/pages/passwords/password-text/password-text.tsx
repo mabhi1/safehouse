@@ -19,7 +19,11 @@ export default function PasswordText({ password }: { password: string }) {
   };
 
   return (
-    <div className={cn("cursor-pointer w-full", isVisible ? "break-words" : "truncate")} onClick={toggleVisibility}>
+    <div
+      className={cn("cursor-pointer w-full", isVisible ? "break-words" : "truncate")}
+      onClick={toggleVisibility}
+      data-testid="togglePassword"
+    >
       {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : encryptedPassword}
     </div>
   );

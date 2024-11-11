@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home Page renders page without any errors 1`] = `
+<div>
+  <div>
+    <div
+      class="flex flex-col md:flex-row"
+    >
+      <img
+        alt="Safe House"
+        data-nimg="1"
+        decoding="async"
+        fetchpriority="high"
+        height="300"
+        src="/hero.svg"
+        style="color: transparent;"
+        width="300"
+      />
+      <div
+        class="flex flex-col justify-center p-5 gap-2 w-full md:w-1/2"
+      >
+        <h2
+          class="text-2xl"
+        >
+          Safe House
+        </h2>
+        <div>
+          Your personal Secure storage for passwords, banks, notes and more. All the data for your cards and passwords are stored in an encrypted form.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

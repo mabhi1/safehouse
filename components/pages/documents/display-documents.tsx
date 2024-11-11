@@ -30,8 +30,8 @@ const Section = ({ children }: Node) => {
 };
 
 const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
-  const { userId } = auth();
-  if (!userId) throw new Error("Unauthorized Access");
+  const { userId, redirectToSignIn } = auth();
+  if (!userId) return redirectToSignIn();
 
   const folders = await getFolders({ currentUser: userId, folderId });
   const files = await getFiles({ currentUser: userId, folderId });
