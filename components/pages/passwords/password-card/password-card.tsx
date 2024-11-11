@@ -2,8 +2,8 @@ import MarkedText from "@/components/ui/marked-text";
 import { PasswordType } from "@/lib/db-types";
 import { deletePassword } from "@/actions/passwords";
 import { DeleteButton } from "@/components/ui/delete-button";
-import PasswordText from "./password-text";
-import { EditPasswordForm } from "./edit-password-form";
+import PasswordText from "../password-text/password-text";
+import { EditPasswordForm } from "../edit-password-form/edit-password-form";
 import { dateFormatter } from "@/lib/utils";
 
 interface PasswordCardProps {
@@ -17,6 +17,7 @@ export default function PasswordCard({ password, searchTerm = "", uid }: Passwor
 
   return (
     <li
+      data-testid={`password${password.id}`}
       key={password.id}
       className="flex flex-col justify-between shadow transition-shadow duration-300 hover:shadow-lg border rounded p-2 overflow-hidden"
     >

@@ -1,16 +1,16 @@
-import { CreatePasswordForm } from "@/components/pages/passwords/create-password-form";
-import PasswordCard from "@/components/pages/passwords/password-card";
+import { CreatePasswordForm } from "@/components/pages/passwords/create-password-form/create-password-form";
+import PasswordCard from "@/components/pages/passwords/password-card/password-card";
 import { Badge } from "@/components/ui/badge";
 import { getPasswordsByUser } from "@/prisma/db/passwords";
 import { auth } from "@clerk/nextjs/server";
-import SortPasswords from "@/components/pages/passwords/sort-passwords";
+import SortPasswords from "@/components/pages/passwords/sort-passwords/sort-passwords";
 import { getSortKey, isMatching, PasswordSortValues } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 export default async function Passwords({ searchParams }: { searchParams: { [key: string]: string } }) {
-  const { userId } = auth();
-  if (!userId) throw new Error("Unauthorized Access");
+  const { userId, redirectToSignIn } = auth();
+  if (!userId) return redirectToSignIn();
 
   const searchText = searchParams["search"];
   const { data, error } = await getPasswordsByUser(

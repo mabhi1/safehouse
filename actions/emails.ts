@@ -19,6 +19,7 @@ export async function sendAlertMessageEmail(event: EventType, email: string) {
 export async function contactUsMessageEmail(message: string, senderEmail: string, senderName: string) {
   const { data, error } = await resend.emails.send({
     from: "Safehouse@resend.dev",
+    replyTo: senderEmail,
     to: process.env.ADMIN_EMAIL!,
     subject: "Safehouse Enquiry",
     react: ContactUsEmail({ message, senderEmail, senderName }),

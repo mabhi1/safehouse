@@ -16,8 +16,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function SortPasswords({ isSearching }: { isSearching: boolean }) {
-  const sortValue = useSearchParams().get("sort");
-  const [value, setValue] = useState(sortValue || "lastUpdated");
+  const sortValue = useSearchParams()?.get("sort") || "lastUpdated";
+  const [value, setValue] = useState(sortValue);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -42,7 +42,7 @@ export default function SortPasswords({ isSearching }: { isSearching: boolean })
   ) : (
     <Select defaultValue={value} onValueChange={handleValueChange}>
       <SelectTrigger className="w-52">
-        <SelectValue placeholder="Sort Passwords" />
+        <SelectValue placeholder="Sort Passwords" data-testid="sortPasswordsSelect" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
