@@ -1,7 +1,6 @@
 "use server";
 
 import crypto from "crypto-js";
-import { revalidatePath } from "next/cache";
 
 const encrypt = async (plainText: string) => {
   const encryptedPassword = crypto.AES.encrypt(plainText, `${process.env.PASSWORD_SECRET_KEY}`).toString();
