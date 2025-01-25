@@ -1,4 +1,9 @@
-import { createPasswordByUser, deletePasswordById, getPasswordsByUser } from "@/prisma/db/passwords";
+import {
+  createPasswordByUser,
+  deletePasswordById,
+  getPasswordsByUser,
+  updatePasswordById,
+} from "@/prisma/db/passwords";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -23,6 +28,27 @@ export async function POST(request: NextRequest) {
     const { site, username, password, uid } = await request.json();
     if (!site.trim().length || !username.trim().length || !password.trim().length || !uid.trim().length) throw "";
     const { data, error } = await createPasswordByUser(site, username, password, uid);
+    if (error || !data) throw "";
+    return new Response(JSON.stringify(data), { status: 200 });
+  } catch (error) {
+    return new Response("Error saving password", {
+      status: 404,
+    });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const { id, site, username, password, uid } = await request.json();
+    if (
+      !id.trim().length ||
+      !site.trim().length ||
+      !username.trim().length ||
+      !password.trim().length ||
+      !uid.trim().length
+    )
+      throw "";
+    const { data, error } = await updatePasswordById(id, site, username, password, uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
   } catch (error) {
