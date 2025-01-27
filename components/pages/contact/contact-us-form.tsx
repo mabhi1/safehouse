@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, SendHorizonal } from "lucide-react";
 import { contactUsMessageEmail } from "@/actions/emails";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
+import { useUser } from "@clerk/nextjs";
 
 type ContactUsFormValues = {
   firstName: string;
@@ -17,10 +18,12 @@ type ContactUsFormValues = {
 };
 
 export default function ContactUsForm() {
+  const { user } = useUser();
+
   const initialFormValues: ContactUsFormValues = {
-    firstName: "",
-    lastName: "",
-    email: "",
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    email: user?.primaryEmailAddress?.emailAddress || "",
     message: "",
   };
 
