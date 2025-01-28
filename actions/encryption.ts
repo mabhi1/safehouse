@@ -1,5 +1,6 @@
 "use server";
 
+import { createEncryptionByUser } from "@/prisma/db/encryption";
 import crypto from "crypto-js";
 
 const encrypt = async (plainText: string) => {
@@ -14,4 +15,9 @@ const decrypt = async (encrypted: string) => {
   return decryptedPassword;
 };
 
-export { encrypt, decrypt };
+const createEncryption = async (uid: string, salt: string, hash: string, recovery: string) => {
+  const res = await createEncryptionByUser(uid, salt, hash, recovery);
+  return res;
+};
+
+export { encrypt, decrypt, createEncryption };

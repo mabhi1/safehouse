@@ -1,11 +1,18 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model encryption {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  salt     String
+  hash     String
+  recovery String
+  uid      String @unique
 }
 
 model cards {
