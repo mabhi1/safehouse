@@ -25,7 +25,6 @@ const MasterPasswordContext = createContext<{
 export const MasterPasswordProvider = ({ children }: { children: React.ReactNode }) => {
   const [masterPassword, setMasterPassword] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [isCancelled, setIsCancelled] = useState(false);
   const [salt, setSalt] = useState("");
   const [hash, setHash] = useState("");
   const resolveCallbackRef = useRef<((password: string) => void) | null>(null);
@@ -47,8 +46,6 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
       return new Promise((resolve, reject) => {
         if (masterPassword) {
           resolve(masterPassword);
-        } else if (isCancelled) {
-          reject(new Error("Master password entry canceled."));
         } else {
           resolveCallbackRef.current = resolve;
           rejectCallbackRef.current = reject;
@@ -58,7 +55,7 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
         }
       });
     },
-    [masterPassword, isCancelled]
+    [masterPassword]
   );
 
   // Function to check if the entered password is correct
@@ -73,7 +70,6 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
   const handleDialogSubmit = async (password: string) => {
     if (await verifyMasterPassword(password)) {
       setMasterPassword(password);
-      setIsCancelled(false);
       setDialogOpen(false);
       if (resolveCallbackRef.current) {
         resolveCallbackRef.current(password); // Resolve the promise
@@ -88,7 +84,6 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
   // Function called when the dialog is canceled
   const handleDialogCancel = () => {
     setDialogOpen(false);
-    setIsCancelled(true);
     if (rejectCallbackRef.current) {
       rejectCallbackRef.current(new Error("User canceled action")); // Reject the promise
       rejectCallbackRef.current = null; // Clear the ref

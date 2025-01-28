@@ -15,10 +15,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { decrypt, encrypt } from "@/actions/encryption";
+import { decryptAES, deriveKey, encryptAES } from "@/lib/crypto";
+import { useMasterPassword } from "@/components/providers/master-password-provider";
 
 type CreatePasswordFormValues = {
   site: string;
@@ -26,9 +26,20 @@ type CreatePasswordFormValues = {
   password: string;
 };
 
-export const EditPasswordForm = ({ password, uid }: { password: PasswordType; uid: string }) => {
+export const EditPasswordForm = ({
+  password,
+  uid,
+  salt,
+  hash,
+}: {
+  password: PasswordType;
+  uid: string;
+  salt: string;
+  hash: string;
+}) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { getMasterPassword } = useMasterPassword();
   const initialFormValues: CreatePasswordFormValues = {
     site: password.site,
     username: password.username,
@@ -37,7 +48,9 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
 
   const onSubmit = async (values: CreatePasswordFormValues) => {
     if (!showPassword) toggleVisibility();
-    return editPassword(password.id, values.site.trim(), values.username.trim(), values.password.trim(), uid);
+    const key = await deriveKey((await getMasterPassword(salt, hash)) as string, salt);
+    const encryptedPassword = JSON.stringify(encryptAES(key, Buffer.from(values.password.trim())));
+    return editPassword(password.id, values.site.trim(), values.username.trim(), encryptedPassword, uid);
   };
 
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreatePasswordFormValues>({
@@ -47,19 +60,29 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
   });
 
   const toggleVisibility = async () => {
+    const key = await deriveKey((await getMasterPassword(salt, hash)) as string, salt);
     showPassword
-      ? handleInputChange({ target: { id: "password", value: await encrypt(formValues.password) } })
-      : handleInputChange({ target: { id: "password", value: await decrypt(formValues.password) } });
+      ? handleInputChange({
+          target: { id: "password", value: JSON.stringify(encryptAES(key, Buffer.from(formValues.password))) },
+        })
+      : handleInputChange({
+          target: { id: "password", value: decryptAES(key, JSON.parse(formValues.password)).toString() },
+        });
     setShowPassword(!showPassword);
   };
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" data-testid="editPasswordButton">
-          Edit
-        </Button>
-      </DialogTrigger>
+      <Button
+        variant="ghost"
+        data-testid="editPasswordButton"
+        onClick={async () => {
+          await getMasterPassword(salt, hash);
+          setOpenDialog(true);
+        }}
+      >
+        Edit
+      </Button>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Password</DialogTitle>
@@ -108,6 +131,7 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
                 value={formValues.password}
                 required
                 onChange={handleInputChange}
+                className="pr-10"
               />
               {showPassword ? (
                 <UnlockIcon

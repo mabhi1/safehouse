@@ -5,12 +5,16 @@ import { getPasswordsByUser } from "@/prisma/db/passwords";
 import { auth } from "@clerk/nextjs/server";
 import SortPasswords from "@/components/pages/passwords/sort-passwords/sort-passwords";
 import { getSortKey, isMatching, PasswordSortValues } from "@/lib/utils";
+import { getEncryptionByUser } from "@/prisma/db/encryption";
 
 export const dynamic = "force-dynamic";
 
 export default async function Passwords({ searchParams }: { searchParams: { [key: string]: string } }) {
   const { userId, redirectToSignIn } = auth();
   if (!userId) return redirectToSignIn();
+
+  const { data: encryptionData, error: encryptionError } = await getEncryptionByUser(userId);
+  if (!encryptionData || encryptionError) throw new Error("");
 
   const searchText = searchParams["search"];
   const { data, error } = await getPasswordsByUser(
@@ -37,12 +41,19 @@ export default async function Passwords({ searchParams }: { searchParams: { [key
           </Badge>
         </div>
         <SortPasswords isSearching={!!searchText?.trim().length} />
-        <CreatePasswordForm uid={userId} />
+        <CreatePasswordForm uid={userId} salt={encryptionData.salt} hash={encryptionData.hash} />
       </div>
       <ul className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
         {data.length <= 0 && <div className="text-lg">No Saved Passwords</div>}
         {getFilteredList()!.map((password) => (
-          <PasswordCard key={password.id} password={password} uid={userId} searchTerm={searchText} />
+          <PasswordCard
+            key={password.id}
+            password={password}
+            uid={userId}
+            searchTerm={searchText}
+            salt={encryptionData.salt}
+            hash={encryptionData.hash}
+          />
         ))}
       </ul>
     </div>

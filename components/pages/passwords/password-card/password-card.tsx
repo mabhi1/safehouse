@@ -10,9 +10,11 @@ interface PasswordCardProps {
   password: PasswordType;
   searchTerm?: string;
   uid: string;
+  salt: string;
+  hash: string;
 }
 
-export default function PasswordCard({ password, searchTerm = "", uid }: PasswordCardProps) {
+export default function PasswordCard({ password, searchTerm = "", uid, salt, hash }: PasswordCardProps) {
   const { id, site, username, updatedAt } = password;
 
   return (
@@ -28,11 +30,11 @@ export default function PasswordCard({ password, searchTerm = "", uid }: Passwor
         <div className="break-words">
           <MarkedText text={username} searchTerm={searchTerm} />
         </div>
-        <PasswordText password={password.password} />
+        <PasswordText password={password.password} salt={salt} hash={hash} />
       </div>
       <div>
         <div className="flex justify-end my-1">
-          <EditPasswordForm uid={uid} password={password} />
+          <EditPasswordForm uid={uid} password={password} salt={salt} hash={hash} />
           <DeleteButton
             id={id}
             uid={uid}
