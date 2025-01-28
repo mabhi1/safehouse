@@ -47,17 +47,22 @@ export const useFormSubmit = <T extends Record<string, string | Date>>({
       return;
 
     startTransition(async () => {
-      const { data, error } = await onSubmit(formValues);
-      if (error || !data) {
-        onFailure && onFailure();
-        toast.error(failureMessage);
-      } else {
-        onSuccess && onSuccess();
-        toast.success(successMessage);
-        if (resetOnSuccess) {
-          setFormValues(initialValues);
+      try {
+        const { data, error } = await onSubmit(formValues);
+        if (error || !data) {
+          onFailure && onFailure();
+          toast.error(failureMessage);
+        } else {
+          onSuccess && onSuccess();
+          toast.success(successMessage);
+          if (resetOnSuccess) {
+            setFormValues(initialValues);
+          }
+          successRedirectUrl && router.push(successRedirectUrl);
         }
-        successRedirectUrl && router.push(successRedirectUrl);
+      } catch (error) {
+        toast.error("Error getting master password");
+        onFailure && onFailure();
       }
     });
   };
