@@ -1,0 +1,35 @@
+{
+  "title": "About SafeHouse",
+  "description": "SafeHouse is your ultimate secure storage solution, protecting your most sensitive data with cutting-edge encryption. Store passwords, notes, documents, events, credit/debit cards, and, secure identity documents like passports and driver's licenses. Your information is always encrypted, private, and accessible only to you.",
+  "features": [
+    {
+      "title": "🔐 Advanced Encryption",
+      "description": "Your passwords and payment card details are encrypted using a zero-knowledge encryption model, meaning only you can unlock them with your master password. Even SafeHouse cannot access your encrypted data."
+    },
+    {
+      "title": "📁 Store Everything Securely",
+      "description": "Keep your notes, events, and important documents in one place, accessible whenever you need them."
+    },
+    {
+      "title": "🛡️ Privacy-First Design",
+      "description": "SafeHouse never stores or transmits your master password. Your encryption key is derived from your master password and unique salt, ensuring that your data remains unreadable to anyone but you."
+    },
+    {
+      "title": "📅 Organize Effortlessly",
+      "description": "Manage your passwords, track events, and store important documents in an intuitive, user-friendly interface."
+    },
+    {
+      "title": "🖥️📱 Seamless Access Across Devices",
+      "description": "Securely access your data on both web and mobile without compromising security."
+    },
+    {
+      "title": "💳 Secure Identity Storage",
+      "description": "Store your financial details safely with encryption, keeping your payment information secure from unauthorized access. Store passports, driver's licenses, health insurance cards, and other identity documents securely, ensuring they are safe, encrypted, and accessible whenever needed."
+    }
+  ],
+  "privacy_commitment": {
+    "title": "Your Privacy, Your Control",
+    "description": "At SafeHouse, privacy is our priority. Unlike other storage apps, we do not store, track, or analyze your sensitive data. Your information belongs to you, and only you can access it."
+  },
+  "closing_message": "Stay organized, stay secure, and take control of your data with SafeHouse. 🚀"
+}

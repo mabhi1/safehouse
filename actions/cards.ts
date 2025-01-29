@@ -3,13 +3,10 @@
 import { createCardByUser, deleteCardById, searchCardsByText } from "@/prisma/db/cards";
 import { CardType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { encrypt } from "./encryption";
 
 export async function addCard(bank: string, cvv: string, expiry: string, number: string, type: CardType, uid: string) {
-  const newExpiry = expiry.split("-").reverse();
-  newExpiry[1] = newExpiry[1].substring(2);
-  const finalExpiry = newExpiry.join("/");
-  const res = await createCardByUser(bank, await encrypt(cvv), finalExpiry, await encrypt(number), type, uid);
+  const res = await createCardByUser(bank, cvv, expiry, number, type, uid);
+  console.log(res.error);
   revalidatePath("/cards");
   return res;
 }

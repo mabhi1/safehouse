@@ -11,7 +11,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { CalendarCog, CreditCard, FolderOpen, NotebookPen, ShieldCheck } from "lucide-react";
+import { CalendarCog, CreditCard, FolderOpen, GlobeLock, IdCard, NotebookPen, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import { SignedIn } from "@clerk/nextjs";
 
@@ -20,6 +20,7 @@ export const storageLinks: {
   href: string;
   description: string;
   icon: (className: string) => React.JSX.Element;
+  new?: boolean;
 }[] = [
   {
     title: "Documents",
@@ -51,6 +52,28 @@ export const storageLinks: {
     description: "Store encrypted login credentials for any website.",
     icon: (className: string) => <ShieldCheck className={className} />,
   },
+  {
+    title: "Identity",
+    href: "/identity",
+    description: "Store passports, driver's licenses, health insurance cards, and other identity documents.",
+    icon: (className: string) => <IdCard className={className} />,
+    new: true,
+  },
+];
+
+export const platformLinks: {
+  title: string;
+  href: string;
+  description: string;
+  icon: (className: string) => React.JSX.Element;
+  new?: boolean;
+}[] = [
+  {
+    title: "Encryption Strategy",
+    description: "End-to-end encryption used to encrypt your sensitive data.",
+    href: "/encryption-strategy",
+    icon: (className: string) => <GlobeLock className={className} />,
+  },
 ];
 
 export function Navigation({ className }: { className?: string }) {
@@ -58,14 +81,14 @@ export function Navigation({ className }: { className?: string }) {
     <NavigationMenu className={className}>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Platform</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="bg-transparent">Platform</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <a
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/"
+                    href="/about"
                   >
                     <Image
                       src="/logo.png"
@@ -82,9 +105,11 @@ export function Navigation({ className }: { className?: string }) {
                   </a>
                 </NavigationMenuLink>
               </li>
-              <ListItem href="/docs" title="Encryption technique">
-                End-to-end encryption used to encrypt your sensitive data.
-              </ListItem>
+              {platformLinks.map((link) => (
+                <ListItem href={link.href} title={link.title} key={link.title}>
+                  {link.description}
+                </ListItem>
+              ))}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -94,7 +119,7 @@ export function Navigation({ className }: { className?: string }) {
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                 {storageLinks.map((component) => (
-                  <ListItem key={component.title} title={component.title} href={component.href}>
+                  <ListItem key={component.title} title={component.title} href={component.href} new={component.new}>
                     {component.description}
                   </ListItem>
                 ))}
@@ -114,7 +139,11 @@ export function Navigation({ className }: { className?: string }) {
   );
 }
 
-const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(
+interface ListItemProps extends React.ComponentPropsWithoutRef<"a"> {
+  new?: boolean;
+}
+
+const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
   ({ className, title, children, href, ...props }, ref) => {
     return (
       <li>
@@ -128,7 +157,10 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWit
             )}
             {...props}
           >
-            <div className="text-sm font-medium leading-none">{title}</div>
+            <div className="text-sm font-medium leading-none flex gap-2 items-end">
+              {title}
+              {props.new && <span className="text-primary animate-bounce">New</span>}
+            </div>
             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
           </Link>
         </NavigationMenuLink>

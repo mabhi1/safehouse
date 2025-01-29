@@ -14,7 +14,10 @@ export default function UserProfileButton() {
         <UserButton
           appearance={{
             elements: { userButtonAvatarBox: "w-8 h-8", userButtonPopoverCard: "ml-4" },
-            baseTheme: theme === "dark" ? dark : undefined,
+            baseTheme:
+              theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
+                ? dark
+                : undefined,
           }}
         />
       </SignedIn>

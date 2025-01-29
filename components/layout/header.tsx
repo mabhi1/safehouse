@@ -16,9 +16,9 @@ const Header = () => {
         <h1 className="uppercase text-xl hidden md:block">Safehouse</h1>
       </Link>
       <SignedOut>
-        <Image src="/logo.png" alt="Safe House" width={50} height={50} priority className="lg:hidden" />
+        <Image src="/logo.png" alt="Safe House" width={40} height={40} priority className="lg:hidden" />
         <Link href="/">
-          <h1 className="uppercase text-xl md:hidden">Safehouse</h1>
+          <h1 className="uppercase text-lg md:hidden">Safehouse</h1>
         </Link>
       </SignedOut>
       <Navigation className="hidden lg:block" />

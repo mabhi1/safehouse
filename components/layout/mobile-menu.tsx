@@ -1,9 +1,9 @@
 "use client";
 
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { BookCopy, GlobeLock, Menu } from "lucide-react";
+import { BookCopy, Menu } from "lucide-react";
 import { Button } from "../ui/button";
-import { storageLinks } from "./navigation";
+import { platformLinks, storageLinks } from "./navigation";
 import Link from "next/link";
 import { SignedIn } from "@clerk/nextjs";
 
@@ -41,7 +41,14 @@ export default function MobileMenu() {
                 <SheetClose asChild>
                   <Link href={storage.href} className="flex gap-3 items-center ml-2">
                     {storage.icon("w-4 h-4")}
-                    <span className="text-sm">{storage.title}</span>
+                    <div className="text-sm">
+                      {storage.title}
+                      {storage.new && (
+                        <span className="ml-2 bg-primary text-primary-foreground text-xs rounded-full p-1 px-2 animate-pulse">
+                          New
+                        </span>
+                      )}
+                    </div>
                   </Link>
                 </SheetClose>
               </li>
@@ -52,20 +59,22 @@ export default function MobileMenu() {
           <div className="font-medium">Platform</div>
           <li>
             <SheetClose asChild>
-              <Link href="/" className="flex gap-3 items-center ml-2">
+              <Link href="/about" className="flex gap-3 items-center ml-2">
                 <BookCopy className="w-4 h-4" />
                 <span className="text-sm">About</span>
               </Link>
             </SheetClose>
           </li>
-          <li>
-            <SheetClose asChild>
-              <Link href="/" className="flex gap-3 items-center ml-2">
-                <GlobeLock className="w-4 h-4" />
-                <span className="text-sm">Encryption</span>
-              </Link>
-            </SheetClose>
-          </li>
+          {platformLinks.map((link) => (
+            <li key={link.title}>
+              <SheetClose asChild>
+                <Link href={link.href} className="flex gap-3 items-center ml-2">
+                  {link.icon("w-4 h-4")}
+                  <div className="text-sm">{link.title}</div>
+                </Link>
+              </SheetClose>
+            </li>
+          ))}
         </ul>
       </SheetContent>
     </Sheet>
