@@ -39,7 +39,6 @@ export const CreatePasswordForm = ({ uid, salt, hash }: { uid: string; salt: str
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreatePasswordFormValues>({
     initialValues: initialFormValues,
     onSubmit: async (values) => {
-      setOpenDialog(false);
       const masterPassword = (await getMasterPassword(salt, hash)) as string;
       const key = await deriveKey(masterPassword, salt);
       return addPassword(

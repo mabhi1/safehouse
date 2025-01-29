@@ -14,11 +14,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { CardType } from "@prisma/client";
+import { useMasterPassword } from "@/components/providers/master-password-provider";
+import { deriveKey, encryptAES } from "@/lib/crypto";
+import { toast } from "sonner";
 
 type CreateCardFormValues = {
   bank: string;
@@ -28,8 +30,9 @@ type CreateCardFormValues = {
   type: CardType;
 };
 
-export default function CreateCardForm({ uid }: { uid: string }) {
+export default function CreateCardForm({ uid, salt, hash }: { uid: string; salt: string; hash: string }) {
   const [openDialog, setOpenDialog] = useState(false);
+  const { getMasterPassword } = useMasterPassword();
   const initialFormValues: CreateCardFormValues = {
     bank: "",
     cvv: "",
@@ -40,20 +43,43 @@ export default function CreateCardForm({ uid }: { uid: string }) {
 
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreateCardFormValues>({
     initialValues: initialFormValues,
-    onSubmit: async (values) => addCard(values.bank, values.cvv, values.expiry, values.number, values.type, uid),
+    onSubmit: async (values) => {
+      const masterPassword = (await getMasterPassword(salt, hash)) as string;
+      const key = await deriveKey(masterPassword, salt);
+      const newExpiry = values.expiry.split("-").reverse();
+      newExpiry[1] = newExpiry[1].substring(2);
+      const finalExpiry = newExpiry.join("/");
+      return addCard(
+        values.bank.trim(),
+        JSON.stringify(encryptAES(key, Buffer.from(values.cvv.trim()))),
+        finalExpiry,
+        JSON.stringify(encryptAES(key, Buffer.from(values.number.trim()))),
+        values.type,
+        uid
+      );
+    },
     onSuccess: () => setOpenDialog(false),
   });
 
+  const handleButtonClick = async () => {
+    try {
+      await getMasterPassword(salt, hash);
+      setOpenDialog(true);
+    } catch (error) {
+      toast.error("Error getting master password");
+    }
+  };
+
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogTrigger asChild>
-        <div>
-          <Button className="hidden md:block">Add Card</Button>
-          <Button variant="outline" size="icon" className="md:hidden">
-            <Plus className="w-[1.2rem] h-[1.2rem]" />
-          </Button>
-        </div>
-      </DialogTrigger>
+      <div>
+        <Button className="hidden md:block" onClick={handleButtonClick}>
+          Add Card
+        </Button>
+        <Button variant="outline" size="icon" className="md:hidden" onClick={handleButtonClick}>
+          <Plus className="w-[1.2rem] h-[1.2rem]" />
+        </Button>
+      </div>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Card</DialogTitle>
