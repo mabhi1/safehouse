@@ -23,10 +23,8 @@ export default function PrivacyPolicy() {
                   return (
                     <li key={point}>
                       <span className={pointArr.length > 1 ? "underline underline-offset-2" : ""}>{pointArr[0]}</span>
-                      {":"}
-                      {pointArr.length > 1 && pointArr[1]}
-                      {":"}
-                      {pointArr.length > 2 && pointArr[2]}
+                      {pointArr.length > 1 && `: ${pointArr[1]}`}
+                      {pointArr.length > 2 && `: ${pointArr[2]}`}
                     </li>
                   );
                 })}

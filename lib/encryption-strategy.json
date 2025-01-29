@@ -1,0 +1,107 @@
+{
+  "encryptionStrategy": {
+    "title": "Secure Data Encryption Flow",
+    "description": "This vault uses a master password to generate a data-encryption key (DEK). The DEK encrypts and decrypts your data. We only store the DEK in memory once you log in, and it’s discarded when you log out or after inactivity.",
+    "steps": [
+      {
+        "stepNumber": 1,
+        "title": "User Registration",
+        "details": [
+          "You create a master password (known only to you).",
+          "A unique salt is generated to make your password derivation secure against brute force attacks.",
+          "A key derivation function (KDF) uses your master password + salt to create a data-encryption key (DEK).",
+          "We hash the DEK (or a derivative) for login verification and never store your master password in plaintext.",
+          "We generate a random recovery key. The DEK is then encrypted with this recovery key (so you can recover it if you ever forget your master password)."
+        ]
+      },
+      {
+        "stepNumber": 2,
+        "title": "Encryption of Your Data",
+        "details": [
+          "When you add or update data (e.g., passwords, notes), we use AES-256-GCM with your DEK to encrypt it.",
+          "We store only the encrypted data on our servers, ensuring no one can read it without your DEK."
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "title": "Login & Decryption",
+        "details": [
+          "When you log in, you type your master password again.",
+          "A new salt lookup plus our KDF re-derives the DEK in your browser/app memory.",
+          "We verify the correct DEK by comparing its hash with what’s stored (without ever exposing your password or DEK plaintext to our server).",
+          "Using the in-memory DEK, you decrypt your vault data locally and can view or edit it."
+        ]
+      }
+    ]
+  },
+  "decryptionFlow": {
+    "title": "How Your Data Is Decrypted",
+    "description": "Decryption happens only after you correctly derive the same data-encryption key used to encrypt your data.",
+    "steps": [
+      {
+        "stepNumber": 1,
+        "title": "Derive the DEK from Your Master Password",
+        "details": [
+          "We retrieve the unique salt associated with your account.",
+          "A KDF (e.g., PBKDF2, Argon2) transforms your password + salt into the DEK.",
+          "We compare a hash of this derived key with our stored hash to confirm it’s correct."
+        ]
+      },
+      {
+        "stepNumber": 2,
+        "title": "Decrypt the Vault",
+        "details": [
+          "Once verified, the DEK is used to decrypt your vault data directly on your device/browser.",
+          "The DEK remains in temporary memory for as long as your session is active."
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "title": "Session Timeout or Logout",
+        "details": [
+          "When you log out or the session times out, we discard the DEK from memory.",
+          "To access your data again, you must re-derive the DEK by entering your master password."
+        ]
+      }
+    ]
+  },
+  "recoveryMechanism": {
+    "title": "Account Recovery with a Recovery Key",
+    "description": "If you forget your master password, you can still recover your data using the recovery key you received at registration.",
+    "steps": [
+      {
+        "stepNumber": 1,
+        "title": "Store Your Recovery Key Securely",
+        "details": [
+          "We generate a unique, random recovery key at registration.",
+          "This key can decrypt your vault’s DEK—so protect it like you would any sensitive code."
+        ]
+      },
+      {
+        "stepNumber": 2,
+        "title": "Recovery Flow",
+        "details": [
+          "You initiate ‘Forgot Master Password.’",
+          "You enter your stored recovery key.",
+          "The system locates your encrypted DEK (which was encrypted with the recovery key).",
+          "We use the recovery key to decrypt the DEK on your device/browser.",
+          "Once the DEK is recovered, you can unlock your vault and create a new master password."
+        ]
+      },
+      {
+        "stepNumber": 3,
+        "title": "Generate a New Recovery Key",
+        "details": [
+          "After resetting your master password, the system can optionally generate a new recovery key to maintain security.",
+          "Always update your stored recovery key if it changes."
+        ]
+      }
+    ]
+  },
+  "importantNotes": [
+    "We never store your master password in plaintext—only, its salt and hash.",
+    "Your data is only decrypted locally, in your browser or device memory.",
+    "Only your recovery key can unlock your data if you lose your master password, so keep it safe.",
+    "When you log out, the derived key is discarded from memory to protect your data."
+  ]
+}
