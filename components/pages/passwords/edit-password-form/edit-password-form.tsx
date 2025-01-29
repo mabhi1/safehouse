@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { decryptAES, deriveKey, encryptAES } from "@/lib/crypto";
+import { deriveKey, encryptAES } from "@/lib/crypto";
 import { useMasterPassword } from "@/components/providers/master-password-provider";
 
 type CreatePasswordFormValues = {
@@ -40,14 +40,14 @@ export const EditPasswordForm = ({
   const [openDialog, setOpenDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { getMasterPassword } = useMasterPassword();
+
   const initialFormValues: CreatePasswordFormValues = {
     site: password.site,
     username: password.username,
-    password: password.password,
+    password: "",
   };
 
   const onSubmit = async (values: CreatePasswordFormValues) => {
-    if (!showPassword) toggleVisibility();
     const key = await deriveKey((await getMasterPassword(salt, hash)) as string, salt);
     const encryptedPassword = JSON.stringify(encryptAES(key, Buffer.from(values.password.trim())));
     return editPassword(password.id, values.site.trim(), values.username.trim(), encryptedPassword, uid);
@@ -59,15 +59,7 @@ export const EditPasswordForm = ({
     onSuccess: () => setOpenDialog(false),
   });
 
-  const toggleVisibility = async () => {
-    const key = await deriveKey((await getMasterPassword(salt, hash)) as string, salt);
-    showPassword
-      ? handleInputChange({
-          target: { id: "password", value: JSON.stringify(encryptAES(key, Buffer.from(formValues.password))) },
-        })
-      : handleInputChange({
-          target: { id: "password", value: decryptAES(key, JSON.parse(formValues.password)).toString() },
-        });
+  const toggleVisibility = () => {
     setShowPassword(!showPassword);
   };
 
@@ -97,7 +89,6 @@ export const EditPasswordForm = ({
               id="site"
               data-testid="siteInput"
               type="text"
-              autoFocus={true}
               placeholder="Enter Site"
               required
               value={formValues.site}
@@ -129,6 +120,7 @@ export const EditPasswordForm = ({
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter Password"
                 value={formValues.password}
+                autoFocus
                 required
                 onChange={handleInputChange}
                 className="pr-10"

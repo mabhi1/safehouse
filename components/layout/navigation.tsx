@@ -12,6 +12,8 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { CalendarCog, CreditCard, FolderOpen, NotebookPen, ShieldCheck } from "lucide-react";
+import Image from "next/image";
+import { SignedIn } from "@clerk/nextjs";
 
 export const storageLinks: {
   title: string;
@@ -56,17 +58,50 @@ export function Navigation({ className }: { className?: string }) {
     <NavigationMenu className={className}>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="bg-transparent">Storage</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Platform</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-              {storageLinks.map((component) => (
-                <ListItem key={component.title} title={component.title} href={component.href}>
-                  {component.description}
-                </ListItem>
-              ))}
+            <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+              <li className="row-span-3">
+                <NavigationMenuLink asChild>
+                  <a
+                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                    href="/"
+                  >
+                    <Image
+                      src="/logo.png"
+                      alt="Safe House"
+                      width={50}
+                      height={50}
+                      priority
+                      className="hidden lg:block"
+                    />
+                    <div className="mb-2 mt-4 text-lg font-medium">Safehouse</div>
+                    <p className="text-sm leading-tight text-muted-foreground">
+                      Manage your data with end-to-end encryption. Simple, safe, and accessible across devices.
+                    </p>
+                  </a>
+                </NavigationMenuLink>
+              </li>
+              <ListItem href="/docs" title="Encryption technique">
+                End-to-end encryption used to encrypt your sensitive data.
+              </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
+        <SignedIn>
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className="bg-transparent">Storage</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                {storageLinks.map((component) => (
+                  <ListItem key={component.title} title={component.title} href={component.href}>
+                    {component.description}
+                  </ListItem>
+                ))}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </SignedIn>
         <NavigationMenuItem>
           <Link href="/contact" legacyBehavior passHref>
             <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-transparent")}>

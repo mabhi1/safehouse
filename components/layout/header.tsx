@@ -1,4 +1,4 @@
-import { ClerkLoading, SignedIn } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { ModeToggle } from "../ui/theme-toggle";
 import Image from "next/image";
 import { Navigation } from "./navigation";
@@ -15,15 +15,18 @@ const Header = () => {
       <Link href="/">
         <h1 className="uppercase text-xl hidden md:block">Safehouse</h1>
       </Link>
+      <SignedOut>
+        <Image src="/logo.png" alt="Safe House" width={50} height={50} priority className="lg:hidden" />
+        <Link href="/">
+          <h1 className="uppercase text-xl md:hidden">Safehouse</h1>
+        </Link>
+      </SignedOut>
       <Navigation className="hidden lg:block" />
       <div className="flex-1 lg:flex-none ml-auto flex items-center gap-3 md:gap-5">
         <SignedIn>
           <SearchButton />
-          <UserProfileButton />
         </SignedIn>
-        <ClerkLoading>
-          <Image src="/profile.png" width={35} height={35} priority alt="Sign-in" className="w-8 h-8" />
-        </ClerkLoading>
+        <UserProfileButton />
         <ModeToggle />
       </div>
     </header>
