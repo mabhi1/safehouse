@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { decryptAES, deriveKey, encryptAES } from "@/lib/crypto";
 import { useMasterPassword } from "@/components/providers/master-password-provider";
+import { toast } from "sonner";
 
 export default function PasswordText({ password, salt, hash }: { password: string; salt: string; hash: string }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -23,6 +24,15 @@ export default function PasswordText({ password, salt, hash }: { password: strin
     });
   };
 
+  const getPassword = (pass: any) => {
+    try {
+      const parsed = JSON.parse(pass);
+      return parsed["ciphertext"] + parsed["authTag"] + parsed["iv"];
+    } catch (error) {
+      return pass;
+    }
+  };
+
   return (
     <div
       className={cn("cursor-pointer w-full", isVisible ? "break-words" : "truncate")}
@@ -30,11 +40,13 @@ export default function PasswordText({ password, salt, hash }: { password: strin
         try {
           const master = (await getMasterPassword(salt, hash)) as string;
           toggleVisibility(master);
-        } catch (error) {}
+        } catch (error) {
+          toast.error("Wrong master password");
+        }
       }}
       data-testid="togglePassword"
     >
-      {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : encryptedPassword}
+      {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : getPassword(encryptedPassword)}
     </div>
   );
 }

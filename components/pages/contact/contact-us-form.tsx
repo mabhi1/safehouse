@@ -9,6 +9,7 @@ import { Loader2, SendHorizonal } from "lucide-react";
 import { contactUsMessageEmail } from "@/actions/emails";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 type ContactUsFormValues = {
   firstName: string;
@@ -18,7 +19,16 @@ type ContactUsFormValues = {
 };
 
 export default function ContactUsForm() {
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
+
+  useEffect(() => {
+    if (user?.firstName && user.lastName && user.primaryEmailAddress) {
+      handleInputChange({ target: { id: "firstName", value: user.firstName } });
+      handleInputChange({ target: { id: "lastName", value: user.lastName } });
+      handleInputChange({ target: { id: "email", value: user.primaryEmailAddress.emailAddress } });
+      document.getElementById("message")?.focus();
+    }
+  }, [user]);
 
   const initialFormValues: ContactUsFormValues = {
     firstName: user?.firstName || "",
@@ -73,7 +83,7 @@ export default function ContactUsForm() {
             name="firstName"
             id="firstName"
             type="text"
-            autoFocus={true}
+            autoFocus={!isSignedIn}
             required
             placeholder="Enter First Name"
             value={formValues.firstName}
@@ -117,6 +127,7 @@ export default function ContactUsForm() {
           name="message"
           id="message"
           placeholder="Enter message"
+          autoFocus={isSignedIn}
           rows={7}
           cols={45}
           required
