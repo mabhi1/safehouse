@@ -14,6 +14,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { deriveKey, encryptAES } from "@/lib/crypto";
@@ -28,7 +29,7 @@ type CreatePasswordFormValues = {
 
 export const CreatePasswordForm = ({ uid, salt, hash }: { uid: string; salt: string; hash: string }) => {
   const [openDialog, setOpenDialog] = useState(false);
-  const { getMasterPassword } = useMasterPassword();
+  const { masterPassword } = useMasterPassword();
   const [showPassword, setShowPassword] = useState(false);
   const initialFormValues: CreatePasswordFormValues = {
     site: "",
@@ -39,7 +40,6 @@ export const CreatePasswordForm = ({ uid, salt, hash }: { uid: string; salt: str
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreatePasswordFormValues>({
     initialValues: initialFormValues,
     onSubmit: async (values) => {
-      const masterPassword = (await getMasterPassword(salt, hash)) as string;
       const key = await deriveKey(masterPassword, salt);
       return addPassword(
         values.site.trim(),
@@ -52,25 +52,18 @@ export const CreatePasswordForm = ({ uid, salt, hash }: { uid: string; salt: str
     onSuccess: () => setOpenDialog(false),
   });
 
-  const handleButtonClick = async () => {
-    try {
-      await getMasterPassword(salt, hash);
-      setOpenDialog(true);
-    } catch (error) {
-      toast.error("Error getting master password");
-    }
-  };
-
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <div>
-        <Button className="hidden md:block" data-testid="addPasswordButton" onClick={handleButtonClick}>
-          Add Password
-        </Button>
-        <Button variant="outline" size="icon" className="md:hidden" onClick={handleButtonClick}>
-          <Plus className="w-[1.2rem] h-[1.2rem]" />
-        </Button>
-      </div>
+      <DialogTrigger asChild>
+        <div>
+          <Button className="hidden md:block" data-testid="addPasswordButton">
+            Add Password
+          </Button>
+          <Button variant="outline" size="icon" className="md:hidden">
+            <Plus className="w-[1.2rem] h-[1.2rem]" />
+          </Button>
+        </div>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Password</DialogTitle>

@@ -15,6 +15,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { deriveKey, encryptAES } from "@/lib/crypto";
@@ -39,7 +40,7 @@ export const EditPasswordForm = ({
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { getMasterPassword } = useMasterPassword();
+  const { masterPassword } = useMasterPassword();
 
   const initialFormValues: CreatePasswordFormValues = {
     site: password.site,
@@ -48,7 +49,7 @@ export const EditPasswordForm = ({
   };
 
   const onSubmit = async (values: CreatePasswordFormValues) => {
-    const key = await deriveKey((await getMasterPassword(salt, hash)) as string, salt);
+    const key = await deriveKey(masterPassword, salt);
     const encryptedPassword = JSON.stringify(encryptAES(key, Buffer.from(values.password.trim())));
     return editPassword(password.id, values.site.trim(), values.username.trim(), encryptedPassword, uid);
   };
@@ -65,16 +66,11 @@ export const EditPasswordForm = ({
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <Button
-        variant="ghost"
-        data-testid="editPasswordButton"
-        onClick={async () => {
-          await getMasterPassword(salt, hash);
-          setOpenDialog(true);
-        }}
-      >
-        Edit
-      </Button>
+      <DialogTrigger asChild>
+        <Button variant="ghost" data-testid="editPasswordButton">
+          Edit
+        </Button>
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Password</DialogTitle>

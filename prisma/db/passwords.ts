@@ -14,6 +14,23 @@ export async function getPasswordsByUser(uid: string, { key, type }: { key: stri
   }
 }
 
+export async function updateManyPasswordsByUser(
+  passwordsData: { id: string; site: string; username: string; password: string; uid: string }[]
+) {
+  try {
+    const updatedData = passwordsData.map(async (pass) => {
+      const data = await prisma.passwords.updateMany({
+        where: { id: pass.id },
+        data: { site: pass.site, username: pass.username, password: pass.password, uid: pass.uid },
+      });
+      return data;
+    });
+    return { data: updatedData, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function createPasswordByUser(site: string, username: string, password: string, uid: string) {
   try {
     const data = await prisma.passwords.create({

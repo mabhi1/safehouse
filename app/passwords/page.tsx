@@ -6,6 +6,8 @@ import { auth } from "@clerk/nextjs/server";
 import SortPasswords from "@/components/pages/passwords/sort-passwords/sort-passwords";
 import { getSortKey, isMatching, PasswordSortValues } from "@/lib/utils";
 import { getEncryptionByUser } from "@/prisma/db/encryption";
+import { EncryptionError } from "@/components/pages/master-password/encryption-error";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +16,8 @@ export default async function Passwords({ searchParams }: { searchParams: { [key
   if (!userId) return redirectToSignIn();
 
   const { data: encryptionData, error: encryptionError } = await getEncryptionByUser(userId);
-  if (!encryptionData || encryptionError) throw new Error("");
+  if (encryptionError) return <EncryptionError error={encryptionError} />;
+  if (!encryptionData) return redirect("/master-password");
 
   const searchText = searchParams["search"];
   const { data, error } = await getPasswordsByUser(

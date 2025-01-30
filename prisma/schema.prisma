@@ -8,11 +8,13 @@ datasource db {
 }
 
 model encryption {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  salt     String
-  hash     String
-  recovery String
-  uid      String @unique
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  salt      String
+  hash      String
+  recovery  String
+  uid       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model cards {

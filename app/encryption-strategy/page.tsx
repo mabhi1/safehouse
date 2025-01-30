@@ -3,6 +3,7 @@ import encryptionFlow from "@/lib/encryption-strategy.json";
 import encryptionStrategyImage from "@/public/encryption-strategy.png";
 import encryptionImage from "@/public/encryption.png";
 import Image from "next/image";
+import Link from "next/link";
 
 function EncryptionStrategyPage() {
   return (
@@ -10,9 +11,9 @@ function EncryptionStrategyPage() {
       <div className="flex justify-between items-start flex-col-reverse md:flex-row gap-5">
         <div className="space-y-4">
           <div className="text-base uppercase">Encryption Strategy</div>
-          <div>
-            All your data for passwords and cards are encrypted using following encryption strategy and then stored to
-            the server.
+          <div className="text-primary font-medium">
+            Only the sensitive data are encrypted using following encryption strategy and then stored to the server.
+            Sensitive data currently includes passwords, cards, and identity documents
           </div>
           <ul className="list-disc list-inside space-y-1">
             {encryptionFlow.importantNotes.map((note) => (
@@ -101,6 +102,12 @@ function EncryptionStrategyPage() {
         alt="Encryption Strategy"
         className="w-full max-w-5xl mx-auto"
       />
+      <div className="flex gap-1">
+        <Link href="/contact" className="text-primary hover:underline underline-offset-2">
+          Contact Us
+        </Link>
+        if you have any questions or concerns.
+      </div>
     </div>
   );
 }

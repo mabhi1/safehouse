@@ -17,7 +17,8 @@ import { toast } from "sonner";
 import { Button } from "../ui/button";
 
 const MasterPasswordContext = createContext<{
-  getMasterPassword: (salt: string, hash: string) => Promise<unknown>;
+  masterPassword: string;
+  assignMasterPassword: (salt: string, hash: string) => Promise<unknown>;
   saveMasterPassword: (password: string) => void;
   clearMasterPassword: () => void;
 } | null>(null);
@@ -41,11 +42,12 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
   };
 
   // Function to get the master password
-  const getMasterPassword = useCallback(
+  const assignMasterPassword = useCallback(
     (salt: string, hash: string) => {
       return new Promise((resolve, reject) => {
         if (masterPassword) {
           resolve(masterPassword);
+          setMasterPassword(masterPassword);
         } else {
           resolveCallbackRef.current = resolve;
           rejectCallbackRef.current = reject;
@@ -97,8 +99,16 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
   };
 
   return (
-    <MasterPasswordContext.Provider value={{ getMasterPassword, saveMasterPassword, clearMasterPassword }}>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+    <MasterPasswordContext.Provider
+      value={{ masterPassword, assignMasterPassword, saveMasterPassword, clearMasterPassword }}
+    >
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(state) => {
+          if (state === false && masterPassword.length === 0) setDialogOpen(true);
+          else setDialogOpen(state);
+        }}
+      >
         <DialogContent>
           <form
             onSubmit={(e) => {
