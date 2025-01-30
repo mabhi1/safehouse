@@ -11,16 +11,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import {
-  CalendarCog,
-  CreditCard,
-  FolderOpen,
-  GlobeLock,
-  IdCard,
-  KeySquare,
-  NotebookPen,
-  ShieldCheck,
-} from "lucide-react";
+import { CalendarCog, CreditCard, FolderOpen, GlobeLock, KeySquare, NotebookPen, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import { SignedIn } from "@clerk/nextjs";
 
@@ -54,19 +45,13 @@ export const storageLinks: {
     href: "/cards",
     description: "Add Debit or Credit Cards. All the data is encrypted and stored.",
     icon: (className: string) => <CreditCard className={className} />,
+    isNew: true,
   },
   {
     title: "Passwords",
     href: "/passwords",
     description: "Store encrypted login credentials for any website.",
     icon: (className: string) => <ShieldCheck className={className} />,
-  },
-  {
-    title: "Identity",
-    href: "/identity",
-    description: "Store passports, driver's licenses, health insurance cards, and other identity documents.",
-    icon: (className: string) => <IdCard className={className} />,
-    isNew: true,
   },
 ];
 
@@ -106,14 +91,14 @@ export function Navigation({ className }: { className?: string }) {
                     href="/about"
                   >
                     <Image
-                      src="/logo.png"
+                      src="/icon.png"
                       alt="Safe House"
-                      width={50}
-                      height={50}
+                      width={1182}
+                      height={1280}
                       priority
-                      className="hidden lg:block"
+                      className="w-[3.6rem] h-auto"
                     />
-                    <div className="mb-2 mt-4 text-lg font-medium">Safehouse</div>
+                    <div className="mb-2 mt-4 text-base font-medium">About safehouse</div>
                     <p className="text-sm leading-tight text-muted-foreground">
                       Manage your data with end-to-end encryption. Simple, safe, and accessible across devices.
                     </p>
