@@ -9,21 +9,20 @@ export async function getEncryptionByUser(uid: string) {
   }
 }
 
-export async function createEncryptionByUser(
-  uid: string,
-  salt: string,
-  hash: string,
-  recovery: string,
-  isReset: boolean
-) {
+export async function createEncryptionByUser(uid: string, salt: string, hash: string, recovery: string) {
   try {
-    if (isReset) {
-      const data = await prisma.encryption.update({ where: { uid }, data: { salt, hash, recovery } });
-      return { data: data, error: null };
-    }
     const data = await prisma.encryption.create({ data: { uid, salt, hash, recovery } });
     return { data: data, error: null };
   } catch (error: any) {
-    return { data: null, error: error.message };
+    return { data: null, error: error };
+  }
+}
+
+export async function updateEncryptionByUser(uid: string, salt: string, hash: string, recovery: string) {
+  try {
+    const data = await prisma.encryption.update({ where: { uid }, data: { salt, hash, recovery } });
+    return { data: data, error: null };
+  } catch (error: any) {
+    return { data: null, error: error };
   }
 }

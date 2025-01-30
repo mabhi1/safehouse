@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function ContactPage() {
   return (
-    <div className="flex items-start justify-between gap-10">
+    <div className="flex flex-col-reverse md:flex-row items-center md:items-start justify-between gap-10">
       <div className="space-y-10 flex-1">
         <div>
           <div className="text-base uppercase">Get in touch</div>
@@ -17,7 +17,7 @@ export default function ContactPage() {
           <ContactUsForm />
         </RecaptchaProvider>
       </div>
-      <Image src="/contact-us.svg" width={300} height={300} alt="Contact Us" priority className="hidden md:block" />
+      <Image src="/contact-us.svg" width={300} height={300} alt="Contact Us" priority className="w-60 lg:w-96" />
     </div>
   );
 }

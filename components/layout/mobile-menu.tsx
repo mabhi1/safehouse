@@ -43,7 +43,7 @@ export default function MobileMenu() {
                     {storage.icon("w-4 h-4")}
                     <div className="text-sm">
                       {storage.title}
-                      {storage.new && (
+                      {storage.isNew && (
                         <span className="ml-2 bg-primary text-primary-foreground text-xs rounded-full p-1 px-2 animate-pulse">
                           New
                         </span>

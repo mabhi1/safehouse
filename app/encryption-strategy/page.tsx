@@ -8,7 +8,7 @@ import Link from "next/link";
 function EncryptionStrategyPage() {
   return (
     <div className="space-y-5">
-      <div className="flex justify-between items-start flex-col-reverse md:flex-row gap-5">
+      <div className="flex justify-between items-center md:items-start flex-col-reverse md:flex-row gap-5">
         <div className="space-y-4">
           <div className="text-base uppercase">Encryption Strategy</div>
           <div className="text-primary font-medium">
@@ -24,7 +24,14 @@ function EncryptionStrategyPage() {
             You won&apos;t be able to get your data back if you loose both the master password and the recovery key.
           </div>
         </div>
-        <Image src={encryptionImage} priority width={200} height={200} alt="Encryption" className="rounded-full" />
+        <Image
+          src={encryptionImage}
+          priority
+          width={200}
+          height={200}
+          alt="Encryption"
+          className="rounded-full w-60 lg:w-96"
+        />
       </div>
       <Accordion type="single" collapsible className="w-full">
         <AccordionItem value="encryption">
@@ -104,7 +111,7 @@ function EncryptionStrategyPage() {
       />
       <div className="flex gap-1">
         <Link href="/contact" className="text-primary hover:underline underline-offset-2">
-          Contact Us
+          Contact us
         </Link>
         if you have any questions or concerns.
       </div>

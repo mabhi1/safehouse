@@ -19,7 +19,6 @@ import {
 import { useState } from "react";
 import { deriveKey, encryptAES } from "@/lib/crypto";
 import { useMasterPassword } from "@/components/providers/master-password-provider";
-import { toast } from "sonner";
 
 type CreatePasswordFormValues = {
   site: string;

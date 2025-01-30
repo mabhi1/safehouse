@@ -6,23 +6,24 @@ import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { toast } from "sonner";
 import { decryptAES, deriveKey, encryptAES, generateHash, generateRecoveryKey, generateSalt } from "@/lib/crypto";
-import { createEncryption } from "@/actions/encryption";
-import { CheckCheck, Copy, X } from "lucide-react";
+import { createEncryption, updateEncryption } from "@/actions/encryption";
+import { CheckCheck, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { cn } from "@/lib/utils";
 import { CardType, EncryptionDataType, PasswordType } from "@/lib/db-types";
 import Spinner from "@/components/layout/spinner";
 import { useMasterPassword } from "@/components/providers/master-password-provider";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function MasterPasswordComp({ data, userId }: { data: EncryptionDataType | null; userId: string }) {
   const [masterPassword, setMasterPassword] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [oldMasterPassword, setOldMasterPassword] = useState("");
   const [reset, setReset] = useState(false);
   const [verifyPassword, setVerifyPassword] = useState("");
+  const [verificationType, setVerificationType] = useState("old-master-password");
   const [resetStep, setResetStep] = useState("");
   const [isPending, startTransition] = useTransition();
   const { saveMasterPassword } = useMasterPassword();
@@ -35,8 +36,6 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
     match: false,
   });
   const [recoveryKey, setRecoveryKey] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
   const router = useRouter();
 
   const handleChangePassword = (password: string, type: "master" | "verify") => {
@@ -72,11 +71,19 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
   const handleResetPassword = async (e: FormEvent) => {
     e.preventDefault();
     if (!data) return;
+    if (verificationType === "old-master-password" && oldMasterPassword.localeCompare(masterPassword) === 0) {
+      toast.info("Passwords should be different");
+      return;
+    }
     setResetStep("Generating hash for the new key");
     startTransition(async () => {
       try {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         const recoveryKeyBuffer = Buffer.from(recoveryKey, "hex");
-        const DEK = decryptAES(recoveryKeyBuffer, JSON.parse(data.recovery));
+        const DEK =
+          verificationType === "old-master-password"
+            ? await deriveKey(oldMasterPassword, data.salt)
+            : decryptAES(recoveryKeyBuffer, JSON.parse(data.recovery));
         const salt = generateSalt();
         const derivedDEK = await deriveKey(masterPassword, salt);
 
@@ -119,7 +126,7 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
         const newRecoveryKey = generateRecoveryKey();
         const newRecoveryKeyBuffer = Buffer.from(newRecoveryKey, "hex");
         const encryptedDEK = encryptAES(newRecoveryKeyBuffer, derivedDEK);
-        await createEncryption(userId, salt, dekHash, JSON.stringify(encryptedDEK), true);
+        await updateEncryption(userId, salt, dekHash, JSON.stringify(encryptedDEK));
 
         // Saving encrypted passwords
         setResetStep("Saving encrypted passwords");
@@ -149,14 +156,15 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
 
         setResetStep("Master password reset complete");
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        setRecoveryKey(newRecoveryKey);
-        setIsDialogOpen(true);
-        setSubmitted(true);
         saveMasterPassword(masterPassword);
+        sessionStorage.setItem("safehouse-recovery-key", newRecoveryKey);
+        router.push(`/master-password/success`);
       } catch (error: any) {
         console.log(error);
         if (error.message.localeCompare("Unsupported state or unable to authenticate data") === 0)
-          toast.error("Invalid recovery key");
+          toast.error(
+            verificationType === "old-master-password" ? "Incorrect old master password" : "Incorrect recovery key"
+          );
         else toast.error(error.message);
       }
     });
@@ -183,13 +191,12 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
     const encryptedDEK = encryptAES(recoveryKeyBuffer, derivedDEK);
 
     startTransition(async () => {
-      const res = await createEncryption(userId, salt, dekHash, JSON.stringify(encryptedDEK), false);
+      const res = await createEncryption(userId, salt, dekHash, JSON.stringify(encryptedDEK));
       if (res.error || !res.data) toast.error(`Error creating your hash. ${res.error.message}.`);
       else {
-        setRecoveryKey(recoveryKey);
-        setIsDialogOpen(true);
-        setSubmitted(true);
         saveMasterPassword(masterPassword);
+        sessionStorage.setItem("safehouse-recovery-key", recoveryKey);
+        router.push(`/master-password/success`);
       }
     });
   };
@@ -198,7 +205,7 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
     <div className="space-y-5">
       {data ? (
         <>
-          <div className="flex gap-5 items-start">
+          <div className="flex flex-col-reverse md:flex-row gap-5 items-center md:items-start">
             <div className="space-y-5">
               <div className="text-base uppercase">Reset Master Password</div>
               <div>
@@ -213,12 +220,7 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
                 to know more about our encryption strategy.
               </div>
               <Separator />
-              {submitted ? (
-                <div className="space-y-5">
-                  <div className="text-green-600">Master password reset successful. Reload page to continue.</div>
-                  <Button onClick={() => router.refresh()}>Reload</Button>
-                </div>
-              ) : isPending ? (
+              {isPending ? (
                 <div className="space-y-2 flex flex-col justify-center items-center">
                   <Spinner />
                   <div>Don&apos;t close the tab. Exiting will result in permanent data loss</div>
@@ -240,19 +242,9 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
 
                   <form className="space-y-5 w-full max-w-xl" onSubmit={handleResetPassword}>
                     <div className="space-y-1">
-                      <Label htmlFor="recoveryKey">Recovery Key</Label>
-                      <Input
-                        autoFocus
-                        id="recoveryKey"
-                        type="text"
-                        placeholder="Enter recovery key"
-                        value={recoveryKey}
-                        onChange={(e) => setRecoveryKey(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-1">
                       <Label htmlFor="masterPassword">New Master Password</Label>
                       <Input
+                        autoFocus
                         id="masterPassword"
                         type="password"
                         placeholder="Enter master password"
@@ -276,7 +268,41 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
                         }}
                       />
                     </div>
-                    <div className="flex gap-5">
+                    <div className="space-y-1">
+                      <Label htmlFor="verification-type">Verification Type</Label>
+                      <Select
+                        defaultValue="old-master-password"
+                        value={verificationType}
+                        onValueChange={setVerificationType}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Verification type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="old-master-password">Old Master Password</SelectItem>
+                          <SelectItem value="recovery-key">Recovery Key</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor={verificationType}>
+                        {verificationType === "old-master-password" ? "Old Master Password" : "Recovery Key"}
+                      </Label>
+                      <Input
+                        id={verificationType}
+                        type={verificationType === "old-master-password" ? "password" : "text"}
+                        placeholder={`Enter ${
+                          verificationType === "old-master-password" ? "Old Master Password" : "Recovery Key"
+                        }`}
+                        value={verificationType === "old-master-password" ? oldMasterPassword : recoveryKey}
+                        onChange={(e) =>
+                          verificationType === "old-master-password"
+                            ? setOldMasterPassword(e.target.value)
+                            : setRecoveryKey(e.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="flex gap-4 justify-end">
                       <Button type="button" variant="secondary" onClick={() => setReset(false)}>
                         Cancel
                       </Button>
@@ -286,7 +312,9 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
                           !masterPassword.length ||
                           Object.values(isValid).filter((x) => x === false).length > 0 ||
                           isPending ||
-                          recoveryKey.trim().length <= 0
+                          verificationType === "old-master-password"
+                            ? oldMasterPassword.trim().length <= 0
+                            : recoveryKey.trim().length <= 0
                         }
                       >
                         Submit
@@ -298,18 +326,12 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
                 <Button onClick={() => setReset(true)}>Reset master password</Button>
               )}
             </div>
-            <Image
-              src="/reset-password.png"
-              alt="Reset Password"
-              width={2084}
-              height={1554}
-              className="w-96 hidden md:block"
-            />
+            <Image src="/reset-password.png" alt="Reset Password" width={2084} height={1554} className="w-60 lg:w-96" />
           </div>
         </>
       ) : (
         <>
-          <div className="flex gap-5 items-start">
+          <div className="flex flex-col-reverse md:flex-row gap-5 items-center md:items-start">
             <div className="space-y-5">
               <div className="text-base uppercase">Master Password</div>
               <div>
@@ -322,112 +344,73 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
                 </Link>
                 to know more about our encryption strategy.
               </div>
-              {submitted ? (
-                <div className="space-y-5">
-                  <div className="text-green-600">
-                    Master password has been created successfully. Reload page to continue.
-                  </div>
-                  <Button onClick={() => router.refresh()}>Reload</Button>
+
+              <div>
+                <div>To ensure a string encryption, password must meet the following requirements:</div>
+                <ul className="p-2 space-y-1">
+                  {validityItem("Minimum 8 characters", isValid.eightChars)}
+                  {validityItem("Atleast a symbol", isValid.symbol)}
+                  {validityItem("Atleast an uppercase letter", isValid.uppercase)}
+                  {validityItem("Atleast a lowercase letter", isValid.lowercase)}
+                  {validityItem("Atleast a number", isValid.number)}
+                  {validityItem("Passwords must match", isValid.match)}
+                </ul>
+              </div>
+              <form className="space-y-5 w-full max-w-xl" onSubmit={handleEnrollment}>
+                <div className="space-y-1">
+                  <Label htmlFor="masterPassword">Master Password</Label>
+                  <Input
+                    autoFocus
+                    id="masterPassword"
+                    type="password"
+                    placeholder="Enter master password"
+                    value={masterPassword}
+                    onChange={(e) => {
+                      handleChangePassword(e.target.value, "master");
+                      setMasterPassword(e.target.value);
+                    }}
+                  />
                 </div>
-              ) : (
-                <>
-                  <div>
-                    <div>To ensure a string encryption, password must meet the following requirements:</div>
-                    <ul className="p-2 space-y-1">
-                      {validityItem("Minimum 8 characters", isValid.eightChars)}
-                      {validityItem("Atleast a symbol", isValid.symbol)}
-                      {validityItem("Atleast an uppercase letter", isValid.uppercase)}
-                      {validityItem("Atleast a lowercase letter", isValid.lowercase)}
-                      {validityItem("Atleast a number", isValid.number)}
-                      {validityItem("Passwords must match", isValid.match)}
-                    </ul>
-                  </div>
-                  <form className="space-y-5 w-full max-w-xl" onSubmit={handleEnrollment}>
-                    <div className="space-y-1">
-                      <Label htmlFor="masterPassword">Master Password</Label>
-                      <Input
-                        autoFocus
-                        id="masterPassword"
-                        type="password"
-                        placeholder="Enter master password"
-                        value={masterPassword}
-                        onChange={(e) => {
-                          handleChangePassword(e.target.value, "master");
-                          setMasterPassword(e.target.value);
-                        }}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="verifyPassword">Re-enter Master Password</Label>
-                      <Input
-                        id="verifyPassword"
-                        type="password"
-                        placeholder="Re-enter master password"
-                        value={verifyPassword}
-                        onChange={(e) => {
-                          handleChangePassword(e.target.value, "verify");
-                          setVerifyPassword(e.target.value);
-                        }}
-                      />
-                    </div>
-                    <div className="flex gap-5">
-                      <Button type="button" variant="secondary" onClick={() => router.back()}>
-                        Back
-                      </Button>
-                      <Button
-                        type="submit"
-                        disabled={
-                          !masterPassword.length ||
-                          Object.values(isValid).filter((x) => x === false).length > 0 ||
-                          isPending
-                        }
-                      >
-                        Submit
-                      </Button>
-                    </div>
-                  </form>
-                </>
-              )}
+                <div className="space-y-1">
+                  <Label htmlFor="verifyPassword">Re-enter Master Password</Label>
+                  <Input
+                    id="verifyPassword"
+                    type="password"
+                    placeholder="Re-enter master password"
+                    value={verifyPassword}
+                    onChange={(e) => {
+                      handleChangePassword(e.target.value, "verify");
+                      setVerifyPassword(e.target.value);
+                    }}
+                  />
+                </div>
+                <div className="flex gap-4 justify-end">
+                  <Button type="button" variant="secondary" onClick={() => router.back()}>
+                    Back
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={
+                      !masterPassword.length ||
+                      Object.values(isValid).filter((x) => x === false).length > 0 ||
+                      isPending
+                    }
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </form>
             </div>
             <Image
               src="/master-password.png"
               alt="Reset Password"
               width={1024}
               height={1024}
-              className="w-96 hidden md:block"
+              className="w-60 lg:w-96"
             />
           </div>
         </>
       )}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Recovery key</DialogTitle>
-            <DialogDescription>Your recovery key has been generated</DialogDescription>
-          </DialogHeader>
-          <div className="text-sm mt-5">
-            Your hash has been saved successfully and a recovery key has been generated. Please copy the recovery key
-            generated and store it in a secure place. This recovery key should not be shared with anyone will be used to
-            recover your data in case you forget your master password.
-          </div>
-          <div className="bg-muted text-muted-foreground p-2 rounded flex justify-between items-center mb-5">
-            <span className="text-sm w-80 overflow-auto no-scrollbar">{recoveryKey}</span>
-            <Copy
-              className="w-4 aspect-square cursor-pointer"
-              onClick={() => {
-                navigator.clipboard.writeText(recoveryKey);
-                toast.success("Recovery key copied");
-                setCopied(true);
-              }}
-            />
-          </div>
-          <DialogFooter>
-            <Button onClick={() => setIsDialogOpen(false)} disabled={!copied}>
-              Done
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

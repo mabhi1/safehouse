@@ -6,8 +6,8 @@ import Link from "next/link";
 function AboutPage() {
   return (
     <div className="space-y-5">
-      <div className="flex flex-col md:flex-row md:gap-10">
-        <Image src="/hero.svg" alt="Safe House" width={200} height={200} priority />
+      <div className="flex flex-col md:flex-row md:gap-10 items-center">
+        <Image src="/hero.svg" alt="Safe House" width={200} height={200} priority className="w-60 lg:w-96" />
         <div className="flex flex-col justify-center gap-5">
           <h2 className="text-2xl">{aboutPage.title}</h2>
           <div>{aboutPage.description}</div>
@@ -32,7 +32,7 @@ function AboutPage() {
           </Link>
           to know more about our encryption strategy.
           <Link href="/contact" className="text-primary hover:underline underline-offset-2">
-            Contact Us
+            Contact us
           </Link>
           if you have any questions or concerns.
         </div>
