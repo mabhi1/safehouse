@@ -24,7 +24,6 @@ export async function PUT(request: NextRequest) {
     if (multiple) {
       if (!cards.length) throw "";
       const { data, error } = await updateManyCardsByUser(cards);
-      console.log(data, error);
       if (error || !data) throw "";
       return new Response(JSON.stringify(data), { status: 200 });
     }
