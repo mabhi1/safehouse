@@ -15,6 +15,30 @@ export async function GetCardsByUser(uid: string, { key, type }: { key: string; 
   }
 }
 
+export async function updateManyCardsByUser(
+  cardsData: { id: string; bank: string; cvv: string; expiry: string; number: string; type: CardType; uid: string }[]
+) {
+  try {
+    const updatedData = cardsData.map(async (card) => {
+      const data = await prisma.cards.updateMany({
+        where: { id: card.id },
+        data: {
+          bank: card.bank,
+          cvv: card.cvv,
+          expiry: card.expiry,
+          number: card.number,
+          type: card.type,
+          uid: card.uid,
+        },
+      });
+      return data;
+    });
+    return { data: updatedData, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
 export async function createCardByUser(
   bank: string,
   cvv: string,

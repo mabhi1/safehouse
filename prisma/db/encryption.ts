@@ -9,12 +9,20 @@ export async function getEncryptionByUser(uid: string) {
   }
 }
 
-export async function createEncryptionByUser(uid: string, salt: string, hash: string, recovery: string) {
+export async function createEncryptionByUser(
+  uid: string,
+  salt: string,
+  hash: string,
+  recovery: string,
+  isReset: boolean
+) {
   try {
-    const existing = await getEncryptionByUser(uid);
-    if (existing.data) throw new Error("Encryption already exists");
+    if (isReset) {
+      const data = await prisma.encryption.update({ where: { uid }, data: { salt, hash, recovery } });
+      return { data: data, error: null };
+    }
     const data = await prisma.encryption.create({ data: { uid, salt, hash, recovery } });
-    return { data: JSON.stringify(data), error: null };
+    return { data: data, error: null };
   } catch (error: any) {
     return { data: null, error: error.message };
   }

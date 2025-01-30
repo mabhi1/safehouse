@@ -6,7 +6,6 @@ import { revalidatePath } from "next/cache";
 
 export async function addCard(bank: string, cvv: string, expiry: string, number: string, type: CardType, uid: string) {
   const res = await createCardByUser(bank, cvv, expiry, number, type, uid);
-  console.log(res.error);
   revalidatePath("/cards");
   return res;
 }

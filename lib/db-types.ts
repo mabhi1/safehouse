@@ -53,4 +53,25 @@ type CardType = {
   updatedAt: Date;
 };
 
-export type { NotesType, PasswordType, FolderType, FileType, EventType, CardType };
+type EncryptionDataType = {
+  id: string;
+  salt: string;
+  hash: string;
+  recovery: string;
+  uid: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type EncryptedTextType = { iv: string; authTag: string; ciphertext: string };
+
+export type {
+  NotesType,
+  PasswordType,
+  FolderType,
+  FileType,
+  EventType,
+  CardType,
+  EncryptionDataType,
+  EncryptedTextType,
+};

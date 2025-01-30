@@ -1,11 +1,13 @@
 import CardsCard from "@/components/pages/cards/cards-card";
 import CreateCardForm from "@/components/pages/cards/create-card-form";
 import SortCards from "@/components/pages/cards/sort-cards";
+import { EncryptionError } from "@/components/pages/master-password/encryption-error";
 import { Badge } from "@/components/ui/badge";
 import { CardsSortValues, getSortKey, isMatching } from "@/lib/utils";
 import { GetCardsByUser } from "@/prisma/db/cards";
 import { getEncryptionByUser } from "@/prisma/db/encryption";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +18,8 @@ export default async function Cards({ searchParams }: { searchParams: { [key: st
   const searchText = searchParams["search"];
 
   const { data: encryptionData, error: encryptionError } = await getEncryptionByUser(userId);
-  if (!encryptionData || encryptionError) throw new Error("");
+  if (encryptionError) return <EncryptionError error={encryptionError} />;
+  if (!encryptionData) return redirect("/master-password");
 
   const { data, error } = await GetCardsByUser(userId, getSortKey("cards", searchParams["sort"] as CardsSortValues));
   if (!data || error) throw new Error("User not found");

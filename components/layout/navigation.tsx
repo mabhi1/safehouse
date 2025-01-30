@@ -11,7 +11,16 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { CalendarCog, CreditCard, FolderOpen, GlobeLock, IdCard, NotebookPen, ShieldCheck } from "lucide-react";
+import {
+  CalendarCog,
+  CreditCard,
+  FolderOpen,
+  GlobeLock,
+  IdCard,
+  KeySquare,
+  NotebookPen,
+  ShieldCheck,
+} from "lucide-react";
 import Image from "next/image";
 import { SignedIn } from "@clerk/nextjs";
 
@@ -20,7 +29,7 @@ export const storageLinks: {
   href: string;
   description: string;
   icon: (className: string) => React.JSX.Element;
-  new?: boolean;
+  isNew?: boolean;
 }[] = [
   {
     title: "Documents",
@@ -57,7 +66,7 @@ export const storageLinks: {
     href: "/identity",
     description: "Store passports, driver's licenses, health insurance cards, and other identity documents.",
     icon: (className: string) => <IdCard className={className} />,
-    new: true,
+    isNew: true,
   },
 ];
 
@@ -66,13 +75,19 @@ export const platformLinks: {
   href: string;
   description: string;
   icon: (className: string) => React.JSX.Element;
-  new?: boolean;
+  isNew?: boolean;
 }[] = [
   {
     title: "Encryption Strategy",
     description: "End-to-end encryption used to encrypt your sensitive data.",
     href: "/encryption-strategy",
     icon: (className: string) => <GlobeLock className={className} />,
+  },
+  {
+    title: "Master Password",
+    description: "Manage your master password required to encrypt/decrypt your sensitive data.",
+    href: "/master-password",
+    icon: (className: string) => <KeySquare className={className} />,
   },
 ];
 
@@ -119,7 +134,7 @@ export function Navigation({ className }: { className?: string }) {
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                 {storageLinks.map((component) => (
-                  <ListItem key={component.title} title={component.title} href={component.href} new={component.new}>
+                  <ListItem key={component.title} title={component.title} href={component.href} isNew={component.isNew}>
                     {component.description}
                   </ListItem>
                 ))}
@@ -140,11 +155,11 @@ export function Navigation({ className }: { className?: string }) {
 }
 
 interface ListItemProps extends React.ComponentPropsWithoutRef<"a"> {
-  new?: boolean;
+  isNew?: boolean;
 }
 
 const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
-  ({ className, title, children, href, ...props }, ref) => {
+  ({ className, title, children, href, isNew = false, ...props }, ref) => {
     return (
       <li>
         <NavigationMenuLink asChild>
@@ -159,7 +174,7 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
           >
             <div className="text-sm font-medium leading-none flex gap-2 items-end">
               {title}
-              {props.new && <span className="text-primary animate-bounce">New</span>}
+              {isNew && <span className="text-primary animate-bounce">New</span>}
             </div>
             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
           </Link>
