@@ -1,6 +1,6 @@
 {
   "title": "About SafeHouse",
-  "description": "SafeHouse is your ultimate secure storage solution, protecting your most sensitive data with cutting-edge encryption. Store passwords, notes, documents, events, credit/debit cards, and, secure identity documents like passports and driver's licenses. Your information is always encrypted, private, and accessible only to you.",
+  "description": "SafeHouse is your ultimate secure storage solution, protecting your most sensitive data with cutting-edge encryption. Store passwords, notes, documents, events, and credit/debit cards. Your information is always encrypted, private, and accessible only to you.",
   "features": [
     {
       "title": "🔐 Advanced Encryption",
@@ -21,10 +21,6 @@
     {
       "title": "🖥️📱 Seamless Access Across Devices",
       "description": "Securely access your data on both web and mobile without compromising security."
-    },
-    {
-      "title": "💳 Secure Identity Storage",
-      "description": "Store your financial details safely with encryption, keeping your payment information secure from unauthorized access. Store passports, driver's licenses, health insurance cards, and other identity documents securely, ensuring they are safe, encrypted, and accessible whenever needed."
     }
   ],
   "privacy_commitment": {

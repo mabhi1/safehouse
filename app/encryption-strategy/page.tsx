@@ -13,7 +13,7 @@ function EncryptionStrategyPage() {
           <div className="text-base uppercase">Encryption Strategy</div>
           <div className="text-primary font-medium">
             Only the sensitive data are encrypted using following encryption strategy and then stored to the server.
-            Sensitive data currently includes passwords, cards, and identity documents
+            Sensitive data currently includes passwords, and cards
           </div>
           <ul className="list-disc list-inside space-y-1">
             {encryptionFlow.importantNotes.map((note) => (
