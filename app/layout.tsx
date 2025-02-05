@@ -3,9 +3,7 @@ import { Heebo } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { Header } from "@/components/layout/header";
 import { Toaster } from "sonner";
-import Footer from "@/components/layout/footer";
 import { cn } from "@/lib/utils";
 import { SearchProvider } from "@/components/providers/search-provider";
 import { MasterPasswordProvider } from "@/components/providers/master-password-provider";
@@ -29,9 +27,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <MasterPasswordProvider>
               <SearchProvider>
-                <Header />
-                <main className="w-full max-w-7xl mx-auto pt-1 px-5 pb-5 text-sm flex-1">{children}</main>
-                <Footer />
+                {children}
                 <Toaster closeButton richColors position="top-right" />
               </SearchProvider>
             </MasterPasswordProvider>
