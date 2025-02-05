@@ -65,16 +65,31 @@ export default function MobileMenu() {
               </Link>
             </SheetClose>
           </li>
-          {platformLinks.map((link) => (
-            <li key={link.title}>
-              <SheetClose asChild>
-                <Link href={link.href} className="flex gap-3 items-center ml-2">
-                  {link.icon("w-4 h-4")}
-                  <div className="text-sm">{link.title}</div>
-                </Link>
-              </SheetClose>
-            </li>
-          ))}
+          {platformLinks.map((link) => {
+            if (link.auth)
+              return (
+                <SignedIn key={link.title}>
+                  <li>
+                    <SheetClose asChild>
+                      <Link href={link.href} className="flex gap-3 items-center ml-2">
+                        {link.icon("w-4 h-4")}
+                        <div className="text-sm">{link.title}</div>
+                      </Link>
+                    </SheetClose>
+                  </li>
+                </SignedIn>
+              );
+            return (
+              <li key={link.title}>
+                <SheetClose asChild>
+                  <Link href={link.href} className="flex gap-3 items-center ml-2">
+                    {link.icon("w-4 h-4")}
+                    <div className="text-sm">{link.title}</div>
+                  </Link>
+                </SheetClose>
+              </li>
+            );
+          })}
         </ul>
       </SheetContent>
     </Sheet>

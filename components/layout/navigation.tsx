@@ -60,6 +60,7 @@ export const platformLinks: {
   href: string;
   description: string;
   icon: (className: string) => React.JSX.Element;
+  auth?: boolean;
   isNew?: boolean;
 }[] = [
   {
@@ -72,6 +73,7 @@ export const platformLinks: {
     title: "Master Password",
     description: "Manage your master password required to encrypt/decrypt your sensitive data.",
     href: "/master-password",
+    auth: true,
     icon: (className: string) => <KeySquare className={className} />,
   },
 ];
@@ -105,11 +107,21 @@ export function Navigation({ className }: { className?: string }) {
                   </a>
                 </NavigationMenuLink>
               </li>
-              {platformLinks.map((link) => (
-                <ListItem href={link.href} title={link.title} key={link.title}>
-                  {link.description}
-                </ListItem>
-              ))}
+              {platformLinks.map((link) => {
+                if (link.auth)
+                  return (
+                    <SignedIn key={link.title}>
+                      <ListItem href={link.href} title={link.title}>
+                        {link.description}
+                      </ListItem>
+                    </SignedIn>
+                  );
+                return (
+                  <ListItem href={link.href} title={link.title} key={link.title}>
+                    {link.description}
+                  </ListItem>
+                );
+              })}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

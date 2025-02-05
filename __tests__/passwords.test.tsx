@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import "@/__mocks__";
 import { passwordWithoutError } from "@/__data__/passwords-data";
-import Passwords from "@/app/passwords/page";
+import Passwords from "@/app/(web)/passwords/page";
 import { render, screen } from "@testing-library/react";
 import { mockGetPasswordsByUser } from "@/__mocks__/passwords-mock";
 import { mockAuth } from "@/__mocks__/clerk-mock";
