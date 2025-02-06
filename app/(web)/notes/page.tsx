@@ -13,7 +13,7 @@ export default async function Notes({ searchParams }: { searchParams: { [key: st
   if (!userId) return redirectToSignIn();
 
   const searchText = searchParams["search"];
-  const { data, error } = await getNotesByUser(userId, getSortKey("notes", searchParams["sort"] as NotesSortValues));
+  const { data, error } = await getNotesByUser(userId!, getSortKey("notes", searchParams["sort"] as NotesSortValues));
   if (!data || error) throw new Error("User not found");
 
   function getFilteredList() {
@@ -32,12 +32,12 @@ export default async function Notes({ searchParams }: { searchParams: { [key: st
           </Badge>
         </div>
         <SortNotes isSearching={!!searchText?.trim().length} />
-        <CreateNoteForm uid={userId} />
+        <CreateNoteForm uid={userId!} />
       </div>
       <ul className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {data.length <= 0 && <div className="text-lg">No Saved Notes</div>}
         {getFilteredList()!.map((note) => (
-          <NoteCard key={note.id} note={note} uid={userId} searchTerm={searchText} />
+          <NoteCard key={note.id} note={note} uid={userId!} searchTerm={searchText} />
         ))}
       </ul>
     </div>

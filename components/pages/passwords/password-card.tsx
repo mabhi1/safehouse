@@ -2,19 +2,17 @@ import MarkedText from "@/components/ui/marked-text";
 import { PasswordType } from "@/lib/db-types";
 import { deletePassword } from "@/actions/passwords";
 import { DeleteButton } from "@/components/ui/delete-button";
-import PasswordText from "../password-text/password-text";
-import { EditPasswordForm } from "../edit-password-form/edit-password-form";
+import PasswordText from "./password-text";
+import { EditPasswordForm } from "./edit-password-form";
 import { dateFormatter } from "@/lib/utils";
 
 interface PasswordCardProps {
   password: PasswordType;
   searchTerm?: string;
   uid: string;
-  salt: string;
-  hash: string;
 }
 
-export default function PasswordCard({ password, searchTerm = "", uid, salt, hash }: PasswordCardProps) {
+export default function PasswordCard({ password, searchTerm = "", uid }: PasswordCardProps) {
   const { id, site, username, updatedAt } = password;
 
   return (
@@ -30,11 +28,11 @@ export default function PasswordCard({ password, searchTerm = "", uid, salt, has
         <div className="break-words">
           <MarkedText text={username} searchTerm={searchTerm} />
         </div>
-        <PasswordText password={password.password} salt={salt} hash={hash} />
+        <PasswordText password={password.password} />
       </div>
       <div>
         <div className="flex justify-end my-1">
-          <EditPasswordForm uid={uid} password={password} salt={salt} hash={hash} />
+          <EditPasswordForm uid={uid} password={password} />
           <DeleteButton
             id={id}
             uid={uid}

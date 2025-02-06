@@ -25,7 +25,7 @@ export default function CalendarPage({ searchParams }: { searchParams: { [key: s
       <Events
         startTime={startTime}
         endTime={endTime}
-        userId={userId}
+        userId={userId!}
         searchText={searchText}
         dateSelected={dateSelected}
         nextMonthStart={today}
@@ -33,7 +33,7 @@ export default function CalendarPage({ searchParams }: { searchParams: { [key: s
       />
       <div className="flex-col gap-5 hidden md:flex">
         <CalendarDates dateSelected={dateSelected} searchText={searchText} />
-        <UpcomingEvents nextMonthStart={today} nextMonthEnd={nextMonthEnd} userId={userId} />
+        <UpcomingEvents nextMonthStart={today} nextMonthEnd={nextMonthEnd} userId={userId!} />
       </div>
     </div>
   );

@@ -42,17 +42,6 @@ type EventType = {
   updatedAt: Date;
 };
 
-type CardType = {
-  id: string;
-  bank: string;
-  cvv: string;
-  expiry: string;
-  number: string;
-  type: "credit" | "debit";
-  uid: string;
-  updatedAt: Date;
-};
-
 type EncryptionDataType = {
   id: string;
   salt: string;
@@ -65,13 +54,4 @@ type EncryptionDataType = {
 
 type EncryptedTextType = { iv: string; authTag: string; ciphertext: string };
 
-export type {
-  NotesType,
-  PasswordType,
-  FolderType,
-  FileType,
-  EventType,
-  CardType,
-  EncryptionDataType,
-  EncryptedTextType,
-};
+export type { NotesType, PasswordType, FolderType, FileType, EventType, EncryptionDataType, EncryptedTextType };

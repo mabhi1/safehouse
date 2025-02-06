@@ -25,7 +25,7 @@ exports[`Home Page renders page without any errors 1`] = `
           Safe House
         </h2>
         <div>
-          Your personal Secure storage for passwords, banks, notes and more. All the data for your cards and passwords are stored in an encrypted form.
+          Your personal Secure storage for passwords, banks, notes and more. All your sensitive data are stored in an encrypted form.
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { CalendarCog, CreditCard, FolderOpen, GlobeLock, KeySquare, NotebookPen, ShieldCheck } from "lucide-react";
+import { CalendarCog, FolderOpen, GlobeLock, KeySquare, NotebookPen, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import { SignedIn } from "@clerk/nextjs";
 
@@ -39,13 +39,6 @@ export const storageLinks: {
     href: "/events",
     description: "Go through the calendar. Add or Remove daily events.",
     icon: (className: string) => <CalendarCog className={className} />,
-  },
-  {
-    title: "Cards",
-    href: "/cards",
-    description: "Add Debit or Credit Cards. All the data is encrypted and stored.",
-    icon: (className: string) => <CreditCard className={className} />,
-    isNew: true,
   },
   {
     title: "Passwords",

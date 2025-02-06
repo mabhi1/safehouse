@@ -1,11 +1,10 @@
 "use client";
 
-import { editPassword } from "@/actions/passwords";
+import { addPassword } from "@/actions/passwords";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, LockIcon, UnlockIcon } from "lucide-react";
+import { Loader2, LockIcon, Plus, UnlockIcon } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
-import { PasswordType } from "@/lib/db-types";
 import { Label } from "@/components/ui/label";
 import {
   Dialog,
@@ -17,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { deriveKey, encryptAES } from "@/lib/crypto";
 import { useMasterPassword } from "@/components/providers/master-password-provider";
 
@@ -27,53 +26,50 @@ type CreatePasswordFormValues = {
   password: string;
 };
 
-export const EditPasswordForm = ({
-  password,
-  uid,
-  salt,
-  hash,
-}: {
-  password: PasswordType;
-  uid: string;
-  salt: string;
-  hash: string;
-}) => {
+export const CreatePasswordForm = ({ uid }: { uid: string }) => {
   const [openDialog, setOpenDialog] = useState(false);
+  const { masterPassword, salt, openPasswordDialog } = useMasterPassword();
   const [showPassword, setShowPassword] = useState(false);
-  const { masterPassword } = useMasterPassword();
-
   const initialFormValues: CreatePasswordFormValues = {
-    site: password.site,
-    username: password.username,
+    site: "",
+    username: "",
     password: "",
   };
 
-  const onSubmit = async (values: CreatePasswordFormValues) => {
-    const key = await deriveKey(masterPassword, salt);
-    const encryptedPassword = JSON.stringify(encryptAES(key, Buffer.from(values.password.trim())));
-    return editPassword(password.id, values.site.trim(), values.username.trim(), encryptedPassword, uid);
-  };
+  useEffect(() => {
+    if (!masterPassword || !masterPassword.length) openPasswordDialog();
+  }, [masterPassword]);
 
   const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreatePasswordFormValues>({
     initialValues: initialFormValues,
-    onSubmit: onSubmit,
+    onSubmit: async (values) => {
+      const key = await deriveKey(masterPassword, salt);
+      return addPassword(
+        values.site.trim(),
+        values.username.trim(),
+        JSON.stringify(encryptAES(key, Buffer.from(values.password.trim()))),
+        uid
+      );
+    },
+    successRedirectUrl: "/passwords",
     onSuccess: () => setOpenDialog(false),
   });
-
-  const toggleVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="ghost" data-testid="editPasswordButton">
-          Edit
-        </Button>
+        <div>
+          <Button className="hidden md:block" data-testid="addPasswordButton">
+            Add Password
+          </Button>
+          <Button variant="outline" size="icon" className="md:hidden">
+            <Plus className="w-[1.2rem] h-[1.2rem]" />
+          </Button>
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Password</DialogTitle>
+          <DialogTitle>Add Password</DialogTitle>
           <DialogDescription>Enter password details and click save when you&apos;re done.</DialogDescription>
         </DialogHeader>
         <form id="form" className="space-y-5" onSubmit={handleSubmit}>
@@ -85,6 +81,7 @@ export const EditPasswordForm = ({
               id="site"
               data-testid="siteInput"
               type="text"
+              autoFocus={true}
               placeholder="Enter Site"
               required
               value={formValues.site}
@@ -116,22 +113,21 @@ export const EditPasswordForm = ({
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter Password"
                 value={formValues.password}
-                autoFocus
                 required
                 onChange={handleInputChange}
-                className="pr-10"
+                className="pr-8"
               />
               {showPassword ? (
                 <UnlockIcon
                   data-testid="passwordUnlockIcon"
                   className="absolute right-0 top-1/2 -translate-y-1/2 mr-1 cursor-pointer p-[0.4rem] w-8 h-8 border-l"
-                  onClick={toggleVisibility}
+                  onClick={() => setShowPassword(false)}
                 />
               ) : (
                 <LockIcon
                   data-testid="passwordLockIcon"
                   className="absolute right-0 top-1/2 -translate-y-1/2 mr-1 cursor-pointer p-[0.4rem] w-8 h-8 border-l"
-                  onClick={toggleVisibility}
+                  onClick={() => setShowPassword(true)}
                 />
               )}
             </div>

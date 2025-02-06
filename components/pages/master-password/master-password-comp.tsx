@@ -11,12 +11,12 @@ import { CheckCheck, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { CardType, EncryptionDataType, PasswordType } from "@/lib/db-types";
+import { EncryptionDataType, PasswordType } from "@/lib/db-types";
 import Spinner from "@/components/layout/spinner";
-import { useMasterPassword } from "@/components/providers/master-password-provider";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useMasterPassword } from "@/components/providers/master-password-provider";
 
 export default function MasterPasswordComp({ data, userId }: { data: EncryptionDataType | null; userId: string }) {
   const [masterPassword, setMasterPassword] = useState("");
@@ -102,23 +102,6 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
           return { ...password, password: encryptedPassword };
         });
 
-        // Fetching Cards
-        setResetStep("Fetching cards");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const cardsRes = await fetch(`/api/cards?uid=${userId}`);
-        const cardsData: CardType[] = await cardsRes.json();
-
-        // Encrypting Cards
-        setResetStep("Encrypting cards with the new password");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const newcardsData = cardsData.map((card) => {
-          const decryptedCVV = decryptAES(DEK, JSON.parse(card.cvv)).toString();
-          const encryptedCVV = JSON.stringify(encryptAES(derivedDEK, Buffer.from(decryptedCVV)));
-          const decryptedNumber = decryptAES(DEK, JSON.parse(card.number)).toString();
-          const encryptedNumber = JSON.stringify(encryptAES(derivedDEK, Buffer.from(decryptedNumber)));
-          return { ...card, cvv: encryptedCVV, number: encryptedNumber };
-        });
-
         // Generating new recovery key
         setResetStep("Generating new recovery key and storing its hash");
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -142,25 +125,12 @@ export default function MasterPasswordComp({ data, userId }: { data: EncryptionD
           }),
         });
 
-        // Saving encrypted cards
-        setResetStep("Saving encrypted cards");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        fetch("/api/cards", {
-          method: "PUT",
-          headers: myHeaders,
-          body: JSON.stringify({
-            cards: newcardsData,
-            multiple: true,
-          }),
-        });
-
         setResetStep("Master password reset complete");
         await new Promise((resolve) => setTimeout(resolve, 1000));
         saveMasterPassword(masterPassword);
         sessionStorage.setItem("safehouse-recovery-key", newRecoveryKey);
         router.push(`/master-password/success`);
       } catch (error: any) {
-        console.log(error);
         if (error.message.localeCompare("Unsupported state or unable to authenticate data") === 0)
           toast.error(
             verificationType === "old-master-password" ? "Incorrect old master password" : "Incorrect recovery key"

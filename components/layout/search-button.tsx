@@ -22,14 +22,13 @@ import {
 import { Input } from "../ui/input";
 import { ChangeEvent, useEffect, useMemo, useState, useTransition } from "react";
 import { searchNotes } from "@/actions/notes";
-import { CardType, EventType, NotesType, PasswordType } from "@/lib/db-types";
+import { EventType, NotesType, PasswordType } from "@/lib/db-types";
 import MarkedText from "../ui/marked-text";
 import { useRouter } from "next/navigation";
 import { isMatching } from "@/lib/utils";
 import { searchPasswords } from "@/actions/passwords";
 import { useAuth } from "@clerk/nextjs";
 import { searchEvents } from "@/actions/events";
-import { searchCards } from "@/actions/cards";
 import { Search } from "lucide-react";
 import Spinner from "./spinner";
 import debounce from "lodash/debounce";
@@ -40,7 +39,6 @@ const defaultStorageValue = {
   notes: [] as NotesType[],
   events: [] as EventType[],
   passwords: [] as PasswordType[],
-  cards: [] as CardType[],
 };
 
 export default function SearchButton() {
@@ -79,7 +77,7 @@ export default function SearchButton() {
 
   const handleSearch = async (text: string) => {
     if (text.trim().length < 3) {
-      setResults({ notes: [], events: [], passwords: [], cards: [] });
+      setResults({ notes: [], events: [], passwords: [] });
       return;
     }
 
@@ -104,11 +102,6 @@ export default function SearchButton() {
       if (notCached("passwords")) {
         const passwordsData = await searchPasswords(text, userId!);
         if (passwordsData.data) newResults.passwords = passwordsData.data;
-      }
-
-      if (notCached("cards")) {
-        const cardsData = await searchCards(text, userId!);
-        if (cardsData.data) newResults.cards = cardsData.data;
       }
 
       setResults(newResults);
@@ -171,7 +164,6 @@ export default function SearchButton() {
                   <SelectLabel>Storage</SelectLabel>
                   <SelectItem value="all">All</SelectItem>
                   <SelectItem value="notes">Notes</SelectItem>
-                  <SelectItem value="cards">Cards</SelectItem>
                   <SelectItem value="passwords">Passwords</SelectItem>
                   <SelectItem value="events">Events</SelectItem>
                 </SelectGroup>
@@ -265,29 +257,6 @@ export default function SearchButton() {
                       </div>
                     ) : (
                       <DialogDescription className="pl-4 pb-2">Passwords not found</DialogDescription>
-                    )}
-                  </div>
-                )}
-                <Separator />
-                {["all", "cards"].includes(storageSelect) && (
-                  <div>
-                    {results.cards.length ? (
-                      <div>
-                        <DialogDescription className="pl-4 py-2">Cards</DialogDescription>
-                        {results.cards.map((card) => (
-                          <DialogClose key={card.id} asChild>
-                            <Button
-                              variant="ghost"
-                              className="w-full font-normal justify-start h-fit"
-                              onClick={() => handleRoute(`/cards?search=${searchText}`)}
-                            >
-                              <MarkedText searchTerm={searchText} text={card.bank} />
-                            </Button>
-                          </DialogClose>
-                        ))}
-                      </div>
-                    ) : (
-                      <DialogDescription className="pl-4 pb-2">Cards not found</DialogDescription>
                     )}
                   </div>
                 )}

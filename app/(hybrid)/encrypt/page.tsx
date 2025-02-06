@@ -31,7 +31,7 @@ export default function EncryptNativePage() {
         window.ReactNativeWebView.postMessage(encryptedText);
       }
     });
-  }, [password, salt]);
+  }, [password, salt, text]);
 
   return (
     <div className="flex-1 flex justify-center items-center">

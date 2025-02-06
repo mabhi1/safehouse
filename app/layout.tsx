@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { SearchProvider } from "@/components/providers/search-provider";
-import { MasterPasswordProvider } from "@/components/providers/master-password-provider";
 
 const heebo = Heebo({ subsets: ["latin"] });
 
@@ -25,12 +24,10 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={cn(heebo.className, "min-h-screen flex flex-col")}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            <MasterPasswordProvider>
-              <SearchProvider>
-                {children}
-                <Toaster closeButton richColors position="top-right" />
-              </SearchProvider>
-            </MasterPasswordProvider>
+            <SearchProvider>
+              {children}
+              <Toaster closeButton richColors position="top-right" />
+            </SearchProvider>
           </ThemeProvider>
         </body>
       </html>

@@ -13,12 +13,13 @@ const isPublicRoute = createRouteMatcher([
   "/api/cron",
   "/api/passwords",
   "/api/notes",
+  "/api/encryption",
 ]);
 
 export default clerkMiddleware((auth, request) => {
   const url = request.url.split("/");
-  if (!isPublicRoute(request) && url[url.length - 1].length !== 0) {
-    auth().protect();
+  if (!auth().userId && !isPublicRoute(request) && url[url.length - 1].length !== 0) {
+    return auth().redirectToSignIn();
   }
 });
 
