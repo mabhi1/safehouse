@@ -13,7 +13,7 @@ declare global {
   }
 }
 
-export default function decryptNativePage() {
+export default function DecryptNativePage() {
   const searchParams = useSearchParams();
   const password = searchParams.get("password");
   const salt = searchParams.get("salt");
