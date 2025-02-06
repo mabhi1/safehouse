@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,22 +15,37 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { usePathname, useRouter } from "next/navigation";
 
 const MasterPasswordContext = createContext<{
   masterPassword: string;
-  assignMasterPassword: (salt: string, hash: string) => Promise<unknown>;
+  salt: string;
+  hash: string;
   saveMasterPassword: (password: string) => void;
+  openPasswordDialog: () => boolean;
   clearMasterPassword: () => void;
 } | null>(null);
 
-export const MasterPasswordProvider = ({ children }: { children: React.ReactNode }) => {
+interface MasterPasswordProviderProps {
+  children: React.ReactNode;
+  salt: string;
+  hash: string;
+}
+
+const protectedRoutes = ["/passwords"];
+
+export const MasterPasswordProvider = ({ children, salt, hash }: MasterPasswordProviderProps) => {
   const [masterPassword, setMasterPassword] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [salt, setSalt] = useState("");
-  const [hash, setHash] = useState("");
-  const resolveCallbackRef = useRef<((password: string) => void) | null>(null);
-  const rejectCallbackRef = useRef<((error: Error) => void) | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
   const { userId } = useAuth();
+
+  useEffect(() => {
+    if (protectedRoutes.includes(pathname) && !masterPassword) {
+      setDialogOpen(true);
+    }
+  }, [pathname, userId, masterPassword]);
 
   useEffect(() => {
     if (!userId) setMasterPassword("");
@@ -40,25 +55,6 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
   const saveMasterPassword = (password: string) => {
     setMasterPassword(password);
   };
-
-  // Function to get the master password
-  const assignMasterPassword = useCallback(
-    (salt: string, hash: string) => {
-      return new Promise((resolve, reject) => {
-        if (masterPassword) {
-          resolve(masterPassword);
-          setMasterPassword(masterPassword);
-        } else {
-          resolveCallbackRef.current = resolve;
-          rejectCallbackRef.current = reject;
-          setSalt(salt);
-          setHash(hash);
-          setDialogOpen(true);
-        }
-      });
-    },
-    [masterPassword]
-  );
 
   // Function to check if the entered password is correct
   const verifyMasterPassword = async (password: string) => {
@@ -73,11 +69,6 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
     if (await verifyMasterPassword(password)) {
       setMasterPassword(password);
       setDialogOpen(false);
-      if (resolveCallbackRef.current) {
-        resolveCallbackRef.current(password); // Resolve the promise
-        resolveCallbackRef.current = null; // Clear the ref
-      }
-      rejectCallbackRef.current = null;
     } else {
       toast.error("Incorrect master password. Please try again.");
     }
@@ -85,12 +76,8 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
 
   // Function called when the dialog is canceled
   const handleDialogCancel = () => {
+    router.back();
     setDialogOpen(false);
-    if (rejectCallbackRef.current) {
-      rejectCallbackRef.current(new Error("User canceled action")); // Reject the promise
-      rejectCallbackRef.current = null; // Clear the ref
-    }
-    resolveCallbackRef.current = null; // Clear the resolve ref
   };
 
   // Function to clear the master password
@@ -98,9 +85,17 @@ export const MasterPasswordProvider = ({ children }: { children: React.ReactNode
     setMasterPassword("");
   };
 
+  // Function to open the password dialog
+  const openPasswordDialog = () => {
+    if (!masterPassword || !masterPassword.length) {
+      setDialogOpen(true);
+      return true;
+    } else return false;
+  };
+
   return (
     <MasterPasswordContext.Provider
-      value={{ masterPassword, assignMasterPassword, saveMasterPassword, clearMasterPassword }}
+      value={{ masterPassword, salt, hash, saveMasterPassword, clearMasterPassword, openPasswordDialog }}
     >
       <Dialog
         open={dialogOpen}

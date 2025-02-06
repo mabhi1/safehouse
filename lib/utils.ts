@@ -22,12 +22,8 @@ export type PasswordSortValues =
   | "siteDesc"
   | "usernameAsc"
   | "usernameDesc";
-export type CardsSortValues = "lastUpdated" | "firstUpdated" | "bankAsc" | "bankDesc";
 
-export function getSortKey(
-  page: "notes" | "passwords" | "cards",
-  sortValue: NotesSortValues | PasswordSortValues | CardsSortValues
-) {
+export function getSortKey(page: "notes" | "passwords", sortValue: NotesSortValues | PasswordSortValues) {
   switch (page) {
     case "notes":
       switch (sortValue) {
@@ -56,19 +52,6 @@ export function getSortKey(
           return { key: "username", type: "asc" };
         case "usernameDesc":
           return { key: "username", type: "desc" };
-        default:
-          return { key: "updatedAt", type: "desc" };
-      }
-    case "cards":
-      switch (sortValue) {
-        case "lastUpdated":
-          return { key: "updatedAt", type: "desc" };
-        case "firstUpdated":
-          return { key: "updatedAt", type: "asc" };
-        case "bankAsc":
-          return { key: "bank", type: "asc" };
-        case "bankDesc":
-          return { key: "bank", type: "desc" };
         default:
           return { key: "updatedAt", type: "desc" };
       }

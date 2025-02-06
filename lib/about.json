@@ -1,10 +1,10 @@
 {
   "title": "About SafeHouse",
-  "description": "SafeHouse is your ultimate secure storage solution, protecting your most sensitive data with cutting-edge encryption. Store passwords, notes, documents, events, and credit/debit cards. Your information is always encrypted, private, and accessible only to you.",
+  "description": "SafeHouse is your ultimate secure storage solution, protecting your most sensitive data with cutting-edge encryption. Store passwords, notes, documents, and events. Your information is always encrypted, private, and accessible only to you.",
   "features": [
     {
       "title": "🔐 Advanced Encryption",
-      "description": "Your passwords and payment card details are encrypted using a zero-knowledge encryption model, meaning only you can unlock them with your master password. Even SafeHouse cannot access your encrypted data."
+      "description": "Your passwords are encrypted using a zero-knowledge encryption model, meaning only you can unlock them with your master password. Even SafeHouse cannot access your encrypted data."
     },
     {
       "title": "📁 Store Everything Securely",

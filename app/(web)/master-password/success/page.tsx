@@ -5,8 +5,8 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 async function MasterPasswordIdPage() {
-  const { userId } = auth();
-  if (!userId) return redirect("/sign-in");
+  const { userId, redirectToSignIn } = auth();
+  if (!userId) return redirectToSignIn();
   const { data, error } = await getEncryptionByUser(userId);
   if (!data || error) return <EncryptionError error={error} />;
 

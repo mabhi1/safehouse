@@ -1,13 +1,10 @@
-import { CreatePasswordForm } from "@/components/pages/passwords/create-password-form/create-password-form";
-import PasswordCard from "@/components/pages/passwords/password-card/password-card";
+import { CreatePasswordForm } from "@/components/pages/passwords/create-password-form";
+import PasswordCard from "@/components/pages/passwords/password-card";
 import { Badge } from "@/components/ui/badge";
 import { getPasswordsByUser } from "@/prisma/db/passwords";
 import { auth } from "@clerk/nextjs/server";
-import SortPasswords from "@/components/pages/passwords/sort-passwords/sort-passwords";
+import SortPasswords from "@/components/pages/passwords/sort-passwords";
 import { getSortKey, isMatching, PasswordSortValues } from "@/lib/utils";
-import { getEncryptionByUser } from "@/prisma/db/encryption";
-import { EncryptionError } from "@/components/pages/master-password/encryption-error";
-import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -15,13 +12,9 @@ export default async function Passwords({ searchParams }: { searchParams: { [key
   const { userId, redirectToSignIn } = auth();
   if (!userId) return redirectToSignIn();
 
-  const { data: encryptionData, error: encryptionError } = await getEncryptionByUser(userId);
-  if (encryptionError) return <EncryptionError error={encryptionError} />;
-  if (!encryptionData) return redirect("/master-password");
-
   const searchText = searchParams["search"];
   const { data, error } = await getPasswordsByUser(
-    userId,
+    userId!,
     getSortKey("passwords", searchParams["sort"] as PasswordSortValues)
   );
   if (!data || error) throw new Error("User not found");
@@ -44,19 +37,12 @@ export default async function Passwords({ searchParams }: { searchParams: { [key
           </Badge>
         </div>
         <SortPasswords isSearching={!!searchText?.trim().length} />
-        <CreatePasswordForm uid={userId} salt={encryptionData.salt} hash={encryptionData.hash} />
+        <CreatePasswordForm uid={userId!} />
       </div>
       <ul className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
         {data.length <= 0 && <div className="text-lg">No Saved Passwords</div>}
         {getFilteredList()!.map((password) => (
-          <PasswordCard
-            key={password.id}
-            password={password}
-            uid={userId}
-            searchTerm={searchText}
-            salt={encryptionData.salt}
-            hash={encryptionData.hash}
-          />
+          <PasswordCard key={password.id} password={password} uid={userId!} searchTerm={searchText} />
         ))}
       </ul>
     </div>

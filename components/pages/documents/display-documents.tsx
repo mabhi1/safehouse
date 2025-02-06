@@ -30,12 +30,11 @@ const Section = ({ children }: Node) => {
 };
 
 const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
-  const { userId, redirectToSignIn } = auth();
-  if (!userId) return redirectToSignIn();
+  const { userId } = auth();
 
-  const folders = await getFolders({ currentUser: userId, folderId });
-  const files = await getFiles({ currentUser: userId, folderId });
-  const currentFolderPath = await getCurrentFolder({ folderId, currentUser: userId });
+  const folders = await getFolders({ currentUser: userId!, folderId });
+  const files = await getFiles({ currentUser: userId!, folderId });
+  const currentFolderPath = await getCurrentFolder({ folderId, currentUser: userId! });
 
   return (
     <div className="flex flex-col gap-5 md:gap-8 flex-1">
@@ -80,12 +79,12 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
               return { id: folder.id, name: folder.name, path: folder.path };
             })}
             currentFolderPath={currentFolderPath}
-            userId={userId}
+            userId={userId!}
           />
         </SectionHeader>
         <SectionBody>
           {folders.map((folder) => (
-            <IndividualFolder folder={folder} key={folder.id} userId={userId} />
+            <IndividualFolder folder={folder} key={folder.id} userId={userId!} />
           ))}
         </SectionBody>
       </Section>
@@ -107,7 +106,7 @@ const DisplayDocumets = async ({ folderId }: { folderId: string }) => {
               return { dbId: file.dbId, id: file.id, name: file.name, uid: file.uid, url: file.url };
             })}
             currentFilePath={currentFolderPath}
-            userId={userId}
+            userId={userId!}
           />
         </SectionHeader>
         <SectionBody>

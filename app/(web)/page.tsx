@@ -8,8 +8,8 @@ export default function Home() {
         <div className="flex flex-col justify-center p-5 gap-2 w-full md:w-1/2">
           <h2 className="text-2xl">Safe House</h2>
           <div>
-            Your personal Secure storage for passwords, banks, notes and more. All the data for your cards and passwords
-            are stored in an encrypted form.
+            Your personal Secure storage for passwords, banks, notes and more. All your sensitive data are stored in an
+            encrypted form.
           </div>
         </div>
       </div>

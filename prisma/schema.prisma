@@ -17,23 +17,6 @@ model encryption {
   updatedAt DateTime @updatedAt
 }
 
-model cards {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  bank      String
-  createdAt DateTime @default(now())
-  cvv       String
-  expiry    String
-  number    String
-  type      CardType
-  uid       String
-  updatedAt DateTime @updatedAt
-}
-
-enum CardType {
-  credit
-  debit
-}
-
 model notes {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt   DateTime @default(now())

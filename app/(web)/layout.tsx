@@ -1,12 +1,31 @@
 import Footer from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { EncryptionError } from "@/components/pages/master-password/encryption-error";
+import { MasterPasswordProvider } from "@/components/providers/master-password-provider";
+import { getEncryptionByUser } from "@/prisma/db/encryption";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-export default function WebLayout({ children }: { children: React.ReactNode }) {
+export default async function WebLayout({ children }: { children: React.ReactNode }) {
+  const { userId } = auth();
+  if (!userId)
+    return (
+      <>
+        <Header />
+        <main className="w-full max-w-[90rem] mx-auto pt-1 px-5 pb-5 text-sm flex-1">{children}</main>
+        <Footer />
+      </>
+    );
+
+  const { data, error } = await getEncryptionByUser(userId);
+  if (error) return <EncryptionError error={error} />;
+  if (!data) return redirect("/master-password");
+
   return (
-    <>
+    <MasterPasswordProvider salt={data.salt} hash={data.hash}>
       <Header />
-      <main className="w-full max-w-7xl mx-auto pt-1 px-5 pb-5 text-sm flex-1">{children}</main>
+      <main className="w-full max-w-[90rem] mx-auto pt-1 px-5 pb-5 text-sm flex-1">{children}</main>
       <Footer />
-    </>
+    </MasterPasswordProvider>
   );
 }

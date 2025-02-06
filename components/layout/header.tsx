@@ -9,7 +9,7 @@ import MobileMenu from "./mobile-menu";
 
 const Header = () => {
   return (
-    <header className="flex items-center gap-[0.4rem] md:gap-4 p-5 max-w-7xl mx-auto w-full h-fit top-0 sticky bg-background/50 backdrop-blur-md z-10">
+    <header className="flex items-center gap-[0.4rem] md:gap-4 p-5 max-w-[90rem] mx-auto w-full h-fit top-0 sticky bg-background/50 backdrop-blur-md z-10">
       <MobileMenu />
       <Image src="/logo.png" alt="Safe House" width={50} height={50} priority className="hidden lg:block" />
       <Link href="/">

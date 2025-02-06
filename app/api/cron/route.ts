@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
         },
       });
       const user = await res.json();
-      const email = user.email_addresses[0].email_address;
+      const email = user.primaryEmailAddress.emailAddress;
       const { data, error } = await sendAlertMessageEmail(event, email);
       if (!data || error) throw new Error(`Failed to send email for ${event.id} at ${email}`);
     }
