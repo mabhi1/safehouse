@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     const { data: data2, error: error2 } = await getEventsByDateAndUser(today, nextMonthEnd, uid);
     if (error2 || !data2) throw "";
 
-    return new Response(JSON.stringify({ currentEvent: data1, upcomingEvents: data2 }), { status: 200 });
+    return new Response(JSON.stringify({ currentEvents: data1, upcomingEvents: data2 }), { status: 200 });
   } catch (error) {
     return new Response("Error fetching events", {
       status: 404,
