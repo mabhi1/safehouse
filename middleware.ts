@@ -13,6 +13,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/cron",
   "/api/passwords",
   "/api/notes",
+  "/api/events",
   "/api/encryption",
 ]);
 
