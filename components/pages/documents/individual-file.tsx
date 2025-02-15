@@ -16,7 +16,7 @@ const IndividualFile = ({ file }: Props) => {
           className="flex flex-col items-center text-center rounded hover:bg-accent p-1 gap-1"
         >
           <Image src="/file.png" width={70} height={70} alt={file.name} priority />
-          <div className="w-24 break-words">{file.name}</div>
+          <div className="w-24 break-words line-clamp-2">{file.name}</div>
         </a>
       </ContextMenuTrigger>
       <ContextMenuContent>

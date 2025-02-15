@@ -18,7 +18,7 @@ const IndividualFolder = ({ folder, userId }: Props) => {
           className="flex flex-col items-center text-center rounded hover:bg-accent p-1"
         >
           <Image src="/folder.png" width={70} height={70} alt={folder.name} priority />
-          <div className="w-24 break-words">{folder.name}</div>
+          <div className="w-24 break-words line-clamp-2">{folder.name}</div>
         </Link>
       </ContextMenuTrigger>
       <ContextMenuContent>
