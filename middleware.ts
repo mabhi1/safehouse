@@ -14,6 +14,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/passwords",
   "/api/notes",
   "/api/events",
+  "/api/email",
   "/api/encryption",
 ]);
 
