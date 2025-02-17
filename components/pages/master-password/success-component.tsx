@@ -4,11 +4,12 @@ import { decryptAES } from "@/lib/crypto";
 import { EncryptionDataType } from "@/lib/db-types";
 import { CircleCheckBig, Copy } from "lucide-react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import { toast } from "sonner";
 
 function SuccessComponent({ data }: { data: EncryptionDataType }) {
   const recoveryKey = sessionStorage.getItem("safehouse-recovery-key");
-  if (!recoveryKey) throw new Error("Invalid Recovery Key");
+  if (!recoveryKey) return redirect("/");
 
   setTimeout(() => {
     sessionStorage.removeItem("safehouse-recovery-key");
