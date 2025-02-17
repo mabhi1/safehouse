@@ -45,7 +45,7 @@ export const MasterPasswordProvider = ({ children, salt, hash }: MasterPasswordP
     if (protectedRoutes.includes(pathname) && salt && hash && !masterPassword) {
       setDialogOpen(true);
     }
-  }, [pathname, userId, masterPassword]);
+  }, [pathname, userId, masterPassword, salt, hash]);
 
   useEffect(() => {
     if (!userId) setMasterPassword("");
