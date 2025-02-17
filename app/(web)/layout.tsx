@@ -4,7 +4,6 @@ import { EncryptionError } from "@/components/pages/master-password/encryption-e
 import { MasterPasswordProvider } from "@/components/providers/master-password-provider";
 import { getEncryptionByUser } from "@/prisma/db/encryption";
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 export default async function WebLayout({ children }: { children: React.ReactNode }) {
   const { userId } = auth();
@@ -19,10 +18,9 @@ export default async function WebLayout({ children }: { children: React.ReactNod
 
   const { data, error } = await getEncryptionByUser(userId);
   if (error) return <EncryptionError error={error} />;
-  if (!data) return redirect("/master-password");
 
   return (
-    <MasterPasswordProvider salt={data.salt} hash={data.hash}>
+    <MasterPasswordProvider salt={data?.salt || ""} hash={data?.hash || ""}>
       <Header />
       <main className="w-full max-w-[90rem] mx-auto pt-1 px-5 pb-5 text-sm flex-1">{children}</main>
       <Footer />
