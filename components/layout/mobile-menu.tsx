@@ -15,7 +15,7 @@ export default function MobileMenu() {
           <Menu className="w-4 h-4" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="h-screen overflow-y-auto p-0">
+      <SheetContent side="left" className="h-dvh overflow-y-auto p-0">
         <SheetHeader className="flex-row gap-4 items-center space-y-0 top-0 sticky bg-background/50 backdrop-blur-md px-6 py-4">
           <SheetClose asChild>
             <Button variant="outline" size="icon">
@@ -71,7 +71,7 @@ export default function MobileMenu() {
             ))}
           </ul>
         </SignedIn>
-        <ul className="space-y-5 ml-2 px-6 pb-6 mt-5">
+        <ul className="space-y-5 ml-2 px-6 pb-20 mt-5">
           <div className="font-medium">Platform</div>
           <li>
             <SheetClose asChild>
