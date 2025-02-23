@@ -3,7 +3,7 @@
 import { addPassword } from "@/actions/passwords";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, LockIcon, Plus, UnlockIcon } from "lucide-react";
+import { LockIcon, Plus, UnlockIcon } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Label } from "@/components/ui/label";
 import {
@@ -59,11 +59,8 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
         <div>
-          <Button className="hidden md:block" data-testid="addPasswordButton">
+          <Button data-testid="addPasswordButton" mobileVariant ICON={Plus}>
             Add Password
-          </Button>
-          <Button variant="outline" size="icon" className="md:hidden">
-            <Plus className="w-[1.2rem] h-[1.2rem]" />
           </Button>
         </div>
       </DialogTrigger>
@@ -136,15 +133,8 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
             <DialogClose asChild>
               <Button variant="secondary">Cancel</Button>
             </DialogClose>
-            <Button disabled={isPending} data-testid="passwordSubmitButton">
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </>
-              ) : (
-                "Save"
-              )}
+            <Button loading={isPending} data-testid="passwordSubmitButton">
+              Save
             </Button>
           </DialogFooter>
         </form>

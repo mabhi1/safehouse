@@ -3,7 +3,7 @@
 import { editPassword } from "@/actions/passwords";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, LockIcon, UnlockIcon } from "lucide-react";
+import { FilePenLine, LockIcon, UnlockIcon } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { PasswordType } from "@/lib/db-types";
 import { Label } from "@/components/ui/label";
@@ -61,7 +61,7 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="ghost" data-testid="editPasswordButton">
+        <Button variant="ghost" data-testid="editPasswordButton" ICON={FilePenLine}>
           Edit
         </Button>
       </DialogTrigger>
@@ -134,15 +134,8 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
             <DialogClose asChild>
               <Button variant="secondary">Cancel</Button>
             </DialogClose>
-            <Button disabled={isPending} data-testid="passwordSubmitButton">
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </>
-              ) : (
-                "Save"
-              )}
+            <Button loading={isPending} data-testid="passwordSubmitButton">
+              Save
             </Button>
           </DialogFooter>
         </form>

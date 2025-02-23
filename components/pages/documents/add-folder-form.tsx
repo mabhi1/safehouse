@@ -80,15 +80,8 @@ export const AddFolderForm = ({ folderId, folders, currentFolderPath, userId }: 
             <DialogClose asChild>
               <Button variant="secondary">Cancel</Button>
             </DialogClose>
-            <Button disabled={isPending} type="submit">
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </>
-              ) : (
-                "Save"
-              )}
+            <Button loading={isPending} type="submit">
+              Save
             </Button>
           </DialogFooter>
         </form>

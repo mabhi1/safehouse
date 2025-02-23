@@ -1,8 +1,10 @@
-import { useState, useTransition, FormEvent } from "react";
+import { useState, useTransition, FormEvent, useMemo } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-type FormSubmitOptions<T extends Record<string, string | Date>> = {
+type ValidationFn = (value: string | number | Date) => boolean; // Custom validation function
+
+type FormSubmitOptions<T extends Record<string, string | Date | number>> = {
   initialValues: T;
   onSubmit: (values: T) => Promise<{ data: any; error: any }>;
   onSuccess?: () => void;
@@ -11,9 +13,11 @@ type FormSubmitOptions<T extends Record<string, string | Date>> = {
   failureMessage?: string;
   successRedirectUrl?: string;
   resetOnSuccess?: boolean;
+  optionalFields?: (keyof T)[]; // Define optional fields
+  validations?: Partial<Record<keyof T, ValidationFn>>; // Custom validations for specific fields
 };
 
-export const useFormSubmit = <T extends Record<string, string | Date>>({
+export const useFormSubmit = <T extends Record<string, string | Date | number>>({
   initialValues,
   onSubmit,
   onSuccess,
@@ -22,13 +26,17 @@ export const useFormSubmit = <T extends Record<string, string | Date>>({
   successMessage = "Action completed successfully",
   failureMessage = "Unable to complete the action",
   resetOnSuccess = true,
+  optionalFields = [],
+  validations = {},
 }: FormSubmitOptions<T>) => {
   const [formValues, setFormValues] = useState<T>(initialValues);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: { id: string; value: string | Date } }
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | { target: { id: string; value: string | Date | number } }
   ) => {
     const { id, value } = e.target;
     setFormValues((prevValues) => ({
@@ -37,14 +45,34 @@ export const useFormSubmit = <T extends Record<string, string | Date>>({
     }));
   };
 
+  // Compute form validity dynamically
+  const isValid = useMemo(() => {
+    // Check that all required fields (non-optional) are filled
+    const requiredFieldsValid = Object.keys(formValues)
+      .filter((key) => !optionalFields.includes(key as keyof T)) // Exclude optional fields
+      .every((key) => {
+        const value = formValues[key as keyof T];
+        return typeof value !== "string" || value.trim(); // Ensure required fields are filled
+      });
+
+    // Check if at least one field is different from initialValues
+    const hasChanges = Object.keys(formValues).some(
+      (key) => formValues[key as keyof T] !== initialValues[key as keyof T]
+    );
+
+    // Run custom validation functions for optional fields
+    const optionalValid = Object.entries(validations).every(([key, validateFn]) => {
+      const value = formValues[key as keyof T];
+      return validateFn ? validateFn(value) : true; // Ensure validateFn exists before calling it
+    });
+
+    return requiredFieldsValid && hasChanges && optionalValid;
+  }, [formValues, initialValues, optionalFields, validations]);
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (
-      Object.values(formValues).some((value) => typeof value === "string" && !value.trim()) ||
-      Object.keys(formValues).every((key) => formValues[key] === initialValues[key])
-    )
-      return;
+    if (!isValid) return; // Prevent submitting invalid form
 
     startTransition(async () => {
       try {
@@ -61,11 +89,11 @@ export const useFormSubmit = <T extends Record<string, string | Date>>({
           successRedirectUrl && router.push(successRedirectUrl);
         }
       } catch (error) {
-        toast.error("Error getting master password");
+        toast.error("Error submitting form");
         onFailure && onFailure();
       }
     });
   };
 
-  return { formValues, handleInputChange, handleSubmit, isPending };
+  return { formValues, handleInputChange, handleSubmit, isPending, isValid };
 };

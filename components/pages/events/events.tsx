@@ -51,7 +51,7 @@ export default async function Events({
               legacyBehavior
             >
               <Button variant="outline" size="icon" className="md:hidden">
-                <SearchX className="w-[1.2rem] h-[1.2rem]" />
+                <SearchX className="w-4 h-4" />
               </Button>
             </Link>
             <Link

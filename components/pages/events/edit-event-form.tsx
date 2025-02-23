@@ -4,7 +4,6 @@ import { updateEvent } from "@/actions/events";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Label } from "@/components/ui/label";
 import {
@@ -92,16 +91,7 @@ export default function EditEventForm({ event, uid }: { event: EventType; uid: s
             <DialogClose asChild>
               <Button variant="secondary">Cancel</Button>
             </DialogClose>
-            <Button disabled={isPending}>
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </>
-              ) : (
-                "Save"
-              )}
-            </Button>
+            <Button loading={isPending}>Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>

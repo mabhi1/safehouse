@@ -52,6 +52,49 @@ type EncryptionDataType = {
   updatedAt: Date;
 };
 
+type ExpenseType = {
+  id: string;
+  amount: number;
+  category: { id: string; name: string };
+  categoryId: string;
+  paymentType: { id: string; name: string };
+  paymentTypeId: string;
+  currency: { id: string; code: string; name: string; symbol: string };
+  currencyId: string;
+  date: Date;
+  title: string;
+  description: string | null;
+  uid: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+type ExpenseCategoryType = {
+  id: string;
+  name: string;
+  expenses: { id: string }[];
+};
+
+type ExpenseCurrencyType = {
+  id: string;
+  code: string;
+  name: string;
+  symbol: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 type EncryptedTextType = { iv: string; authTag: string; ciphertext: string };
 
-export type { NotesType, PasswordType, FolderType, FileType, EventType, EncryptionDataType, EncryptedTextType };
+export type {
+  NotesType,
+  PasswordType,
+  FolderType,
+  FileType,
+  EventType,
+  EncryptionDataType,
+  EncryptedTextType,
+  ExpenseType,
+  ExpenseCategoryType,
+  ExpenseCurrencyType,
+};

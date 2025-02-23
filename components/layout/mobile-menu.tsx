@@ -12,14 +12,14 @@ export default function MobileMenu() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" size="icon" className="lg:hidden">
-          <Menu className="w-[1.2rem] h-[1.2rem]" />
+          <Menu className="w-4 h-4" />
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="space-y-5">
         <SheetHeader className="flex-row gap-4 items-center space-y-0">
           <SheetClose asChild>
             <Button variant="outline" size="icon">
-              <Menu className="w-[1.2rem] h-[1.2rem]" />
+              <Menu className="w-4 h-4" />
             </Button>
           </SheetClose>
           <SheetTitle className="uppercase font-normal">
@@ -38,19 +38,35 @@ export default function MobileMenu() {
             <div className="font-medium">Storage</div>
             {storageLinks.map((storage) => (
               <li key={storage.title}>
-                <SheetClose asChild>
-                  <Link href={storage.href} className="flex gap-3 items-center ml-2">
-                    {storage.icon("w-4 h-4")}
-                    <div className="text-sm">
-                      {storage.title}
-                      {storage.isNew && (
-                        <span className="ml-2 bg-primary text-primary-foreground text-xs rounded-full p-1 px-2 animate-pulse">
-                          New
-                        </span>
-                      )}
-                    </div>
-                  </Link>
-                </SheetClose>
+                <div className="space-y-5">
+                  <SheetClose asChild>
+                    <Link href={storage.href} className="flex gap-3 items-center ml-2">
+                      {storage.icon("w-4 h-4")}
+                      <div className="text-sm">
+                        {storage.title}
+                        {storage.isNew && (
+                          <span className="ml-2 bg-primary text-primary-foreground text-xs rounded-full p-1 px-2 animate-pulse">
+                            New
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                  </SheetClose>
+                  {storage.subMenu && storage.subMenu.length && (
+                    <ul className="space-y-5 ml-8">
+                      {storage.subMenu.map((item) => (
+                        <li key={item.title}>
+                          <SheetClose asChild>
+                            <Link href={item.href} className="flex gap-3 items-center ml-2">
+                              {item.icon("w-4 h-4")}
+                              <div className="text-sm">{item.title}</div>
+                            </Link>
+                          </SheetClose>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </li>
             ))}
           </ul>

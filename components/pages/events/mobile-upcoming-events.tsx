@@ -16,7 +16,7 @@ export function MobileUpcomingEvents({
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon" className="md:hidden">
-          <CalendarClock className="w-[1.2rem] h-[1.2rem]" />
+          <CalendarClock className="w-4 h-4" />
         </Button>
       </DialogTrigger>
       <DialogContent>

@@ -8,7 +8,7 @@ export function MobileCalendar({ dateSelected, searchText = "" }: { dateSelected
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon" className="md:hidden">
-          <CalendarDays className="w-[1.2rem] h-[1.2rem]" />
+          <CalendarDays className="w-4 h-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="p-0 w-fit border-0">

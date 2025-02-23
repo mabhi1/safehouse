@@ -11,9 +11,50 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { CalendarCog, FolderOpen, GlobeLock, KeySquare, NotebookPen, ShieldCheck } from "lucide-react";
+import {
+  CalendarCog,
+  ChartArea,
+  Coins,
+  FolderOpen,
+  GlobeLock,
+  HandCoins,
+  KeySquare,
+  Layers2,
+  Monitor,
+  NotebookPen,
+  ShieldCheck,
+  WalletMinimal,
+} from "lucide-react";
 import Image from "next/image";
 import { SignedIn } from "@clerk/nextjs";
+
+export const expensesSubMenu = [
+  {
+    title: "Dashboard",
+    icon: (className: string) => <Monitor className={className} />,
+    href: "/expenses",
+  },
+  {
+    title: "Expenses",
+    icon: (className: string) => <Coins className={className} />,
+    href: "/expenses/expense-list",
+  },
+  {
+    title: "Reports/Analytics",
+    icon: (className: string) => <ChartArea className={className} />,
+    href: "/expenses/reports",
+  },
+  {
+    title: "Categories",
+    icon: (className: string) => <Layers2 className={className} />,
+    href: "/expenses/categories",
+  },
+  {
+    title: "Payment Methods",
+    icon: (className: string) => <WalletMinimal className={className} />,
+    href: "/expenses/payments",
+  },
+];
 
 export const storageLinks: {
   title: string;
@@ -21,6 +62,11 @@ export const storageLinks: {
   description: string;
   icon: (className: string) => React.JSX.Element;
   isNew?: boolean;
+  subMenu?: {
+    title: string;
+    href: string;
+    icon: (className: string) => React.JSX.Element;
+  }[];
 }[] = [
   {
     title: "Documents",
@@ -45,6 +91,14 @@ export const storageLinks: {
     href: "/passwords",
     description: "Store encrypted login credentials for any website.",
     icon: (className: string) => <ShieldCheck className={className} />,
+  },
+  {
+    title: "Expenses",
+    href: "/expenses",
+    description: "Track and manage your expenses effortlessly with a modern UI.",
+    icon: (className: string) => <HandCoins className={className} />,
+    isNew: true,
+    subMenu: expensesSubMenu,
   },
 ];
 
@@ -164,7 +218,9 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
           >
             <div className="text-sm font-medium leading-none flex gap-2 items-end">
               {title}
-              {isNew && <span className="text-primary animate-bounce">New</span>}
+              {isNew && (
+                <span className="bg-primary text-primary-foreground text-xs rounded-full px-2 animate-pulse">New</span>
+              )}
             </div>
             <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
           </Link>
