@@ -4,7 +4,7 @@ import { addNote } from "@/actions/notes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Label } from "@/components/ui/label";
 import {
@@ -43,7 +43,7 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
         <div>
           <Button className="hidden md:block">Add Note</Button>
           <Button variant="outline" size="icon" className="md:hidden">
-            <Plus className="w-[1.2rem] h-[1.2rem]" />
+            <Plus className="w-4 h-4" />
           </Button>
         </div>
       </DialogTrigger>
@@ -87,16 +87,7 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
             <DialogClose asChild>
               <Button variant="secondary">Cancel</Button>
             </DialogClose>
-            <Button disabled={isPending}>
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </>
-              ) : (
-                "Save"
-              )}
-            </Button>
+            <Button loading={isPending}>Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -41,7 +41,7 @@ export function DeleteFileButton({ fileId, fileDbId }: { fileId: string; fileDbI
   };
 
   return isPending ? (
-    <Loader2 className="mr-2 h-4 w-4 animate-spin mx-2 my-1.5" />
+    <Loader2 className="mr-2 w-4 h-4 animate-spin mx-2 my-1.5" />
   ) : (
     <AlertDialog>
       <AlertDialogTrigger className="w-full text-left text-destructive px-2 py-1.5 text-sm hover:bg-accent">

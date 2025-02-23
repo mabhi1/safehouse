@@ -42,7 +42,7 @@ function SuccessComponent({ data }: { data: EncryptionDataType }) {
           <div className="bg-muted text-muted-foreground p-2 rounded-lg flex justify-between">
             <span className="w-72 lg:w-full overflow-auto no-scrollbar">{recoveryKey}</span>
             <Copy
-              className="w-4 aspect-square cursor-pointer"
+              className="w-4 h-4 cursor-pointer"
               onClick={() => {
                 navigator.clipboard.writeText(recoveryKey);
                 toast.success("Recovery key copied");

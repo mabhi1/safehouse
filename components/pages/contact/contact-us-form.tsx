@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, SendHorizonal } from "lucide-react";
+import { SendHorizonal } from "lucide-react";
 import { contactUsMessageEmail } from "@/actions/emails";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { useUser } from "@clerk/nextjs";
@@ -136,18 +136,8 @@ export default function ContactUsForm() {
         />
       </div>
 
-      <Button disabled={isPending} className="group">
-        {isPending ? (
-          <>
-            Please wait
-            <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-          </>
-        ) : (
-          <>
-            Send Message
-            <SendHorizonal className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-          </>
-        )}
+      <Button loading={isPending} className="group" ICON={SendHorizonal}>
+        Send Message
       </Button>
     </form>
   );

@@ -15,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
-import { Loader2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -74,15 +73,8 @@ export const RenameFolderForm = ({ userId, folderId, folderName }: Props) => {
             <DialogClose asChild>
               <Button variant="secondary">Cancel</Button>
             </DialogClose>
-            <Button disabled={isPending} type="submit">
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </>
-              ) : (
-                "Save"
-              )}
+            <Button loading={isPending} type="submit">
+              Save
             </Button>
           </DialogFooter>
         </form>

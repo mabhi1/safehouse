@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface Props {
-  value: Date;
+  value: Date | undefined;
   onChange: (
     e:
       | ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -27,10 +27,13 @@ export function DatePicker({ value, onChange }: Props) {
       <PopoverTrigger asChild>
         <Button
           variant={"outline"}
-          className={cn("w-full justify-start text-left font-normal", !value && "text-muted-foreground")}
+          className={cn(
+            "w-full flex items-center gap-2 justify-start text-left font-normal",
+            !value && "text-muted-foreground"
+          )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(value, "PPP") : <span>Pick a date</span>}
+          <CalendarIcon className="w-4 h-4" />
+          <span className="mt-[2px]">{value ? format(value, "PPP") : "Pick a date"}</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

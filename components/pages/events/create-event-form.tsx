@@ -46,7 +46,7 @@ export default function CreateEventForm({ uid }: { uid: string }) {
         <div>
           <Button className="hidden md:block">Add Event</Button>
           <Button variant="outline" size="icon" className="md:hidden">
-            <Plus className="w-[1.2rem] h-[1.2rem]" />
+            <Plus className="w-4 h-4" />
           </Button>
         </div>
       </DialogTrigger>
@@ -96,16 +96,7 @@ export default function CreateEventForm({ uid }: { uid: string }) {
             <DialogClose asChild>
               <Button variant="secondary">Cancel</Button>
             </DialogClose>
-            <Button disabled={isPending}>
-              {isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Please wait
-                </>
-              ) : (
-                "Save"
-              )}
-            </Button>
+            <Button loading={isPending}>Save</Button>
           </DialogFooter>
         </form>
       </DialogContent>

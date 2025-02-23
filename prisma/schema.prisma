@@ -55,3 +55,46 @@ model events {
   uid         String
   updatedAt   DateTime @updatedAt
 }
+
+model currency {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  code      String
+  name      String
+  symbol    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expenses  expense[]
+}
+
+model category {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expenses  expense[]
+}
+
+model paymentType {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expenses  expense[]
+}
+
+model expense {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  currency      currency    @relation(fields: [currencyId], references: [id])
+  currencyId    String      @db.ObjectId
+  amount        Float
+  category      category    @relation(fields: [categoryId], references: [id])
+  categoryId    String      @db.ObjectId
+  paymentType   paymentType @relation(fields: [paymentTypeId], references: [id])
+  paymentTypeId String      @db.ObjectId
+  date          DateTime
+  title         String
+  description   String?
+  uid           String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
