@@ -11,10 +11,8 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const uid = searchParams.get("uid");
-    const key = searchParams.get("key") || "updatedAt";
-    const type = searchParams.get("type") || "desc";
     if (!uid) throw "";
-    const { data, error } = await getPasswordsByUser(uid, { key, type });
+    const { data, error } = await getPasswordsByUser(uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
   } catch (error) {
