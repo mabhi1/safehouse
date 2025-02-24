@@ -32,7 +32,7 @@ export default function IndividualExpensePage({
     <div className="space-y-5">
       <Link href="." className="flex items-center mr-auto gap-2">
         <MoveLeft className="w-4 h-4" />
-        <span className="text-base uppercase">All Expenses</span>
+        <span className="text-lg capitalize">All Expenses</span>
       </Link>
       <div className="flex justify-between gap-3 md:gap-5">
         <div>

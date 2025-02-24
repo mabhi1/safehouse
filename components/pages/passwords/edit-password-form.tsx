@@ -3,7 +3,7 @@
 import { editPassword } from "@/actions/passwords";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FilePenLine, LockIcon, UnlockIcon } from "lucide-react";
+import { CircleSlash, LockIcon, Save, UnlockIcon } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { PasswordType } from "@/lib/db-types";
 import { Label } from "@/components/ui/label";
@@ -48,10 +48,21 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
     return editPassword(password.id, values.site.trim(), values.username.trim(), encryptedPassword, uid);
   };
 
-  const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreatePasswordFormValues>({
+  const { formValues, handleInputChange, handleSubmit, isPending, isValid } = useFormSubmit<CreatePasswordFormValues>({
     initialValues: initialFormValues,
     onSubmit: onSubmit,
     onSuccess: () => setOpenDialog(false),
+    validations: {
+      site: (value) => {
+        try {
+          new URL(`https://${value}`);
+          return true;
+        } catch (error) {
+          // toast.error("Invalid site entered");
+          return false;
+        }
+      },
+    },
   });
 
   const toggleVisibility = () => {
@@ -61,7 +72,7 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="ghost" data-testid="editPasswordButton" ICON={FilePenLine}>
+        <Button variant="ghost" data-testid="editPasswordButton">
           Edit
         </Button>
       </DialogTrigger>
@@ -75,20 +86,25 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
             <Label htmlFor="site">
               Site<span className="text-destructive">*</span>
             </Label>
-            <Input
-              id="site"
-              data-testid="siteInput"
-              type="text"
-              placeholder="Enter Site"
-              required
-              value={formValues.site}
-              onChange={handleInputChange}
-            />
+            <div className="relative">
+              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-muted-foreground text-sm">https://</div>
+              <Input
+                id="site"
+                data-testid="siteInput"
+                type="text"
+                placeholder="Enter Site"
+                required
+                value={formValues.site}
+                onChange={handleInputChange}
+                className="pl-[53px]"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="username">
               Username<span className="text-destructive">*</span>
             </Label>
+
             <Input
               id="username"
               data-testid="usernameInput"
@@ -132,9 +148,11 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary" ICON={CircleSlash}>
+                Cancel
+              </Button>
             </DialogClose>
-            <Button loading={isPending} data-testid="passwordSubmitButton">
+            <Button loading={isPending} disabled={!isValid} data-testid="passwordSubmitButton" ICON={Save}>
               Save
             </Button>
           </DialogFooter>

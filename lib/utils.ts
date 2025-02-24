@@ -46,23 +46,6 @@ export function getSortKey(page: "notes" | "passwords", sortValue: NotesSortValu
         default:
           return { key: "updatedAt", type: "desc" };
       }
-    case "passwords":
-      switch (sortValue) {
-        case "lastUpdated":
-          return { key: "updatedAt", type: "desc" };
-        case "firstUpdated":
-          return { key: "updatedAt", type: "asc" };
-        case "siteAsc":
-          return { key: "site", type: "asc" };
-        case "siteDesc":
-          return { key: "site", type: "desc" };
-        case "usernameAsc":
-          return { key: "username", type: "asc" };
-        case "usernameDesc":
-          return { key: "username", type: "desc" };
-        default:
-          return { key: "updatedAt", type: "desc" };
-      }
     default:
       return { key: "updatedAt", type: "desc" };
   }
