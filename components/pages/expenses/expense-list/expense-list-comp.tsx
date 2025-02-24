@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ExpenseCategoryType, ExpenseType } from "@/lib/db-types";
-import { Filter, Minus, RotateCcw, Search, X } from "lucide-react";
+import { Filter, Minus, RotateCcw, X } from "lucide-react";
 import CreateExpenseForm from "./create-expense-form";
 import { DataTable } from "./data-table";
 import { expensesTableColumns } from "./expenses-table-columns";
@@ -66,20 +66,17 @@ export const ExpenseListComp = ({
     <div className="space-y-5">
       <div className="flex flex-wrap justify-end items-center gap-3 md:gap-5">
         <div className="flex items-center mr-auto gap-1">
-          <span className="text-base uppercase">Expenses</span>
+          <span className="text-xl capitalize">Expenses</span>
           <Badge variant="secondary" className="font-normal">
             {getFilteredExpenses.length}
           </Badge>
         </div>
-        <div className="relative">
-          <Search className="w-4 h-4 absolute top-1/2 -translate-y-1/2 left-2 text-muted-foreground" />
-          <Input
-            placeholder="Search Title"
-            className="h-9 w-56 pl-8"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value.trim().toLowerCase())}
-          />
-        </div>
+        <Input
+          placeholder="Search Title"
+          className="h-9 w-48 md:w-56"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value.trim().toLowerCase())}
+        />
 
         <Sheet>
           <SheetTrigger asChild>

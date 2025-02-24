@@ -18,7 +18,7 @@ export default function ReportsIndexPage({ currencyData, expenseData, categories
   return (
     <div className="space-y-5">
       <div className="flex flex-col md:flex-row gap-2 justify-between items-start md:items-center">
-        <div className="text-base uppercase">Reports and Analytics</div>
+        <div className="text-xl capitalize">Reports and Analytics</div>
         {currencyData.length > 0 && (
           <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
             <SelectTrigger className="w-40">

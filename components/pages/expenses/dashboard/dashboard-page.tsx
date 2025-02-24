@@ -44,7 +44,7 @@ export default function DashboardPage({
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between gap-2 items-start md:items-center">
         <div>
-          <div className="text-base uppercase">Dashboard</div>
+          <div className="text-xl capitalize">Dashboard</div>
           <div className="text-muted-foreground">
             You can see your current month reports and analytics here. Check the Reports/Analytics tab for custom
             reports.

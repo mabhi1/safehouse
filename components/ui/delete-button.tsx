@@ -30,6 +30,7 @@ interface DeleteButtonProps {
   dialogDescription?: string;
   className?: string;
   mobileVariant?: boolean;
+  hideIcon?: boolean;
   variant?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost";
 }
 
@@ -46,6 +47,7 @@ export function DeleteButton({
   className,
   mobileVariant = false,
   variant = "ghost",
+  hideIcon = false,
 }: DeleteButtonProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -70,7 +72,7 @@ export function DeleteButton({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          ICON={Trash}
+          ICON={hideIcon ? undefined : Trash}
           variant={variant}
           className={cn(variant !== "destructive" && "text-destructive hover:text-destructive", className)}
           mobileVariant={mobileVariant}

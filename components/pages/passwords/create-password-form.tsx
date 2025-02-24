@@ -3,7 +3,7 @@
 import { addPassword } from "@/actions/passwords";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LockIcon, Plus, UnlockIcon } from "lucide-react";
+import { CircleSlash, LockIcon, Plus, Save, UnlockIcon } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Label } from "@/components/ui/label";
 import {
@@ -40,7 +40,7 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
     if (!masterPassword || !masterPassword.length) openPasswordDialog();
   }, [masterPassword]);
 
-  const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreatePasswordFormValues>({
+  const { formValues, handleInputChange, handleSubmit, isPending, isValid } = useFormSubmit<CreatePasswordFormValues>({
     initialValues: initialFormValues,
     onSubmit: async (values) => {
       const key = await deriveKey(masterPassword, salt);
@@ -53,16 +53,24 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
     },
     successRedirectUrl: "/passwords",
     onSuccess: () => setOpenDialog(false),
+    validations: {
+      site: (value) => {
+        try {
+          new URL(`https://${value}`);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      },
+    },
   });
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <div>
-          <Button data-testid="addPasswordButton" mobileVariant ICON={Plus}>
-            Add Password
-          </Button>
-        </div>
+        <Button data-testid="addPasswordButton" mobileVariant ICON={Plus}>
+          Add Password
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -74,16 +82,20 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
             <Label htmlFor="site">
               Site<span className="text-destructive">*</span>
             </Label>
-            <Input
-              id="site"
-              data-testid="siteInput"
-              type="text"
-              autoFocus={true}
-              placeholder="Enter Site"
-              required
-              value={formValues.site}
-              onChange={handleInputChange}
-            />
+            <div className="relative">
+              <div className="absolute top-1/2 -translate-y-1/2 left-2 text-muted-foreground text-sm">https://</div>
+              <Input
+                id="site"
+                data-testid="siteInput"
+                type="text"
+                autoFocus={true}
+                placeholder="Enter Site"
+                required
+                value={formValues.site}
+                onChange={handleInputChange}
+                className="pl-[53px]"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="username">
@@ -131,9 +143,11 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary" ICON={CircleSlash}>
+                Cancel
+              </Button>
             </DialogClose>
-            <Button loading={isPending} data-testid="passwordSubmitButton">
+            <Button loading={isPending} disabled={!isValid} data-testid="passwordSubmitButton" ICON={Save}>
               Save
             </Button>
           </DialogFooter>
