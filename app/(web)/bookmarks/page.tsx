@@ -1,6 +1,6 @@
 import { getBookmarksByUser } from "@/prisma/db/bookmarks";
 import { auth } from "@clerk/nextjs/server";
-import BookmarksPage from "@/components/pages/bookmarks/bookmarks-page";
+import BookmarksTable from "@/components/pages/bookmarks/bookmarks-table";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +13,7 @@ export default async function Bookmarks({ searchParams }: { searchParams: { [key
 
   return (
     <div>
-      <BookmarksPage bookmarks={bookmarks || []} userId={userId} searchText={searchText} />
+      <BookmarksTable bookmarks={bookmarks || []} userId={userId} searchText={searchText} />
     </div>
   );
 }
