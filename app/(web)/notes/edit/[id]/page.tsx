@@ -2,7 +2,7 @@ import { getNoteById } from "@/prisma/db/notes";
 import { auth } from "@clerk/nextjs/server";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import EditNoteFormPage from "@/components/pages/notes/edit-note-form-page";
+import EditNoteForm from "@/components/pages/notes/edit-note-form";
 
 export const dynamicParams = true;
 
@@ -27,5 +27,5 @@ export default async function EditNotePage({ params }: Props) {
     redirect("/notes");
   }
 
-  return <EditNoteFormPage note={note} userId={userId} />;
+  return <EditNoteForm note={note} userId={userId} />;
 }

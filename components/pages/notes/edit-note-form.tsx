@@ -17,7 +17,7 @@ type EditNoteFormValues = {
   description: string;
 };
 
-export default function EditNoteFormPage({ note, userId }: { note: NotesType; userId: string }) {
+export default function EditNoteForm({ note, userId }: { note: NotesType; userId: string }) {
   const router = useRouter();
   const initialFormValues: EditNoteFormValues = {
     title: note.title,

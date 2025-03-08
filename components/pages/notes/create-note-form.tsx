@@ -16,7 +16,7 @@ type NewNoteFormValues = {
   description: string;
 };
 
-export default function NewNoteForm({ userId }: { userId: string }) {
+export default function CreateNoteForm({ userId }: { userId: string }) {
   const router = useRouter();
   const initialFormValues: NewNoteFormValues = {
     title: "",

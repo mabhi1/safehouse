@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import NewNoteForm from "@/components/pages/notes/new-note-form";
+import CreateNoteForm from "@/components/pages/notes/create-note-form";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,5 +10,5 @@ export default async function NewNotePage() {
   const { userId, redirectToSignIn } = auth();
   if (!userId) return redirectToSignIn();
 
-  return <NewNoteForm userId={userId} />;
+  return <CreateNoteForm userId={userId} />;
 }
