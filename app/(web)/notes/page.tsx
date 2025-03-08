@@ -13,7 +13,7 @@ export default async function Notes() {
   return (
     <div>
       <div className="space-y-4 hidden lg:block">
-        <h1 className="text-xl capitalize">Your Notes</h1>
+        <h1 className="text-xl capitalize">Notes</h1>
         <div className="p-6 border rounded-lg bg-muted/50 text-center">
           <h2 className="text-xl font-medium mb-2">Welcome to your notes</h2>
           <p className="text-muted-foreground">
