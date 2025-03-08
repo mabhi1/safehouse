@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { DeleteButton } from "@/components/ui/delete-button";
 import { deleteBookmark } from "@/actions/bookmarks";
+import MarkedText from "@/components/ui/marked-text";
 
 interface BookmarkRowProps {
   bookmark: BookmarkType;
@@ -27,6 +28,7 @@ interface BookmarkRowProps {
   onEditChange: (field: string, value: string) => void;
   onSave: (e: React.FormEvent) => void;
   isSaving: boolean;
+  searchTerm: string;
 }
 
 export default function BookmarkRow({
@@ -41,6 +43,7 @@ export default function BookmarkRow({
   onEditChange,
   onSave,
   isSaving,
+  searchTerm,
 }: BookmarkRowProps) {
   // Extract domain for favicon
   let domain;
@@ -120,9 +123,13 @@ export default function BookmarkRow({
         </>
       ) : (
         <>
-          <TableCell className="font-medium px-4 py-2">{bookmark.title}</TableCell>
+          <TableCell className="font-medium px-4 py-2">
+            <MarkedText searchTerm={searchTerm} text={bookmark.title} />
+          </TableCell>
           <TableCell className="text-muted-foreground hidden md:table-cell px-4 py-2">
-            <div className="max-h-20 overflow-y-auto">{bookmark.comment}</div>
+            <div className="max-h-20 overflow-y-auto">
+              <MarkedText searchTerm={searchTerm} text={bookmark.comment} />
+            </div>
           </TableCell>
           <TableCell className="px-4 py-2">
             <a
@@ -132,7 +139,9 @@ export default function BookmarkRow({
               className="flex items-center gap-1 text-primary hover:underline truncate max-w-xs"
             >
               <ExternalLink className="h-3 w-3 flex-shrink-0" />
-              <span className="truncate">{bookmark.url}</span>
+              <span className="truncate">
+                <MarkedText searchTerm={searchTerm} text={bookmark.url} />
+              </span>
             </a>
           </TableCell>
           <TableCell className="text-center px-4 py-2">

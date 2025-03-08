@@ -2,7 +2,7 @@
 
 import React from "react";
 import { BookmarkType } from "@/lib/db-types";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import BookmarkRow from "./BookmarkRow";
 import NewBookmarkRow from "./NewBookmarkRow";
@@ -35,6 +35,7 @@ interface BookmarksTableProps {
   onNewBookmarkChange: (field: string, value: string) => void;
   onNewBookmarkSubmit: (e: React.FormEvent) => void;
   onCancelAdd: () => void;
+  searchTerm: string;
 }
 
 export default function BookmarksTable({
@@ -55,6 +56,7 @@ export default function BookmarksTable({
   onNewBookmarkChange,
   onNewBookmarkSubmit,
   onCancelAdd,
+  searchTerm,
 }: BookmarksTableProps) {
   const allBookmarks = Object.values(groupedBookmarks).flat();
 
@@ -105,6 +107,7 @@ export default function BookmarksTable({
                   onEditChange={onEditChange}
                   onSave={onEditSubmit}
                   isSaving={isSaving}
+                  searchTerm={searchTerm}
                 />
               ))}
             </React.Fragment>
