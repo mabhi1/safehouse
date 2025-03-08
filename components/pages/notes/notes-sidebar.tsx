@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { useState, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
-import CreateNoteForm from "./create-note-form";
 import { cn, isMatching } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 interface NotesSidebarProps {
   notes: NotesType[];
@@ -34,10 +35,21 @@ export default function NotesSidebar({ notes, userId }: NotesSidebarProps) {
             {filteredNotes.length}
           </Badge>
         </div>
-        {userId && <CreateNoteForm uid={userId} />}
+        {userId && (
+          <Link href="/notes/new">
+            <Button mobileVariant ICON={Plus}>
+              Add Note
+            </Button>
+          </Link>
+        )}
       </div>
 
-      <Input placeholder="Search notes" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+      <Input
+        className="h-9"
+        placeholder="Search notes"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
       <ul className="flex flex-col divide-y">
         {filteredNotes.length === 0 && <li className="p-3 text-sm text-muted-foreground">No notes found</li>}

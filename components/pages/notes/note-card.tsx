@@ -2,7 +2,7 @@ import MarkedText from "@/components/ui/marked-text";
 import { NotesType } from "@/lib/db-types";
 import { DeleteButton } from "@/components/ui/delete-button";
 import { deleteNote } from "@/actions/notes";
-import { EditNoteForm } from "./edit-note-form";
+import EditNoteFormPage from "./edit-note-form-page";
 import { dateFormatter } from "@/lib/utils";
 
 interface NoteCardProps {
@@ -32,7 +32,7 @@ export default function NoteCard({ note, searchTerm = "", uid }: NoteCardProps) 
       </div>
       <div>
         <div className="flex justify-end my-2">
-          <EditNoteForm note={note} uid={uid} />
+          <EditNoteFormPage note={note} userId={uid} />
           <DeleteButton
             id={id}
             uid={uid}
