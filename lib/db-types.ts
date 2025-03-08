@@ -86,6 +86,16 @@ type ExpenseCurrencyType = {
 
 type EncryptedTextType = { iv: string; authTag: string; ciphertext: string };
 
+type BookmarkType = {
+  id: string;
+  title: string;
+  comment: string;
+  url: string;
+  uid: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type {
   NotesType,
   PasswordType,
@@ -97,4 +107,5 @@ export type {
   ExpenseType,
   ExpenseCategoryType,
   ExpenseCurrencyType,
+  BookmarkType,
 };

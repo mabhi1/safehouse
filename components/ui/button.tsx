@@ -57,7 +57,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           disabled
         >
           <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="mt-[2px]">Please wait</span>
+          {size === "icon" ? null : <span className="mt-[2px]">Please wait</span>}
         </Comp>
       );
     }

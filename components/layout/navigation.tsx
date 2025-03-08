@@ -24,6 +24,7 @@ import {
   NotebookPen,
   ShieldCheck,
   WalletMinimal,
+  Bookmark,
 } from "lucide-react";
 import Image from "next/image";
 import { SignedIn } from "@clerk/nextjs";
@@ -91,6 +92,13 @@ export const storageLinks: {
     href: "/passwords",
     description: "Store encrypted login credentials for any website.",
     icon: (className: string) => <ShieldCheck className={className} />,
+  },
+  {
+    title: "Bookmarks",
+    href: "/bookmarks",
+    description: "Save and organize your favorite websites with custom notes.",
+    icon: (className: string) => <Bookmark className={className} />,
+    isNew: true,
   },
   {
     title: "Expenses",

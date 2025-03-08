@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, ButtonProps } from "@/components/ui/button";
 import { CircleSlash, Loader2, StepForward, Trash } from "lucide-react";
 import {
   AlertDialog,
@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-interface DeleteButtonProps {
+interface DeleteButtonProps extends ButtonProps {
   id: string;
   uid: string;
   deleteAction: (id: string, uid: string) => Promise<{ data: any; error: any }>;
@@ -48,6 +48,7 @@ export function DeleteButton({
   mobileVariant = false,
   variant = "ghost",
   hideIcon = false,
+  ...props
 }: DeleteButtonProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -76,8 +77,9 @@ export function DeleteButton({
           variant={variant}
           className={cn(variant !== "destructive" && "text-destructive hover:text-destructive", className)}
           mobileVariant={mobileVariant}
+          {...props}
         >
-          Delete
+          {props.children || "Delete"}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
