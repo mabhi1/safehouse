@@ -4,7 +4,7 @@ import { addNote } from "@/actions/notes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus } from "lucide-react";
+import { CircleSlash, Plus, Save } from "lucide-react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Label } from "@/components/ui/label";
 import {
@@ -31,7 +31,7 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
     description: "",
   };
 
-  const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<CreateNoteFormValues>({
+  const { formValues, handleInputChange, handleSubmit, isPending, isValid } = useFormSubmit<CreateNoteFormValues>({
     initialValues: initialFormValues,
     onSubmit: async (values) => addNote(values.title.trim(), values.description.trim(), uid),
     onSuccess: () => setOpenDialog(false),
@@ -40,12 +40,9 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <div>
-          <Button className="hidden md:block">Add Note</Button>
-          <Button variant="outline" size="icon" className="md:hidden">
-            <Plus className="w-4 h-4" />
-          </Button>
-        </div>
+        <Button mobileVariant ICON={Plus}>
+          Add Note
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -85,9 +82,13 @@ export default function CreateNoteForm({ uid }: { uid: string }) {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary" ICON={CircleSlash}>
+                Cancel
+              </Button>
             </DialogClose>
-            <Button loading={isPending}>Save</Button>
+            <Button loading={isPending} disabled={!isValid} ICON={Save}>
+              Save
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

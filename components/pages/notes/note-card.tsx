@@ -38,6 +38,7 @@ export default function NoteCard({ note, searchTerm = "", uid }: NoteCardProps) 
             uid={uid}
             deleteAction={deleteNote}
             dialogDescription="This action will permanently remove the note from our servers."
+            hideIcon
           />
         </div>
         <div className="text-slate-500 text-xs border-t border-slate-500 pt-1">

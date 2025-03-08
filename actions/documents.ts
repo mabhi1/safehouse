@@ -104,3 +104,31 @@ export async function renameFolder(userId: string, name: string, folderId: strin
     return { data: null, error: true };
   }
 }
+
+export async function searchDocuments(text: string, userId: string) {
+  try {
+    if (text.trim().length < 3) return { data: [], error: null };
+
+    // Search for files
+    const fileQuery = query(collection(db, "files"), where("uid", "==", userId));
+    const fileSnapshot = await getDocs(fileQuery);
+
+    const files: FileType[] = [];
+    fileSnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.name.toLowerCase().includes(text.toLowerCase())) {
+        files.push({
+          id: doc.id,
+          name: data.name,
+          dbId: data.dbId,
+          url: data.url,
+          uid: data.uid,
+        });
+      }
+    });
+
+    return { data: files, error: null };
+  } catch (error) {
+    return { data: null, error: true };
+  }
+}

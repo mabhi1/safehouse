@@ -22,13 +22,15 @@ import {
 import { Input } from "../ui/input";
 import { ChangeEvent, useEffect, useMemo, useState, useTransition } from "react";
 import { searchNotes } from "@/actions/notes";
-import { EventType, NotesType, PasswordType } from "@/lib/db-types";
+import { EventType, ExpenseType, FileType, NotesType, PasswordType } from "@/lib/db-types";
 import MarkedText from "../ui/marked-text";
 import { useRouter } from "next/navigation";
 import { isMatching } from "@/lib/utils";
 import { searchPasswords } from "@/actions/passwords";
 import { useAuth } from "@clerk/nextjs";
 import { searchEvents } from "@/actions/events";
+import { searchExpenses } from "@/actions/expenses";
+import { searchDocuments } from "@/actions/documents";
 import { Search } from "lucide-react";
 import Spinner from "./spinner";
 import debounce from "lodash/debounce";
@@ -39,6 +41,8 @@ const defaultStorageValue = {
   notes: [] as NotesType[],
   events: [] as EventType[],
   passwords: [] as PasswordType[],
+  expenses: [] as ExpenseType[],
+  documents: [] as FileType[],
 };
 
 export default function SearchButton() {
@@ -77,7 +81,7 @@ export default function SearchButton() {
 
   const handleSearch = async (text: string) => {
     if (text.trim().length < 3) {
-      setResults({ notes: [], events: [], passwords: [] });
+      setResults({ notes: [], events: [], passwords: [], expenses: [], documents: [] });
       return;
     }
 
@@ -102,6 +106,16 @@ export default function SearchButton() {
       if (notCached("passwords")) {
         const passwordsData = await searchPasswords(text, userId!);
         if (passwordsData.data) newResults.passwords = passwordsData.data;
+      }
+
+      if (notCached("expenses")) {
+        const expensesData = await searchExpenses(text, userId!);
+        if (expensesData.data) newResults.expenses = expensesData.data;
+      }
+
+      if (notCached("documents")) {
+        const documentsData = await searchDocuments(text, userId!);
+        if (documentsData.data) newResults.documents = documentsData.data;
       }
 
       setResults(newResults);
@@ -166,6 +180,8 @@ export default function SearchButton() {
                   <SelectItem value="notes">Notes</SelectItem>
                   <SelectItem value="passwords">Passwords</SelectItem>
                   <SelectItem value="events">Events</SelectItem>
+                  <SelectItem value="expenses">Expenses</SelectItem>
+                  <SelectItem value="documents">Documents</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -247,16 +263,65 @@ export default function SearchButton() {
                               className="w-full font-normal justify-start h-fit"
                               onClick={() => handleRoute(`/passwords?search=${searchText}`)}
                             >
-                              <MarkedText
-                                searchTerm={searchText}
-                                text={isMatching(password.site, searchText) ? password.site : password.username}
-                              />
+                              <MarkedText searchTerm={searchText} text={password.site} />
+                              <div className="text-xs ml-2">
+                                <MarkedText searchTerm={searchText} text={password.username} />
+                              </div>
                             </Button>
                           </DialogClose>
                         ))}
                       </div>
                     ) : (
                       <DialogDescription className="pl-4 pb-2">Passwords not found</DialogDescription>
+                    )}
+                  </div>
+                )}
+                <Separator />
+                {["all", "expenses"].includes(storageSelect) && (
+                  <div>
+                    {results.expenses.length ? (
+                      <div>
+                        <DialogDescription className="pl-4 py-2">Expenses</DialogDescription>
+                        {results.expenses.map((expense) => (
+                          <DialogClose key={expense.id} asChild>
+                            <Button
+                              variant="ghost"
+                              className="w-full font-normal justify-start h-fit"
+                              onClick={() => handleRoute(`/expenses/expense-list?search=${searchText}`)}
+                            >
+                              <MarkedText searchTerm={searchText} text={expense.title} />
+                              <div className="text-xs ml-2">
+                                <MarkedText searchTerm={searchText} text={expense.description || "No Description"} />
+                              </div>
+                            </Button>
+                          </DialogClose>
+                        ))}
+                      </div>
+                    ) : (
+                      <DialogDescription className="pl-4 pb-2">Expenses not found</DialogDescription>
+                    )}
+                  </div>
+                )}
+                <Separator />
+                {["all", "documents"].includes(storageSelect) && (
+                  <div>
+                    {results.documents.length ? (
+                      <div>
+                        <DialogDescription className="pl-4 py-2">Documents</DialogDescription>
+                        {results.documents.map((document) => (
+                          <DialogClose key={document.id} asChild>
+                            <Button
+                              variant="ghost"
+                              className="w-full font-normal justify-start h-fit"
+                              onClick={() => handleRoute(`/documents?search=${searchText}`)}
+                            >
+                              <MarkedText searchTerm={searchText} text={document.name} />
+                            </Button>
+                          </DialogClose>
+                        ))}
+                      </div>
+                    ) : (
+                      <DialogDescription className="pl-4 pb-2">Documents not found</DialogDescription>
                     )}
                   </div>
                 )}

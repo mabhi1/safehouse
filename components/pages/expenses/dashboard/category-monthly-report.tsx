@@ -30,10 +30,17 @@ export default function CategoryMonthlyReport({
 
   // Aggregate expenses for current month
   const chartData = useMemo(() => {
-    const updatedData = { ...categoryData };
+    // Create a deep copy of categoryData with reset expenses
+    const updatedData = Object.entries(categoryData).reduce((acc, [id, { category }]) => {
+      acc[id] = { category, expenses: 0 };
+      return acc;
+    }, {} as Record<string, { category: string; expenses: number }>);
+
+    // Add current month expenses
     currentMonthData.forEach(({ category, amount }) => {
       updatedData[category.id].expenses += amount;
     });
+
     return Object.values(updatedData);
   }, [currentMonthData, categoryData]);
 

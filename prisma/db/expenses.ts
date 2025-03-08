@@ -195,3 +195,56 @@ export async function deleteExpenseById(id: string, uid: string) {
     return { data: null, error };
   }
 }
+
+export async function searchExpensesByText(text: string, userId: string) {
+  try {
+    if (text.trim().length < 3) return { data: [], error: null };
+    const data = await prisma.expense.findMany({
+      where: {
+        OR: [
+          { title: { contains: text, mode: "insensitive" } },
+          { description: { contains: text, mode: "insensitive" } },
+        ],
+        uid: userId,
+      },
+      include: {
+        category: { select: { name: true, id: true } },
+        currency: { select: { name: true, code: true, symbol: true, id: true } },
+        paymentType: { select: { name: true, id: true } },
+      },
+    });
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+
+export async function deleteMultipleExpensesById(ids: string[], uid: string) {
+  try {
+    // Delete expenses one by one to ensure each one belongs to the user
+    const results = await Promise.all(
+      ids.map(async (id) => {
+        try {
+          const data = await prisma.expense.delete({
+            where: {
+              id,
+              uid,
+            },
+          });
+          return { success: true, id };
+        } catch (error) {
+          return { success: false, id, error };
+        }
+      })
+    );
+
+    return {
+      data: results,
+      error: null,
+      successCount: results.filter((r) => r.success).length,
+      failureCount: results.filter((r) => !r.success).length,
+    };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
