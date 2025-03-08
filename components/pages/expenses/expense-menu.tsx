@@ -2,7 +2,6 @@
 
 import { expensesSubMenu } from "@/components/layout/navigation";
 import { cn } from "@/lib/utils";
-import { ChartArea, Coins, Layers2, Monitor, WalletMinimal } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

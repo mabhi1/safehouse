@@ -8,7 +8,7 @@ import { Filter, Minus, RotateCcw, X, Trash2, CircleSlash, StepForward } from "l
 import CreateExpenseForm from "./create-expense-form";
 import { DataTable } from "./data-table";
 import { expensesTableColumns } from "./expenses-table-columns";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Sheet,
   SheetClose,
@@ -36,7 +36,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface ExpenseListCompProps {
   expenseData: ExpenseType[];
@@ -44,7 +43,6 @@ interface ExpenseListCompProps {
   categoryData: ExpenseCategoryType[];
   paymentTypeData: ExpenseCategoryType[];
   currencyData: { id: string; code: string; name: string; symbol: string }[];
-  searchText?: string;
 }
 
 export const ExpenseListComp = ({
@@ -53,13 +51,10 @@ export const ExpenseListComp = ({
   categoryData,
   paymentTypeData,
   currencyData,
-  searchText,
 }: ExpenseListCompProps) => {
-  const [searchTerm, setSearchTerm] = useState(searchText || "");
+  const [searchTerm, setSearchTerm] = useState("");
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
-  const pathname = usePathname();
   const [filterData, setFilterData] = useState({
     date: [undefined, undefined] as [Date | undefined, Date | undefined],
     category: "",
@@ -67,32 +62,6 @@ export const ExpenseListComp = ({
     currency: "",
     amount: [0, Number.MAX_SAFE_INTEGER] as [number, number],
   });
-  const searchParams = useSearchParams();
-
-  // Create a memoized function to update URL
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-
-      if (value) {
-        params.set(name, value);
-      } else {
-        params.delete(name);
-      }
-
-      return params.toString();
-    },
-    [searchParams]
-  );
-
-  useEffect(() => {
-    if (searchText) setSearchTerm(searchText);
-  }, [searchText]);
-
-  useEffect(() => {
-    const queryString = createQueryString("search", searchTerm);
-    router.push(`${pathname}?${queryString}`, { scroll: false });
-  }, [searchTerm, router, pathname, createQueryString]);
 
   // Function to filter expenses
   const getFilteredExpenses = useMemo(() => {

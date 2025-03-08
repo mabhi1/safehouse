@@ -18,7 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { CircleSlash, Save } from "lucide-react";
+import { CircleSlash, FilePenLine, Save } from "lucide-react";
 
 type EditNoteFormValues = {
   title: string;
@@ -41,7 +41,9 @@ export function EditNoteForm({ note, uid }: { note: NotesType; uid: string }) {
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button variant="ghost">Edit</Button>
+        <Button variant="secondary" ICON={FilePenLine} mobileVariant>
+          Edit
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

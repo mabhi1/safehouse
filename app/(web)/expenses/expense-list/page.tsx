@@ -4,11 +4,9 @@ import { ExpenseListComp } from "@/components/pages/expenses/expense-list/expens
 
 export const dynamic = "force-dynamic";
 
-export default async function ExpenseListPage({ searchParams }: { searchParams: { [key: string]: string } }) {
+export default async function ExpenseListPage() {
   const { userId, redirectToSignIn } = auth();
   if (!userId) return redirectToSignIn();
-
-  const searchText = searchParams["search"];
 
   const { data: expenseData, error } = await getExpensesByUser(userId!);
   if (!expenseData || error) throw new Error("User not found");
@@ -24,7 +22,6 @@ export default async function ExpenseListPage({ searchParams }: { searchParams: 
       paymentTypeData={paymentTypeData || []}
       currencyData={currencyData || []}
       userId={userId}
-      searchText={searchText}
     />
   );
 }
