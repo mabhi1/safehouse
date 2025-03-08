@@ -28,6 +28,12 @@ export function useBookmarks(initialBookmarks: BookmarkType[], userId: string, i
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
+  useEffect(() => {
+    if (initialSearchText) {
+      setSearchTerm(initialSearchText);
+    }
+  }, [initialSearchText]);
+
   // Create a memoized function to update URL
   const createQueryString = useCallback(
     (name: string, value: string) => {

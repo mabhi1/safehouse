@@ -22,7 +22,7 @@ import {
 import { Input } from "../ui/input";
 import { ChangeEvent, useEffect, useMemo, useState, useTransition } from "react";
 import { searchNotes } from "@/actions/notes";
-import { EventType, ExpenseType, FileType, NotesType, PasswordType } from "@/lib/db-types";
+import { BookmarkType, EventType, ExpenseType, FileType, NotesType, PasswordType } from "@/lib/db-types";
 import MarkedText from "../ui/marked-text";
 import { useRouter } from "next/navigation";
 import { isMatching } from "@/lib/utils";
@@ -31,6 +31,7 @@ import { useAuth } from "@clerk/nextjs";
 import { searchEvents } from "@/actions/events";
 import { searchExpenses } from "@/actions/expenses";
 import { searchDocuments } from "@/actions/documents";
+import { searchBookmarks } from "@/actions/bookmarks";
 import { Search } from "lucide-react";
 import Spinner from "./spinner";
 import debounce from "lodash/debounce";
@@ -43,6 +44,7 @@ const defaultStorageValue = {
   passwords: [] as PasswordType[],
   expenses: [] as ExpenseType[],
   documents: [] as FileType[],
+  bookmarks: [] as BookmarkType[],
 };
 
 export default function SearchButton() {
@@ -81,7 +83,7 @@ export default function SearchButton() {
 
   const handleSearch = async (text: string) => {
     if (text.trim().length < 3) {
-      setResults({ notes: [], events: [], passwords: [], expenses: [], documents: [] });
+      setResults({ notes: [], events: [], passwords: [], expenses: [], documents: [], bookmarks: [] });
       return;
     }
 
@@ -116,6 +118,11 @@ export default function SearchButton() {
       if (notCached("documents")) {
         const documentsData = await searchDocuments(text, userId!);
         if (documentsData.data) newResults.documents = documentsData.data;
+      }
+
+      if (notCached("bookmarks")) {
+        const bookmarksData = await searchBookmarks(text, userId!);
+        if (bookmarksData.data) newResults.bookmarks = bookmarksData.data;
       }
 
       setResults(newResults);
@@ -182,6 +189,7 @@ export default function SearchButton() {
                   <SelectItem value="events">Events</SelectItem>
                   <SelectItem value="expenses">Expenses</SelectItem>
                   <SelectItem value="documents">Documents</SelectItem>
+                  <SelectItem value="bookmarks">Bookmarks</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -322,6 +330,32 @@ export default function SearchButton() {
                       </div>
                     ) : (
                       <DialogDescription className="pl-4 pb-2">Documents not found</DialogDescription>
+                    )}
+                  </div>
+                )}
+                <Separator />
+                {["all", "bookmarks"].includes(storageSelect) && (
+                  <div>
+                    {results.bookmarks.length ? (
+                      <div>
+                        <DialogDescription className="pl-4 py-2">Bookmarks</DialogDescription>
+                        {results.bookmarks.map((bookmark) => (
+                          <DialogClose key={bookmark.id} asChild>
+                            <Button
+                              variant="ghost"
+                              className="w-full font-normal justify-start h-fit"
+                              onClick={() => handleRoute(`/bookmarks?search=${searchText}`)}
+                            >
+                              <MarkedText searchTerm={searchText} text={bookmark.title} />
+                              <div className="text-xs ml-2">
+                                <MarkedText searchTerm={searchText} text={bookmark.url} />
+                              </div>
+                            </Button>
+                          </DialogClose>
+                        ))}
+                      </div>
+                    ) : (
+                      <DialogDescription className="pl-4 pb-2">Bookmarks not found</DialogDescription>
                     )}
                   </div>
                 )}
