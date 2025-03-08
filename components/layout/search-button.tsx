@@ -205,7 +205,7 @@ export default function SearchButton() {
                             <Button
                               variant="ghost"
                               className="w-full font-normal justify-start h-fit"
-                              onClick={() => handleRoute(`/notes?search=${searchText}`)}
+                              onClick={() => handleRoute(`/notes/${note.id}`)}
                             >
                               <MarkedText
                                 searchTerm={searchText}
@@ -287,7 +287,7 @@ export default function SearchButton() {
                             <Button
                               variant="ghost"
                               className="w-full font-normal justify-start h-fit"
-                              onClick={() => handleRoute(`/expenses/expense-list?search=${searchText}`)}
+                              onClick={() => handleRoute(`/expenses/expense-list/${expense.id}`)}
                             >
                               <MarkedText searchTerm={searchText} text={expense.title} />
                               <div className="text-xs ml-2">
