@@ -4,13 +4,33 @@ import { ExpenseType } from "@/lib/db-types";
 import { amountFormatter, dateFormatter } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const expensesTableColumns: ColumnDef<ExpenseType>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+        onCheckedChange={(value: boolean | "indeterminate") => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value: boolean | "indeterminate") => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "date",
     header: "Date",
     cell: ({ row }) => {
-      return dateFormatter(row.getValue("date"));
+      return <div className="min-w-max">{dateFormatter(row.getValue("date"))}</div>;
     },
   },
   {

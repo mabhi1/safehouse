@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { CreatePasswordForm } from "./create-password-form";
 import { Badge } from "@/components/ui/badge";
 import { FloatingDock } from "@/components/ui/floating-dock";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 interface PasswordsPageProps {
   passwords: PasswordType[];
@@ -15,8 +16,36 @@ interface PasswordsPageProps {
 }
 
 export default function PasswordsPage({ passwords, userId, searchText }: PasswordsPageProps) {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(searchText || "");
   const [activeLetter, setActiveLetter] = useState<string>("A");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  // Create a memoized function to update URL
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  useEffect(() => {
+    if (searchText) setSearchTerm(searchText);
+  }, [searchText]);
+
+  useEffect(() => {
+    const queryString = createQueryString("search", searchTerm);
+    router.push(`${pathname}?${queryString}`, { scroll: false });
+  }, [searchTerm, router, pathname, createQueryString, searchText]);
 
   const filteredPasswords = useMemo(
     () =>
@@ -67,7 +96,6 @@ export default function PasswordsPage({ passwords, userId, searchText }: Passwor
       const element = document.getElementById(letter);
       if (element) {
         const rect = element.getBoundingClientRect();
-        if (letter === "A") console.log(rect.top, rect.bottom, window.innerHeight);
         if (rect.top >= 0 || rect.bottom >= window.innerHeight / 5) {
           currentLetter = letter;
           break;
@@ -98,7 +126,7 @@ export default function PasswordsPage({ passwords, userId, searchText }: Passwor
             placeholder="Search Passwords"
             className="h-9 w-36 md:w-56"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value.trim().toLowerCase())}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
         <CreatePasswordForm uid={userId!} />
@@ -115,7 +143,7 @@ export default function PasswordsPage({ passwords, userId, searchText }: Passwor
             </div>
             <ul className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
               {groupedPasswords[letter].map((password) => (
-                <PasswordCard key={password.id} password={password} uid={userId!} searchTerm={searchText} />
+                <PasswordCard key={password.id} password={password} uid={userId!} searchTerm={searchTerm} />
               ))}
             </ul>
           </div>

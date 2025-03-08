@@ -4,11 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ExpenseCategoryType, ExpenseType } from "@/lib/db-types";
-import { Filter, Minus, RotateCcw, X } from "lucide-react";
+import { Filter, Minus, RotateCcw, X, Trash2, CircleSlash, StepForward } from "lucide-react";
 import CreateExpenseForm from "./create-expense-form";
 import { DataTable } from "./data-table";
 import { expensesTableColumns } from "./expenses-table-columns";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Sheet,
   SheetClose,
@@ -22,6 +22,21 @@ import {
 import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/date-picker";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RowSelectionState } from "@tanstack/react-table";
+import { deleteMultipleExpenses } from "@/actions/expenses";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface ExpenseListCompProps {
   expenseData: ExpenseType[];
@@ -29,6 +44,7 @@ interface ExpenseListCompProps {
   categoryData: ExpenseCategoryType[];
   paymentTypeData: ExpenseCategoryType[];
   currencyData: { id: string; code: string; name: string; symbol: string }[];
+  searchText?: string;
 }
 
 export const ExpenseListComp = ({
@@ -37,8 +53,13 @@ export const ExpenseListComp = ({
   categoryData,
   paymentTypeData,
   currencyData,
+  searchText,
 }: ExpenseListCompProps) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(searchText || "");
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
   const [filterData, setFilterData] = useState({
     date: [undefined, undefined] as [Date | undefined, Date | undefined],
     category: "",
@@ -46,6 +67,32 @@ export const ExpenseListComp = ({
     currency: "",
     amount: [0, Number.MAX_SAFE_INTEGER] as [number, number],
   });
+  const searchParams = useSearchParams();
+
+  // Create a memoized function to update URL
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  useEffect(() => {
+    if (searchText) setSearchTerm(searchText);
+  }, [searchText]);
+
+  useEffect(() => {
+    const queryString = createQueryString("search", searchTerm);
+    router.push(`${pathname}?${queryString}`, { scroll: false });
+  }, [searchTerm, router, pathname, createQueryString]);
 
   // Function to filter expenses
   const getFilteredExpenses = useMemo(() => {
@@ -62,6 +109,35 @@ export const ExpenseListComp = ({
     });
   }, [searchTerm, filterData, expenseData]);
 
+  // Get selected expense IDs
+  const selectedExpenseIds = useMemo(() => {
+    return Object.keys(rowSelection).map((index) => getFilteredExpenses[parseInt(index)].id);
+  }, [rowSelection, getFilteredExpenses]);
+
+  // Handle delete selected expenses
+  const handleDeleteSelected = async () => {
+    if (selectedExpenseIds.length === 0) return;
+    setIsDeleting(true);
+    try {
+      const result = await deleteMultipleExpenses(selectedExpenseIds, userId);
+
+      if (result.data) {
+        toast.success(
+          `Successfully deleted ${result.successCount} expense(s)${
+            result.failureCount > 0 ? `. Failed to delete ${result.failureCount} expense(s).` : ""
+          }`
+        );
+        setRowSelection({});
+      } else {
+        toast.error("Failed to delete expenses. Please try again.");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap justify-end items-center gap-3 md:gap-5">
@@ -77,6 +153,34 @@ export const ExpenseListComp = ({
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value.trim().toLowerCase())}
         />
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" disabled={selectedExpenseIds.length === 0} ICON={Trash2}>
+              Delete
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action will permanently remove the expenses from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel asChild>
+                <Button variant="outline" ICON={CircleSlash}>
+                  Cancel
+                </Button>
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteSelected} asChild>
+                <Button ICON={StepForward} disabled={isDeleting}>
+                  Continue
+                </Button>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <Sheet>
           <SheetTrigger asChild>
@@ -209,7 +313,12 @@ export const ExpenseListComp = ({
         />
       </div>
 
-      <DataTable columns={expensesTableColumns} data={getFilteredExpenses} />
+      <DataTable
+        columns={expensesTableColumns}
+        data={getFilteredExpenses}
+        rowSelection={rowSelection}
+        onRowSelectionChange={setRowSelection}
+      />
     </div>
   );
 };

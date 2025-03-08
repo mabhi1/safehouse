@@ -1,12 +1,12 @@
 import prisma from "..";
 
-export async function getNotesByUser(uid: string, { key, type }: { key: string; type: string }) {
+export async function getNotesByUser(uid: string) {
   try {
     const data = await prisma.notes.findMany({
       where: {
         uid,
       },
-      orderBy: { [key]: type },
+      orderBy: { updatedAt: "desc" },
     });
     return { data, error: null };
   } catch (error) {

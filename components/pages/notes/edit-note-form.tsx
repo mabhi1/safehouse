@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { CircleSlash, Save } from "lucide-react";
 
 type EditNoteFormValues = {
   title: string;
@@ -31,7 +32,7 @@ export function EditNoteForm({ note, uid }: { note: NotesType; uid: string }) {
     description: note.description,
   };
 
-  const { formValues, handleInputChange, handleSubmit, isPending } = useFormSubmit<EditNoteFormValues>({
+  const { formValues, handleInputChange, handleSubmit, isPending, isValid } = useFormSubmit<EditNoteFormValues>({
     initialValues: initialFormValues,
     onSubmit: async (values) => editNote(note.id, values.title.trim(), values.description.trim(), uid),
     onSuccess: () => setOpenDialog(false),
@@ -80,9 +81,13 @@ export function EditNoteForm({ note, uid }: { note: NotesType; uid: string }) {
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary" ICON={CircleSlash}>
+                Cancel
+              </Button>
             </DialogClose>
-            <Button loading={isPending}>Save</Button>
+            <Button loading={isPending} disabled={!isValid} ICON={Save}>
+              Save
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -25,8 +25,19 @@ const formatDate = (date: Date) => {
 };
 
 export default function CategoryCustomReport({ expenseData, categories }: CategoryMonthlyDataProps) {
-  const [activeChart, setActiveChart] = useState<keyof typeof chartDataItem>("All");
   const [filterDate, setFilterDate] = useState<"3" | "6" | "12" | "all">("all");
+
+  const chartDataItem = useMemo(() => {
+    const item: { [key: string]: number } = { All: 0 };
+
+    categories.forEach((category) => {
+      item[category.name] = 0;
+    });
+
+    return item;
+  }, [categories]);
+
+  const [activeChart, setActiveChart] = useState<string>("All");
 
   const filterByDateRange = (data: ExpenseType[], filterOption: "3" | "6" | "12" | "all") => {
     const now = new Date();
@@ -51,26 +62,24 @@ export default function CategoryCustomReport({ expenseData, categories }: Catego
     return data.filter((item) => new Date(item.date) >= startDate);
   };
 
-  const chartDataItem: { [key: string]: number } = { All: 0 };
+  const chartData = useMemo(() => {
+    const data: { [key: string]: any } = {};
 
-  categories.forEach((category) => {
-    chartDataItem[category.name] = 0;
-  });
+    filterByDateRange(expenseData, filterDate).forEach((expense) => {
+      const date = formatDate(expense.date);
+      if (data[date]) {
+        data[date][expense.category.name] = expense.amount;
+        data[date]["All"] += expense.amount;
+      } else {
+        const newItem = { ...chartDataItem };
+        newItem[expense.category.name] = expense.amount;
+        newItem["All"] += expense.amount;
+        data[date] = { date: date, ...newItem };
+      }
+    });
 
-  const chartData: { [key: string]: any } = {};
-
-  filterByDateRange(expenseData, filterDate).forEach((expense) => {
-    const date = formatDate(expense.date);
-    if (chartData[date]) {
-      chartData[date][expense.category.name] = expense.amount;
-      chartData[date]["All"] += expense.amount;
-    } else {
-      const newItem = { ...chartDataItem };
-      newItem[expense.category.name] = expense.amount;
-      newItem["All"] += expense.amount;
-      chartData[date] = { date: date, ...newItem };
-    }
-  });
+    return data;
+  }, [expenseData, filterDate, chartDataItem]);
 
   const chartConfig: { [key: string]: { label: string } } = {
     expenses: {
