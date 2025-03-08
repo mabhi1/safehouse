@@ -30,7 +30,7 @@ export const expensesTableColumns: ColumnDef<ExpenseType>[] = [
     accessorKey: "date",
     header: "Date",
     cell: ({ row }) => {
-      return <div className="min-w-max">{dateFormatter(row.getValue("date"))}</div>;
+      return <div className="w-max">{dateFormatter(row.getValue("date"))}</div>;
     },
   },
   {
@@ -50,7 +50,7 @@ export const expensesTableColumns: ColumnDef<ExpenseType>[] = [
     accessorKey: "category",
     header: "Category",
     cell: ({ row }) => {
-      return <>{row.original.category.name}</>;
+      return <div className="w-max">{row.original.category.name}</div>;
     },
   },
   {
