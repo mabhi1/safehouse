@@ -26,7 +26,7 @@ export default function PasswordText({ password }: { password: string }) {
     try {
       const parsed = JSON.parse(pass);
       return parsed["ciphertext"] + parsed["authTag"] + parsed["iv"];
-    } catch (error) {
+    } catch {
       return pass;
     }
   };

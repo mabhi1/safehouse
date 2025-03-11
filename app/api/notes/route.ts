@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const { data, error } = await getNotesByUser(uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error fetching notes", {
       status: 404,
     });
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await createNoteByUser(title, description, uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error saving note", {
       status: 404,
     });
@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest) {
     const { data, error } = await updateNoteById(id, title, description, uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error saving note", {
       status: 404,
     });
@@ -53,7 +53,7 @@ export async function DELETE(request: NextRequest) {
     const { data, error } = await deleteNoteById(id, uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error deleting note", {
       status: 404,
     });

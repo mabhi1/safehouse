@@ -54,7 +54,7 @@ export default function PasswordsPage({ passwords, userId, searchText }: Passwor
             let url;
             try {
               url = new URL(`https://${password.site}`);
-            } catch (error) {
+            } catch {
               url = { hostname: password.site };
             }
             const domain = url.hostname.split(".");
@@ -74,7 +74,7 @@ export default function PasswordsPage({ passwords, userId, searchText }: Passwor
     let url;
     try {
       url = new URL(`https://${entry.site}`);
-    } catch (error) {
+    } catch {
       url = { hostname: entry.site };
     }
     const domain = url.hostname.split(".");

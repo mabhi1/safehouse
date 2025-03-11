@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     } else {
       throw new Error();
     }
-  } catch (error) {
+  } catch {
     return new Response("Error sending email", {
       status: 404,
     });

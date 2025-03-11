@@ -1,4 +1,4 @@
-//@ts-ignore
+//@ts-expect-error - Using crypto-browserify for cross-platform compatibility
 import crypto, { BinaryLike, CipherKey } from "crypto-browserify";
 // For simplicity, we'll use PBKDF2. You might use argon2 library or bcrypt instead.
 const PBKDF2_ITERATIONS = 100000;

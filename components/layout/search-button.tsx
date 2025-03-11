@@ -148,7 +148,7 @@ export default function SearchButton() {
     if (searchText.trim().length >= 3) {
       handleSearch(searchText);
     }
-  }, [storageSelect]);
+  }, [storageSelect, searchText]);
 
   const handleRoute = (route: string) => {
     router.push(route);

@@ -100,7 +100,7 @@ export const ExpenseListComp = ({
       } else {
         toast.error("Failed to delete expenses. Please try again.");
       }
-    } catch (error) {
+    } catch {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsDeleting(false);

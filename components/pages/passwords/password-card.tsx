@@ -19,7 +19,7 @@ export default function PasswordCard({ password, searchTerm = "", uid }: Passwor
   let url;
   try {
     url = new URL(`https://${site}`);
-  } catch (error) {
+  } catch {
     url = { hostname: site };
   }
   const domain = url.hostname.split(".");

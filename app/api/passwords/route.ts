@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const { data, error } = await getPasswordsByUser(uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error fetching passwords", {
       status: 404,
     });
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await createPasswordByUser(site, username, password, uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error: any) {
+  } catch {
     return new Response("Error saving password", {
       status: 404,
     });
@@ -57,7 +57,7 @@ export async function PUT(request: NextRequest) {
       if (error || !data) throw "";
       return new Response(JSON.stringify(data), { status: 200 });
     }
-  } catch (error) {
+  } catch {
     return new Response("Error saving password", {
       status: 404,
     });
@@ -73,7 +73,7 @@ export async function DELETE(request: NextRequest) {
     const { data, error } = await deletePasswordById(id, uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error deleting password", {
       status: 404,
     });

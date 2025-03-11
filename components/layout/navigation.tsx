@@ -25,6 +25,7 @@ import {
   ShieldCheck,
   WalletMinimal,
   Bookmark,
+  Split,
 } from "lucide-react";
 import Image from "next/image";
 import { SignedIn } from "@clerk/nextjs";
@@ -98,6 +99,12 @@ export const storageLinks: {
     href: "/bookmarks",
     description: "Save and organize your favorite websites with custom notes.",
     icon: (className: string) => <Bookmark className={className} />,
+  },
+  {
+    title: "Split Bill",
+    href: "/split-bill",
+    description: "Create groups and split bills with friends and family.",
+    icon: (className: string) => <Split className={className} />,
     isNew: true,
   },
   {
@@ -105,7 +112,6 @@ export const storageLinks: {
     href: "/expenses",
     description: "Track and manage your expenses effortlessly with a modern UI.",
     icon: (className: string) => <HandCoins className={className} />,
-    isNew: true,
     subMenu: expensesSubMenu,
   },
 ];

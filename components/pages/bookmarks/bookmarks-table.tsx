@@ -5,7 +5,7 @@ import { BookmarkType } from "@/lib/db-types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, ExternalLink, Plus, CircleSlash, StepForward } from "lucide-react";
+import { Trash2, ExternalLink, CircleSlash, StepForward } from "lucide-react";
 import Image from "next/image";
 import { deleteBookmark } from "@/actions/bookmarks";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";

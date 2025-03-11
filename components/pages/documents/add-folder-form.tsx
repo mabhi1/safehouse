@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { FolderType } from "@/lib/db-types";
-import { Loader2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 

@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await getEventsByDate(startTime, endTime);
     if (error || !data || !data?.length) throw new Error("No Events found");
-    for (let event of data) {
+    for (const event of data) {
       const res = await fetch(`https://api.clerk.com/v1/users/${event.uid}`, {
         headers: {
           Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}`,

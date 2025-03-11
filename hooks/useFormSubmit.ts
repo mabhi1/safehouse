@@ -2,9 +2,9 @@ import { useState, useTransition, FormEvent, useMemo } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-type ValidationFn = (value: string | number | Date) => boolean; // Custom validation function
+type ValidationFn = (value: string | number | Date | Record<string, any>) => boolean; // Custom validation function
 
-type FormSubmitOptions<T extends Record<string, string | Date | number>> = {
+type FormSubmitOptions<T extends Record<string, string | Date | number | Record<string, any>>> = {
   initialValues: T;
   onSubmit: (values: T) => Promise<{ data: any; error: any }>;
   onSuccess?: () => void;
@@ -15,9 +15,10 @@ type FormSubmitOptions<T extends Record<string, string | Date | number>> = {
   resetOnSuccess?: boolean;
   optionalFields?: (keyof T)[]; // Define optional fields
   validations?: Partial<Record<keyof T, ValidationFn>>; // Custom validations for specific fields
+  additionalChanges?: () => boolean;
 };
 
-export const useFormSubmit = <T extends Record<string, string | Date | number>>({
+export const useFormSubmit = <T extends Record<string, string | Date | number | Record<string, any>>>({
   initialValues,
   onSubmit,
   onSuccess,
@@ -28,6 +29,7 @@ export const useFormSubmit = <T extends Record<string, string | Date | number>>(
   resetOnSuccess = true,
   optionalFields = [],
   validations = {},
+  additionalChanges = () => true,
 }: FormSubmitOptions<T>) => {
   const [formValues, setFormValues] = useState<T>(initialValues);
   const [isPending, startTransition] = useTransition();
@@ -36,7 +38,7 @@ export const useFormSubmit = <T extends Record<string, string | Date | number>>(
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-      | { target: { id: string; value: string | Date | number } }
+      | { target: { id: string; value: string | Date | number | Record<string, any> } }
   ) => {
     const { id, value } = e.target;
     setFormValues((prevValues) => ({
@@ -66,7 +68,7 @@ export const useFormSubmit = <T extends Record<string, string | Date | number>>(
       return validateFn ? validateFn(value) : true; // Ensure validateFn exists before calling it
     });
 
-    return requiredFieldsValid && hasChanges && optionalValid;
+    return requiredFieldsValid && (hasChanges || additionalChanges ? additionalChanges() : true) && optionalValid;
   }, [formValues, initialValues, optionalFields, validations]);
 
   const handleSubmit = (e: FormEvent) => {

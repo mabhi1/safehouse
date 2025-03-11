@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     if (error2 || !data2) throw "";
 
     return new Response(JSON.stringify({ currentEvents: data1, upcomingEvents: data2 }), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error fetching events", {
       status: 404,
     });
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const { data, error } = await createEventByUser(title, description, new Date(date), uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error saving event", {
       status: 404,
     });
@@ -64,7 +64,7 @@ export async function PUT(request: NextRequest) {
     const { data, error } = await updateEventById(id, title, description, new Date(date), uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error saving note", {
       status: 404,
     });
@@ -80,7 +80,7 @@ export async function DELETE(request: NextRequest) {
     const { data, error } = await deleteEventById(id, uid);
     if (error || !data) throw "";
     return new Response(JSON.stringify(data), { status: 200 });
-  } catch (error) {
+  } catch {
     return new Response("Error deleting event", {
       status: 404,
     });

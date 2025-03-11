@@ -57,7 +57,7 @@ export const EditPasswordForm = ({ password, uid }: { password: PasswordType; ui
         try {
           new URL(`https://${value}`);
           return true;
-        } catch (error) {
+        } catch {
           // toast.error("Invalid site entered");
           return false;
         }

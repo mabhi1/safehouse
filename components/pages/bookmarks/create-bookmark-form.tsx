@@ -27,7 +27,7 @@ const isValidUrl = (url: string): boolean => {
     const parsedUrl = new URL(url);
     // Check if it has http or https protocol
     return parsedUrl.protocol === "http:" || parsedUrl.protocol === "https:";
-  } catch (error) {
+  } catch {
     return false;
   }
 };
@@ -48,7 +48,7 @@ export function CreateBookmarkForm({ uid }: { uid: string }) {
   };
 
   const validations = {
-    url: (value: string | number | Date) => {
+    url: (value: any) => {
       const urlString = String(value);
       return isValidUrl(urlString);
     },
