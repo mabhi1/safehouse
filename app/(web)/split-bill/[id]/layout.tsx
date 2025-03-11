@@ -209,14 +209,13 @@ export default async function BillGroupLayout({
           <p className="text-xs text-muted-foreground">{group.description || "Manage your bill group and members."}</p>
         </div>
 
-        {isCreator && (
-          <EditGroupForm
-            groupId={group.id}
-            userId={userId}
-            initialName={group.name}
-            initialDescription={group.description || ""}
-          />
-        )}
+        <EditGroupForm
+          groupId={group.id}
+          userId={userId}
+          initialName={group.name}
+          initialDescription={group.description || ""}
+        />
+
         {isCreator && (
           <DeleteButton
             id={group.id}

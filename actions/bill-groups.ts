@@ -34,13 +34,7 @@ export async function deleteBillGroupAction(id: string, userId: string) {
   return result;
 }
 
-export async function addMemberToBillGroupAction(groupId: string, memberUserId: string, userId: string) {
-  // Verify the user is the creator of this group
-  const { data: isCreator } = await isUserGroupCreator(groupId, userId);
-  if (!isCreator) {
-    return { error: "Unauthorized. Only the creator can add members.", data: null };
-  }
-
+export async function addMemberToBillGroupAction(groupId: string, memberUserId: string) {
   // Get the group to check if the member is already in it
   const { data: group } = await getBillGroupById(groupId);
   if (!group) {
@@ -59,13 +53,7 @@ export async function addMemberToBillGroupAction(groupId: string, memberUserId: 
   return result;
 }
 
-export async function removeMemberFromBillGroupAction(memberId: string, groupId: string, userId: string) {
-  // Verify the user is the creator of this group
-  const { data: isCreator } = await isUserGroupCreator(groupId, userId);
-  if (!isCreator) {
-    return { error: "Unauthorized. Only the creator can remove members.", data: null };
-  }
-
+export async function removeMemberFromBillGroupAction(memberId: string, groupId: string) {
   // Check if the member has any outstanding balances
   const { data: hasBalances, error: balanceError } = await memberHasOutstandingBalances(memberId, groupId);
 

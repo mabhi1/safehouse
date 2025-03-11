@@ -22,11 +22,9 @@ import { toast } from "sonner";
 
 export default function AddMemberForm({
   groupId,
-  userId,
   members,
 }: {
   groupId: string;
-  userId: string;
   members: { id: string; userId: string }[];
 }) {
   const router = useRouter();
@@ -43,7 +41,7 @@ export default function AddMemberForm({
     setAddingMember(true);
 
     try {
-      const { error } = await addMemberToBillGroupAction(groupId, selectedUser.id, userId);
+      const { error } = await addMemberToBillGroupAction(groupId, selectedUser.id);
 
       if (error) {
         throw new Error(error);
@@ -84,9 +82,7 @@ export default function AddMemberForm({
       }
 
       // Filter out users who are already members or the creator
-      const filteredResults = data.filter(
-        (user: UserResult) => user.id !== userId && !members.some((member) => member.id === user.id)
-      );
+      const filteredResults = data.filter((user: UserResult) => !members.some((member) => member.id === user.id));
 
       setSearchResults(filteredResults);
 

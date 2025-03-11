@@ -42,7 +42,7 @@ export const MemberList = ({
     setLoading(true);
 
     try {
-      const { error } = await removeMemberFromBillGroupAction(memberId, id, userId);
+      const { error } = await removeMemberFromBillGroupAction(memberId, id);
 
       if (error) {
         if (error.includes("outstanding balances")) {
@@ -51,12 +51,20 @@ export const MemberList = ({
           throw new Error(error);
         }
       } else {
-        toast.success("Member removed successfully");
+        if (userId === members.find((member) => member.id === memberId)?.userId) {
+          toast.success("Member removed successfully");
+        } else {
+          toast.success("You exited the group successfully.");
+        }
         router.refresh();
       }
     } catch (error) {
       console.error("Error removing member:", error);
-      toast.error("Failed to remove member. Please try again.");
+      if (userId === members.find((member) => member.id === memberId)?.userId) {
+        toast.error("Failed to remove member. Please try again.");
+      } else {
+        toast.error("Failed to exit group. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -69,7 +77,7 @@ export const MemberList = ({
           <h2 className="text-xl">Members</h2>
           <Badge variant="outline">{members.length}</Badge>
         </div>
-        <AddMemberForm groupId={id} userId={userId} members={members} />
+        <AddMemberForm groupId={id} members={members} />
       </div>
 
       <Card>
@@ -108,35 +116,33 @@ export const MemberList = ({
                         </div>
                       </div>
 
-                      {isCreator && member.user.id !== userId && (
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <Trash className="h-4 w-4 text-destructive hover:text-destructive/80" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                This action will permanently delete the user from the group.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel asChild>
-                                <Button variant="outline" ICON={CircleSlash}>
-                                  Cancel
-                                </Button>
-                              </AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleRemoveMember(member.id)} asChild>
-                                <Button ICON={StepForward} loading={loading}>
-                                  Continue
-                                </Button>
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      )}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <Trash className="h-4 w-4 text-destructive hover:text-destructive/80" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action will permanently delete the user from the group.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel asChild>
+                              <Button variant="outline" ICON={CircleSlash}>
+                                Cancel
+                              </Button>
+                            </AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleRemoveMember(member.id)} asChild>
+                              <Button ICON={StepForward} loading={loading}>
+                                Continue
+                              </Button>
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </div>
                 ))}
