@@ -57,13 +57,14 @@ model events {
 }
 
 model currency {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  code      String
-  name      String
-  symbol    String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  expenses  expense[]
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  code        String
+  name        String
+  symbol      String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  expenses    expense[]
+  billExpense billExpense[]
 }
 
 model category {
@@ -107,4 +108,59 @@ model bookmarks {
   url       String
   uid       String
   updatedAt DateTime @updatedAt
+}
+
+model billGroup {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  members     billMember[]
+  expenses    billExpense[]
+}
+
+model billMember {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String // Clerk user ID
+  isCreator Boolean     @default(false) // Flag to identify the creator
+  group     billGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String      @db.ObjectId
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  shares    billShare[]
+}
+
+enum SplitType {
+  equal
+  percentage
+  amount
+}
+
+model billExpense {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String?
+  amount      Float
+  currency    currency    @relation(fields: [currencyId], references: [id])
+  currencyId  String      @db.ObjectId
+  paidBy      String
+  group       billGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId     String      @db.ObjectId
+  splitType   SplitType // "equal", "percentage", "amount"
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  shares      billShare[]
+}
+
+model billShare {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  expense    billExpense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expenseId  String      @db.ObjectId
+  member     billMember  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId   String      @db.ObjectId
+  amount     Float
+  percentage Float?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }

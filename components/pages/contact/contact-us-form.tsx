@@ -60,7 +60,7 @@ export default function ContactUsForm() {
         values.email.trim(),
         `${values.firstName.trim()} ${values.lastName.trim()}`
       );
-    } catch (error) {
+    } catch {
       return { data: null, error: true };
     }
   };

@@ -2,7 +2,6 @@ import { EncryptionError } from "@/components/pages/master-password/encryption-e
 import SuccessComponent from "@/components/pages/master-password/success-component";
 import { getEncryptionByUser } from "@/prisma/db/encryption";
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 async function MasterPasswordIdPage() {
   const { userId, redirectToSignIn } = auth();

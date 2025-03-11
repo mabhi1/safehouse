@@ -61,7 +61,7 @@ export function DeleteFolderButton({ userId, folderId }: { userId: string; folde
                   await deleteDoc(doc(db, "files", dir.id));
                   // File deleted successfully
                 })
-                .catch((error) => {
+                .catch(() => {
                   // Uh-oh, an error occurred!
                 });
 
@@ -73,7 +73,7 @@ export function DeleteFolderButton({ userId, folderId }: { userId: string; folde
         await deleteDoc(doc(db, "folders", folderId));
         toast.success("Action completed successfully");
         router.refresh();
-      } catch (error) {
+      } catch {
         toast.error("Unable to complete the action");
       }
     });

@@ -5,9 +5,9 @@
  **/
 
 import { cn } from "@/lib/utils";
-import { AnimatePresence, MotionValue, motion, useMotionValue, useTransform } from "framer-motion";
+import { AnimatePresence, MotionValue, motion, useMotionValue } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "./button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -100,7 +100,7 @@ const FloatingDockDesktop = ({
   className?: string;
   activeLetter: string;
 }) => {
-  let mouseX = useMotionValue(Infinity);
+  const mouseX = useMotionValue(Infinity);
   return (
     <motion.div
       onMouseMove={(e) => mouseX.set(e.pageX)}
@@ -118,7 +118,6 @@ const FloatingDockDesktop = ({
 };
 
 function IconContainer({
-  mouseX,
   title,
   icon,
   href,
@@ -130,28 +129,12 @@ function IconContainer({
   href: string;
   activeLetter: string;
 }) {
-  const [active, setActive] = useState(false);
-
-  let ref = useRef<HTMLDivElement>(null);
-
-  let distance = useTransform(mouseX, (val) => {
-    if (active) return 0;
-
-    let bounds = ref.current?.getBoundingClientRect() ?? { x: 0, width: 0 };
-    return val - bounds.x - bounds.width / 2;
-  });
-
-  useEffect(() => {
-    if (activeLetter.localeCompare(title) === 0) setActive(true);
-    else setActive(false);
-  }, [title, activeLetter]);
+  const ref = useRef<HTMLDivElement>(null);
 
   return (
     <Link href={href}>
       <motion.div
         ref={ref}
-        onMouseEnter={() => setActive(true)}
-        onMouseLeave={() => (activeLetter.localeCompare(title) === 0 ? setActive(true) : setActive(false))}
         className={cn(
           "aspect-square rounded-full flex items-center justify-center relative w-10 h-10",
           activeLetter === title ? "bg-primary" : "bg-gray-200 dark:bg-gray-800 hover:bg-primary/20"

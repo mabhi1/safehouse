@@ -34,7 +34,7 @@ export function DeleteFileButton({ fileId, fileDbId }: { fileId: string; fileDbI
           toast.success("Action completed successfully");
           router.refresh();
         })
-        .catch((error) => {
+        .catch(() => {
           toast.error("Unable to complete the action");
         });
     });

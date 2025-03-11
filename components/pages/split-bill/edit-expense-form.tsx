@@ -1,0 +1,587 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Banknote, CircleSlash, Pencil, Percent, Save } from "lucide-react";
+import { useFormSubmit } from "@/hooks/useFormSubmit";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useEffect, useState } from "react";
+import { Select, SelectTrigger, SelectItem, SelectContent, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+import { getAllCurrenciesAction } from "@/actions/currency";
+import { currency } from "@prisma/client";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { UserResult } from "@/lib/db-types";
+import { getUsersByIds } from "@/actions/users";
+import { updateBillExpenseAction } from "@/actions/bill-expenses";
+
+type EditExpenseFormValues = {
+  title: string;
+  description: string;
+  amount: number;
+  currencyId: string;
+  splitType: "equal" | "percentage" | "amount";
+};
+
+export default function EditExpenseForm({
+  expense,
+  members,
+  groupId,
+  userId,
+}: {
+  expense: {
+    id: string;
+    title: string;
+    description: string | null;
+    amount: number;
+    currencyId: string;
+    splitType: "equal" | "percentage" | "amount";
+    shares: {
+      id: string;
+      memberId: string;
+      amount: number;
+      percentage: number | null;
+    }[];
+  };
+  members: { id: string; userId: string }[];
+  groupId: string;
+  userId: string;
+}) {
+  const [currencies, setCurrencies] = useState<currency[]>([]);
+  const [loadingCurrencies, setLoadingCurrencies] = useState(true);
+  const [users, setUsers] = useState<UserResult[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<Record<string, boolean>>({});
+  const [memberShares, setMemberShares] = useState<Record<string, { amount: number; percentage: number }>>({});
+  const [openDialog, setOpenDialog] = useState(false);
+  const [initialMemberShares, setInitialMemberShares] = useState<
+    Record<string, { amount: number; percentage: number }>
+  >({});
+  const [initialSelectedMembers, setInitialSelectedMembers] = useState<Record<string, boolean>>({});
+
+  // Initialize selected members and shares based on existing expense
+  useEffect(() => {
+    const initialSelectedMembers: Record<string, boolean> = {};
+    const initialMemberShares: Record<string, { amount: number; percentage: number }> = {};
+
+    // First set all members to false
+    members.forEach((member) => {
+      initialSelectedMembers[member.id] = false;
+      initialMemberShares[member.id] = { amount: 0, percentage: 0 };
+    });
+
+    // Calculate total amount for percentage calculation if needed
+    const totalAmount = expense.amount;
+
+    // Then set the selected members based on expense shares
+    expense.shares.forEach((share) => {
+      initialSelectedMembers[share.memberId] = true;
+
+      // If percentage is null but we have an amount, calculate the percentage
+      const percentage =
+        share.percentage !== null ? share.percentage : totalAmount > 0 ? (share.amount / totalAmount) * 100 : 0;
+
+      initialMemberShares[share.memberId] = {
+        amount: share.amount,
+        percentage: percentage,
+      };
+    });
+
+    setSelectedMembers(initialSelectedMembers);
+    setMemberShares(initialMemberShares);
+    setInitialSelectedMembers(initialSelectedMembers);
+    setInitialMemberShares(initialMemberShares);
+  }, [expense, members]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const { data, error } = await getUsersByIds(members.map((member) => member.userId));
+      if (error || !data) {
+        throw new Error(error);
+      }
+      setUsers(data);
+    };
+    fetchUsers();
+  }, [members]);
+
+  const getUser = (userId: string) => {
+    return users.find((user) => user.id === userId);
+  };
+
+  // Fetch currencies
+  useEffect(() => {
+    const fetchCurrencies = async () => {
+      try {
+        const { data, error } = await getAllCurrenciesAction();
+        if (error) {
+          throw new Error(error);
+        }
+
+        if (data) {
+          setCurrencies(data);
+        }
+      } catch (error) {
+        toast.error("Failed to load currencies");
+        console.error(error);
+      } finally {
+        setLoadingCurrencies(false);
+      }
+    };
+
+    fetchCurrencies();
+  }, []);
+
+  const initialFormValues: EditExpenseFormValues = {
+    title: expense.title,
+    description: expense.description || "",
+    amount: expense.amount,
+    currencyId: expense.currencyId,
+    splitType: expense.splitType,
+  };
+
+  const { formValues, handleInputChange, handleSubmit, isPending, isValid } = useFormSubmit<EditExpenseFormValues>({
+    initialValues: initialFormValues,
+    onSubmit: async (values) => {
+      if (!validateShares()) {
+        return { data: "", error: "Invalid shares" };
+      }
+      const selectedMemberIds = Object.keys(selectedMembers).filter((id) => selectedMembers[id]);
+      const shares = selectedMemberIds.map((memberId) => ({
+        memberId,
+        amount: memberShares[memberId].amount,
+        percentage: values.splitType === "percentage" ? memberShares[memberId].percentage : undefined,
+      }));
+
+      return await updateBillExpenseAction(
+        expense.id,
+        values.title.trim(),
+        parseFloat(values.amount.toString()),
+        values.currencyId,
+        groupId,
+        values.splitType,
+        values.description.trim() || undefined,
+        shares
+      );
+    },
+    onSuccess: () => {
+      setOpenDialog(false);
+    },
+    optionalFields: ["description"],
+    validations: {
+      amount: (value) => {
+        if (parseFloat(value as string) <= 0) return false;
+        return true;
+      },
+      currencyId: (value) => {
+        return value !== "";
+      },
+    },
+    additionalChanges: () => {
+      const memberSharesChanged = Object.keys(memberShares).some((memberId) => {
+        return (
+          memberShares[memberId].amount !== initialMemberShares[memberId].amount ||
+          memberShares[memberId].percentage !== initialMemberShares[memberId].percentage
+        );
+      });
+
+      // Check if there are changes in selectedMembers
+      const selectedMembersChanged = Object.keys(selectedMembers).some(
+        (memberId) => selectedMembers[memberId] !== initialSelectedMembers[memberId]
+      );
+      return memberSharesChanged || selectedMembersChanged;
+    },
+  });
+
+  // Calculate equal shares when amount or selected members change
+  useEffect(() => {
+    if (formValues.splitType === "equal") {
+      calculateEqualShares();
+    }
+  }, [formValues.amount, selectedMembers, formValues.splitType]);
+
+  const validateShares = () => {
+    if (!formValues.amount) return false;
+
+    const totalAmount = parseFloat(formValues.amount.toString());
+    const selectedMemberIds = Object.keys(selectedMembers).filter((id) => selectedMembers[id]);
+
+    if (selectedMemberIds.length === 0) {
+      toast.error("Please select at least one member to split with");
+      return false;
+    }
+
+    // Check if any selected member has a share of 0
+    const hasZeroShare = selectedMemberIds.some((id) => memberShares[id].amount === 0);
+    if (hasZeroShare) {
+      toast.error("All selected members must have a share greater than 0");
+      return false;
+    }
+
+    // For amount or percentage split types, validate the total
+    if (formValues.splitType === "amount") {
+      const totalShares = selectedMemberIds.reduce((sum, id) => sum + memberShares[id].amount, 0);
+      if (Math.abs(totalShares - totalAmount) > 0.01) {
+        toast.error(
+          `The sum of shares (${totalShares.toFixed(2)}) must equal the total amount (${totalAmount.toFixed(2)})`
+        );
+        return false;
+      }
+    } else if (formValues.splitType === "percentage") {
+      const totalPercentage = selectedMemberIds.reduce((sum, id) => sum + memberShares[id].percentage, 0);
+      if (Math.abs(totalPercentage - 100) > 0.01) {
+        toast.error(`The sum of percentages (${totalPercentage.toFixed(2)}%) must equal 100%`);
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const getTotalShares = () => {
+    const selectedMemberIds = Object.keys(selectedMembers).filter((id) => selectedMembers[id]);
+    if (formValues.splitType === "amount") {
+      return selectedMemberIds.reduce((sum, id) => sum + memberShares[id].amount, 0);
+    } else if (formValues.splitType === "percentage") {
+      return selectedMemberIds.reduce((sum, id) => sum + memberShares[id].percentage, 0);
+    }
+    return 0;
+  };
+
+  const getShareStatus = () => {
+    if (!formValues.amount) return { isValid: false, message: "" };
+
+    const totalAmount = formValues.amount;
+    const totalShares = getTotalShares();
+
+    if (formValues.splitType === "amount") {
+      const diff = Math.abs(totalShares - totalAmount);
+      if (diff < 0.01) {
+        return { isValid: true, message: "Shares sum up to the total amount" };
+      } else if (totalShares < totalAmount) {
+        return { isValid: false, message: `${(totalAmount - totalShares).toFixed(2)} remaining to allocate` };
+      } else {
+        return { isValid: false, message: `${(totalShares - totalAmount).toFixed(2)} over-allocated` };
+      }
+    } else if (formValues.splitType === "percentage") {
+      const diff = Math.abs(totalShares - 100);
+      if (diff < 0.01) {
+        return { isValid: true, message: "Percentages sum up to 100%" };
+      } else if (totalShares < 100) {
+        return { isValid: false, message: `${(100 - totalShares).toFixed(2)}% remaining to allocate` };
+      } else {
+        return { isValid: false, message: `${(totalShares - 100).toFixed(2)}% over-allocated` };
+      }
+    }
+
+    return { isValid: true, message: "" };
+  };
+
+  const shareStatus = getShareStatus();
+
+  const calculateEqualShares = () => {
+    const numSelected = Object.values(selectedMembers).filter(Boolean).length;
+    if (numSelected === 0 || !formValues.amount) return;
+
+    const totalAmount = parseFloat(formValues.amount.toString());
+    const equalShare = totalAmount / numSelected;
+
+    const newMemberShares = { ...memberShares };
+
+    Object.keys(selectedMembers).forEach((memberId) => {
+      if (selectedMembers[memberId]) {
+        newMemberShares[memberId] = {
+          amount: equalShare,
+          percentage: 100 / numSelected,
+        };
+      } else {
+        newMemberShares[memberId] = { amount: 0, percentage: 0 };
+      }
+    });
+
+    setMemberShares(newMemberShares);
+  };
+
+  const updateMemberShare = (memberId: string, value: string, type: "amount" | "percentage") => {
+    const numValue = parseFloat(value) || 0;
+    const newMemberShares = { ...memberShares };
+
+    if (type === "amount") {
+      newMemberShares[memberId] = {
+        ...newMemberShares[memberId],
+        amount: numValue,
+      };
+
+      // Update percentage based on amount if total amount is available
+      if (formValues.amount) {
+        const totalAmount = parseFloat(formValues.amount.toString());
+        if (totalAmount > 0) {
+          newMemberShares[memberId].percentage = (numValue / totalAmount) * 100;
+        }
+      }
+    } else {
+      newMemberShares[memberId] = {
+        ...newMemberShares[memberId],
+        percentage: numValue,
+      };
+
+      // Update amount based on percentage if total amount is available
+      if (formValues.amount) {
+        const totalAmount = parseFloat(formValues.amount.toString());
+        newMemberShares[memberId].amount = (numValue / 100) * totalAmount;
+      }
+    }
+
+    setMemberShares(newMemberShares);
+  };
+
+  return (
+    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <Pencil className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit Expense</DialogTitle>
+          <DialogDescription>Update expense details and click save when you&apos;re done.</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Expense Title</Label>
+              <Input
+                id="title"
+                placeholder="Enter expense title"
+                value={formValues.title}
+                onChange={handleInputChange}
+                disabled={isPending}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description (Optional)</Label>
+              <Textarea
+                id="description"
+                placeholder="Enter expense description"
+                value={formValues.description}
+                onChange={handleInputChange}
+                disabled={isPending}
+                rows={2}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="amount">Amount</Label>
+                <Input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  placeholder="0.00"
+                  value={formValues.amount}
+                  onChange={(e) => {
+                    handleInputChange(e);
+                  }}
+                  disabled={isPending}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="currency">Currency</Label>
+                <Select
+                  value={formValues.currencyId}
+                  onValueChange={(value) => handleInputChange({ target: { id: "currencyId", value } })}
+                  disabled={loadingCurrencies}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {currencies.map((currency) => (
+                      <SelectItem key={currency.id} value={currency.id}>
+                        {currency.code} ({currency.symbol})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Split Type</Label>
+              <RadioGroup
+                value={formValues.splitType}
+                onValueChange={(value) => {
+                  handleInputChange({ target: { id: "splitType", value } });
+                }}
+                className="flex space-x-4"
+                disabled={isPending}
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="equal" id="equal" />
+                  <Label htmlFor="equal" className="cursor-pointer">
+                    Equal
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="percentage" id="percentage" />
+                  <Label htmlFor="percentage" className="cursor-pointer">
+                    Percentage
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="amount" id="amount" />
+                  <Label htmlFor="amount" className="cursor-pointer">
+                    Amount
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Split With</Label>
+              <div className="border rounded-md p-4 space-y-4">
+                {members.map((member) => (
+                  <div key={member.id} className="flex items-start space-x-2">
+                    <Checkbox
+                      id={`member-${member.id}`}
+                      checked={selectedMembers[member.id] || false}
+                      onCheckedChange={(checked) => {
+                        setSelectedMembers({ ...selectedMembers, [member.id]: !!checked });
+                      }}
+                      disabled={isPending}
+                      className="mt-1"
+                    />
+                    <div className="flex-1 space-y-1">
+                      <Label htmlFor={`member-${member.id}`} className="cursor-pointer">
+                        {member.userId === userId
+                          ? "You"
+                          : `${getUser(member.userId)?.firstName} ${getUser(member.userId)?.lastName}`}
+                      </Label>
+
+                      {selectedMembers[member.id] && (
+                        <div className="flex items-center space-x-2">
+                          {formValues.splitType === "equal" ? (
+                            <div className="text-sm text-muted-foreground">
+                              {formValues.amount ? (
+                                <span>
+                                  {memberShares[member.id]?.amount.toFixed(2)} (
+                                  {memberShares[member.id]?.percentage.toFixed(2)}%)
+                                </span>
+                              ) : (
+                                <span>Equal share</span>
+                              )}
+                            </div>
+                          ) : formValues.splitType === "percentage" ? (
+                            <div className="flex items-center space-x-2 w-full">
+                              <Input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                max="100"
+                                value={memberShares[member.id]?.percentage || 0}
+                                onChange={(e) => {
+                                  updateMemberShare(member.id, e.target.value, "percentage");
+                                  handleInputChange({
+                                    target: {
+                                      id: "memberShares",
+                                      value: {
+                                        ...memberShares,
+                                        [member.id]: {
+                                          ...memberShares[member.id],
+                                          percentage: parseFloat(e.target.value),
+                                        },
+                                      },
+                                    },
+                                  });
+                                }}
+                                disabled={isPending}
+                                className="w-24"
+                              />
+                              <Percent className="h-4 w-4 text-muted-foreground" />
+                              {formValues.amount && (
+                                <span className="text-sm text-muted-foreground">
+                                  = {memberShares[member.id]?.amount.toFixed(2)}
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="flex items-center space-x-2 w-full">
+                              <Banknote className="h-4 w-4 text-muted-foreground" />
+                              <Input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value={memberShares[member.id]?.amount || 0}
+                                onChange={(e) => {
+                                  updateMemberShare(member.id, e.target.value, "amount");
+                                  handleInputChange({
+                                    target: {
+                                      id: "memberShares",
+                                      value: {
+                                        ...memberShares,
+                                        [member.id]: {
+                                          ...memberShares[member.id],
+                                          amount: parseFloat(e.target.value),
+                                        },
+                                      },
+                                    },
+                                  });
+                                }}
+                                disabled={isPending}
+                                className="w-24"
+                              />
+                              {formValues.amount && (
+                                <span className="text-sm text-muted-foreground">
+                                  = {memberShares[member.id]?.percentage.toFixed(2)}%
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {(formValues.splitType === "amount" || formValues.splitType === "percentage") && (
+                  <div className="pt-2 border-t">
+                    <div className={`text-sm ${shareStatus.isValid ? "text-green-600" : "text-amber-600"}`}>
+                      {shareStatus.message}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary" ICON={CircleSlash}>
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button loading={isPending} disabled={!isValid} ICON={Save}>
+              Save
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

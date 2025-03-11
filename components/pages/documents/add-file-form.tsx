@@ -85,7 +85,7 @@ export const AddFileForm = ({ folderId, currentFilePath, userId, allFiles }: Pro
           },
           () => {},
           () => {
-            getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            getDownloadURL(uploadTask.snapshot.ref).then(async () => {
               const url = await getDownloadURL(storageRef);
               const newId = uuidV4();
               try {
@@ -105,7 +105,7 @@ export const AddFileForm = ({ folderId, currentFilePath, userId, allFiles }: Pro
                 setOpenDialog(false);
                 toast.success(`${files[i].name} uploaded successfully`);
                 router.refresh();
-              } catch (error) {
+              } catch {
                 toast.error(`Unable to upload ${files[i].name}`);
               }
             });

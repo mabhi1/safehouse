@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
           });
         }
       });
-  } catch (err) {
+  } catch {
     return new Response("Error verifying recaptcha", {
       status: 405,
     });

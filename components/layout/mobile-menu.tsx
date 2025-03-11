@@ -52,7 +52,7 @@ export default function MobileMenu() {
                       </div>
                     </Link>
                   </SheetClose>
-                  {storage.subMenu && storage.subMenu.length && (
+                  {storage.subMenu && storage.subMenu.length > 0 && (
                     <ul className="space-y-5 ml-8">
                       {storage.subMenu.map((item) => (
                         <li key={item.title}>

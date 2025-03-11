@@ -28,9 +28,6 @@ export default function EditNoteForm({ note, userId }: { note: NotesType; userId
     initialValues: initialFormValues,
     onSubmit: async (values) => {
       const result = await editNote(note.id, values.title.trim(), values.description.trim(), userId);
-      if (result.data) {
-        router.push(`/notes/${note.id}`);
-      }
       return result;
     },
   });

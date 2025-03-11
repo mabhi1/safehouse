@@ -58,7 +58,7 @@ export const CreatePasswordForm = ({ uid }: { uid: string }) => {
         try {
           new URL(`https://${value}`);
           return true;
-        } catch (error) {
+        } catch {
           return false;
         }
       },

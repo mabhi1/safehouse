@@ -19,7 +19,7 @@ export default function Favicon({ websiteUrl }: FaviconProps) {
 
       // Google Favicon API
       setFaviconUrl(`https://www.google.com/s2/favicons?sz=64&domain=${domain}`);
-    } catch (error) {
+    } catch {
       console.error("Invalid URL:", websiteUrl);
     }
   }, [websiteUrl]);

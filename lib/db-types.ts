@@ -96,6 +96,14 @@ type BookmarkType = {
   updatedAt: Date;
 };
 
+interface UserResult {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  imageUrl: string;
+}
+
 export type {
   NotesType,
   PasswordType,
@@ -108,4 +116,5 @@ export type {
   ExpenseCategoryType,
   ExpenseCurrencyType,
   BookmarkType,
+  UserResult,
 };
