@@ -173,25 +173,6 @@ export async function deleteBillGroup(id: string, userId: string) {
 
 export async function updateBillGroup(id: string, userId: string, name: string, description: string | undefined) {
   try {
-    // Check if the user is the creator of the group
-    const group = await prisma.billGroup.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        members: {
-          where: {
-            userId,
-            isCreator: true,
-          },
-        },
-      },
-    });
-
-    if (!group || group.members.length === 0) {
-      return { data: null, error: "Unauthorized. Only the creator can update the group." };
-    }
-
     const data = await prisma.billGroup.update({
       where: {
         id,
