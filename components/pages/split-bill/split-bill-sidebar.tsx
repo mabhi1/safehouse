@@ -66,7 +66,7 @@ export default function SplitBillSidebar({ groups, userId }: SplitBillSidebarPro
               <li
                 className={cn(
                   "flex gap-2 justify-between items-center bg-background hover:bg-muted p-3 rounded-lg transition-all duration-500",
-                  isActive ? "bg-muted" : "bg-muted/40"
+                  isActive && "bg-muted"
                 )}
               >
                 <span className="truncate font-medium">{group.name}</span>
