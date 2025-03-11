@@ -14,11 +14,11 @@ import { redirect } from "next/navigation";
 export const dynamicParams = true;
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const id = (await params).id;
+  const id = params.id;
   const { data } = await getExpenseById(id);
   return {
     title: data ? data.title : "Expense",
@@ -34,24 +34,33 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function ExpenseIdPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ExpenseIdPage({ params }: Props) {
   const { userId, redirectToSignIn } = auth();
   if (!userId) return redirectToSignIn();
 
-  const id = (await params).id;
-  const { data: currentExpense, error: currentExpenseError } = await getExpenseByIdAndUser(id, userId);
-  const { data: categoryData } = await getAllCategories(userId);
-  const { data: paymentTypeData } = await getAllPaymentTypes(userId);
-  const { data: currencyData } = await getAllCurrencies();
+  const id = params.id;
 
-  if (!currentExpense || currentExpenseError) redirect("/not-found");
+  try {
+    const { data: currentExpense, error: currentExpenseError } = await getExpenseByIdAndUser(id, userId);
+    const { data: categoryData } = await getAllCategories(userId);
+    const { data: paymentTypeData } = await getAllPaymentTypes(userId);
+    const { data: currencyData } = await getAllCurrencies();
 
-  return (
-    <IndividualExpensePage
-      expense={currentExpense!}
-      categoryData={categoryData || []}
-      paymentTypeData={paymentTypeData || []}
-      currencyData={currencyData || []}
-    />
-  );
+    if (!currentExpense || currentExpenseError) {
+      console.error("Error fetching expense:", currentExpenseError);
+      redirect("/not-found");
+    }
+
+    return (
+      <IndividualExpensePage
+        expense={currentExpense}
+        categoryData={categoryData || []}
+        paymentTypeData={paymentTypeData || []}
+        currencyData={currencyData || []}
+      />
+    );
+  } catch (error) {
+    console.error("Unexpected error in ExpenseIdPage:", error);
+    redirect("/not-found");
+  }
 }
