@@ -59,7 +59,7 @@ export default function EditExpenseForm({
       amount: number;
       percentage: number | null;
     }[];
-    imageUrl?: string;
+    imageUrl?: string | null;
   };
   members: { id: string; userId: string }[];
   groupId: string;
