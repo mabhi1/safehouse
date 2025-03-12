@@ -68,7 +68,7 @@ export const useFormSubmit = <T extends Record<string, string | Date | number | 
       return validateFn ? validateFn(value) : true; // Ensure validateFn exists before calling it
     });
 
-    return requiredFieldsValid && (hasChanges || additionalChanges ? additionalChanges() : true) && optionalValid;
+    return requiredFieldsValid && (hasChanges || (additionalChanges ? additionalChanges() : true)) && optionalValid;
   }, [formValues, initialValues, optionalFields, validations]);
 
   const handleSubmit = (e: FormEvent) => {

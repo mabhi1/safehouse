@@ -8,36 +8,56 @@ export async function createBillExpense(
   paidBy: string,
   groupId: string,
   splitType: "equal" | "percentage" | "amount",
+  addedBy: string,
   description?: string,
   shares: { memberId: string; amount: number; percentage?: number }[] = []
 ) {
   try {
-    const data = await prisma.billExpense.create({
-      data: {
-        title,
-        description,
-        amount,
-        currencyId,
-        paidBy,
-        groupId,
-        splitType,
-        shares: {
-          create: shares.map((share) => ({
-            memberId: share.memberId,
-            amount: share.amount,
-            percentage: share.percentage,
-          })),
-        },
-      },
-      include: {
-        shares: {
-          include: {
-            member: true,
+    // Use a transaction to create the expense and add a history entry
+    const data = await prisma.$transaction(async (tx) => {
+      // Create the expense
+      const newExpense = await tx.billExpense.create({
+        data: {
+          title,
+          description,
+          amount,
+          currencyId,
+          paidBy,
+          addedBy,
+          groupId,
+          splitType,
+          shares: {
+            create: shares.map((share) => ({
+              memberId: share.memberId,
+              amount: share.amount,
+              percentage: share.percentage,
+            })),
           },
         },
-        currency: true,
-      },
+        include: {
+          shares: {
+            include: {
+              member: true,
+            },
+          },
+          currency: true,
+        },
+      });
+
+      // Add a history entry for the creation
+      await tx.expenseHistory.create({
+        data: {
+          expenseId: newExpense.id,
+          updatedBy: addedBy,
+          changes: {
+            creation: { old: null, new: true },
+          },
+        },
+      });
+
+      return newExpense;
     });
+
     return { data, error: null };
   } catch (error) {
     console.error("Error creating bill expense:", error);
@@ -58,6 +78,7 @@ export async function getBillExpensesByGroup(groupId: string) {
           },
         },
         currency: true,
+        history: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -83,6 +104,7 @@ export async function getBillExpenseById(id: string) {
           },
         },
         currency: true,
+        history: true,
       },
     });
     return { data, error: null };
@@ -497,10 +519,109 @@ export async function updateBillExpense(
   amount: number,
   currencyId: string,
   splitType: "equal" | "percentage" | "amount",
+  paidBy: string,
+  updatedBy: string,
   description?: string,
   shares: { memberId: string; amount: number; percentage?: number }[] = []
 ) {
   try {
+    // Get the current expense to track changes
+    const { data: currentExpense, error: fetchError } = await getBillExpenseById(id);
+
+    if (fetchError || !currentExpense) {
+      return { data: null, error: fetchError || "Expense not found" };
+    }
+
+    // Helper function for floating point comparison
+    const areNumbersEqual = (a: number, b: number, epsilon = 0.001) => {
+      return Math.abs(a - b) < epsilon;
+    };
+
+    // Prepare changes object to track what was modified
+    const changes: Record<string, { old: any; new: any }> = {};
+
+    // Only track changes if values are actually different
+    if (currentExpense.title !== title) {
+      changes.title = { old: currentExpense.title, new: title };
+    }
+
+    // Handle description changes - treat null and empty string as equivalent
+    const oldDesc = currentExpense.description || null;
+    const newDesc = description || null;
+    if (oldDesc !== newDesc && !(oldDesc === null && newDesc === "")) {
+      changes.description = { old: oldDesc, new: newDesc };
+    }
+
+    // Use floating point comparison for amount
+    if (!areNumbersEqual(currentExpense.amount, amount)) {
+      changes.amount = { old: currentExpense.amount, new: amount };
+    }
+
+    if (currentExpense.currencyId !== currencyId) {
+      changes.currencyId = { old: currentExpense.currencyId, new: currencyId };
+    }
+
+    if (currentExpense.splitType !== splitType) {
+      changes.splitType = { old: currentExpense.splitType, new: splitType };
+    }
+
+    if (currentExpense.paidBy !== paidBy) {
+      changes.paidBy = { old: currentExpense.paidBy, new: paidBy };
+    }
+
+    // Track share changes - only if they actually changed
+    const oldShares = currentExpense.shares.map((share) => ({
+      memberId: share.memberId,
+      amount: share.amount,
+      percentage: share.percentage,
+    }));
+
+    // More accurate comparison of shares
+    const sharesChanged = (() => {
+      // Different number of shares
+      if (oldShares.length !== shares.length) {
+        return true;
+      }
+
+      // Sort both arrays by memberId to ensure consistent comparison
+      const sortedOldShares = [...oldShares].sort((a, b) => a.memberId.localeCompare(b.memberId));
+      const sortedNewShares = [...shares].sort((a, b) => a.memberId.localeCompare(b.memberId));
+
+      // First check if the member IDs are the same
+      const oldMemberIds = sortedOldShares.map((share) => share.memberId).sort();
+      const newMemberIds = sortedNewShares.map((share) => share.memberId).sort();
+
+      if (JSON.stringify(oldMemberIds) !== JSON.stringify(newMemberIds)) {
+        return true;
+      }
+
+      // If member IDs are the same, check if amounts or percentages changed
+      for (let i = 0; i < sortedOldShares.length; i++) {
+        const oldShare = sortedOldShares[i];
+        const newShare = sortedNewShares.find((s) => s.memberId === oldShare.memberId);
+
+        if (!newShare) continue; // Should not happen if member IDs are the same
+
+        // Check if amount changed (with small epsilon for floating point comparison)
+        if (!areNumbersEqual(oldShare.amount, newShare.amount)) {
+          return true;
+        }
+
+        // Check if percentage changed (with small epsilon for floating point comparison)
+        const oldPercentage = oldShare.percentage || 0;
+        const newPercentage = newShare.percentage || 0;
+        if (!areNumbersEqual(oldPercentage, newPercentage)) {
+          return true;
+        }
+      }
+
+      return false;
+    })();
+
+    if (sharesChanged) {
+      changes.shares = { old: oldShares, new: shares };
+    }
+
     // First delete all existing shares
     await prisma.billShare.deleteMany({
       where: {
@@ -508,34 +629,52 @@ export async function updateBillExpense(
       },
     });
 
-    // Then update the expense and create new shares
-    const data = await prisma.billExpense.update({
-      where: {
-        id,
-      },
-      data: {
-        title,
-        description,
-        amount,
-        currencyId,
-        splitType,
-        shares: {
-          create: shares.map((share) => ({
-            memberId: share.memberId,
-            amount: share.amount,
-            percentage: share.percentage,
-          })),
+    // Create transaction to update expense and add history entry
+    const data = await prisma.$transaction(async (tx) => {
+      // Update the expense
+      const updatedExpense = await tx.billExpense.update({
+        where: {
+          id,
         },
-      },
-      include: {
-        shares: {
-          include: {
-            member: true,
+        data: {
+          title,
+          description,
+          amount,
+          currencyId,
+          splitType,
+          paidBy,
+          shares: {
+            create: shares.map((share) => ({
+              memberId: share.memberId,
+              amount: share.amount,
+              percentage: share.percentage,
+            })),
           },
         },
-        currency: true,
-      },
+        include: {
+          shares: {
+            include: {
+              member: true,
+            },
+          },
+          currency: true,
+        },
+      });
+
+      // Create history entry if there are changes
+      if (Object.keys(changes).length > 0) {
+        await tx.expenseHistory.create({
+          data: {
+            expenseId: id,
+            updatedBy,
+            changes: changes as any,
+          },
+        });
+      }
+
+      return updatedExpense;
     });
+
     return { data, error: null };
   } catch (error) {
     console.error("Error updating bill expense:", error);

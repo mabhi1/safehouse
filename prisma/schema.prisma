@@ -138,19 +138,21 @@ enum SplitType {
 }
 
 model billExpense {
-  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String?
   amount      Float
-  currency    currency    @relation(fields: [currencyId], references: [id])
-  currencyId  String      @db.ObjectId
+  currency    currency         @relation(fields: [currencyId], references: [id])
+  currencyId  String           @db.ObjectId
   paidBy      String
-  group       billGroup   @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId     String      @db.ObjectId
+  addedBy     String // Added field to track who added the expense
+  group       billGroup        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId     String           @db.ObjectId
   splitType   SplitType // "equal", "percentage", "amount"
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
   shares      billShare[]
+  history     expenseHistory[]
 }
 
 model billShare {
@@ -163,4 +165,13 @@ model billShare {
   percentage Float?
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+}
+
+model expenseHistory {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  expense   billExpense @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  expenseId String      @db.ObjectId
+  updatedBy String // User ID who made the change
+  changes   Json // JSON object containing the changes made
+  createdAt DateTime    @default(now())
 }
