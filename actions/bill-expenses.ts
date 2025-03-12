@@ -7,6 +7,7 @@ import {
   getUserExpenseSummary,
   getGroupExpenseSummary,
   updateBillExpense,
+  deleteBillExpenseImage,
 } from "@/prisma/db/billExpenses";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -19,7 +20,8 @@ export async function createBillExpenseAction(
   splitType: "equal" | "percentage" | "amount",
   paidBy: string,
   description?: string,
-  shares: { memberId: string; amount: number; percentage?: number }[] = []
+  shares: { memberId: string; amount: number; percentage?: number }[] = [],
+  imageUrl?: string
 ) {
   const { userId } = auth();
   if (!userId) {
@@ -53,7 +55,8 @@ export async function createBillExpenseAction(
     splitType,
     userId,
     description,
-    shares
+    shares,
+    imageUrl
   );
 
   if (result.data) {
@@ -112,7 +115,8 @@ export async function updateBillExpenseAction(
   splitType: "equal" | "percentage" | "amount",
   paidBy: string,
   description?: string,
-  shares: { memberId: string; amount: number; percentage?: number }[] = []
+  shares: { memberId: string; amount: number; percentage?: number }[] = [],
+  imageUrl?: string
 ) {
   const { userId } = auth();
   if (!userId) {
@@ -137,11 +141,29 @@ export async function updateBillExpenseAction(
     }
   }
 
-  const result = await updateBillExpense(id, title, amount, currencyId, splitType, paidBy, userId, description, shares);
+  const result = await updateBillExpense(
+    id,
+    title,
+    amount,
+    currencyId,
+    splitType,
+    paidBy,
+    userId,
+    description,
+    shares,
+    imageUrl
+  );
 
   if (result.data) {
     revalidatePath(`/split-bill/${groupId}/expenses`);
   }
 
+  return result;
+}
+
+export async function deleteBillExpenseImageAction(id: string, groupId: string, userId: string) {
+  const result = await deleteBillExpenseImage(id, userId);
+
+  revalidatePath(`/split-bill/${groupId}/expenses`);
   return result;
 }
