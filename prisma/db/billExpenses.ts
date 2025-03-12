@@ -10,7 +10,8 @@ export async function createBillExpense(
   splitType: "equal" | "percentage" | "amount",
   addedBy: string,
   description?: string,
-  shares: { memberId: string; amount: number; percentage?: number }[] = []
+  shares: { memberId: string; amount: number; percentage?: number }[] = [],
+  imageUrl?: string
 ) {
   try {
     // Use a transaction to create the expense and add a history entry
@@ -33,6 +34,7 @@ export async function createBillExpense(
               percentage: share.percentage,
             })),
           },
+          imageUrl,
         },
         include: {
           shares: {
@@ -522,7 +524,8 @@ export async function updateBillExpense(
   paidBy: string,
   updatedBy: string,
   description?: string,
-  shares: { memberId: string; amount: number; percentage?: number }[] = []
+  shares: { memberId: string; amount: number; percentage?: number }[] = [],
+  imageUrl?: string
 ) {
   try {
     // Get the current expense to track changes
@@ -539,6 +542,10 @@ export async function updateBillExpense(
 
     // Prepare changes object to track what was modified
     const changes: Record<string, { old: any; new: any }> = {};
+
+    if (currentExpense.imageUrl !== imageUrl) {
+      changes.imageUrl = { old: currentExpense.imageUrl, new: imageUrl };
+    }
 
     // Only track changes if values are actually different
     if (currentExpense.title !== title) {
@@ -650,6 +657,7 @@ export async function updateBillExpense(
               percentage: share.percentage,
             })),
           },
+          imageUrl,
         },
         include: {
           shares: {
@@ -679,5 +687,37 @@ export async function updateBillExpense(
   } catch (error) {
     console.error("Error updating bill expense:", error);
     return { data: null, error: "Failed to update bill expense" };
+  }
+}
+
+export async function deleteBillExpenseImage(id: string, updatedBy: string) {
+  try {
+    const { data: currentExpense, error: fetchError } = await getBillExpenseById(id);
+
+    if (fetchError || !currentExpense) {
+      return { data: null, error: fetchError || "Expense not found" };
+    }
+
+    const changes = { imageUrl: { old: currentExpense.imageUrl, new: null } };
+
+    const data = await prisma.$transaction(async (tx) => {
+      await tx.billExpense.update({
+        where: { id },
+        data: { imageUrl: { unset: true } },
+      });
+
+      await tx.expenseHistory.create({
+        data: {
+          expenseId: id,
+          updatedBy,
+          changes: changes as any,
+        },
+      });
+    });
+
+    return { data, error: null };
+  } catch (error) {
+    console.error("Error deleting bill expense image:", error);
+    return { data: null, error: "Failed to delete bill expense image" };
   }
 }

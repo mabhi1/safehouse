@@ -26,6 +26,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { UserResult } from "@/lib/db-types";
 import { getUsersByIds } from "@/actions/users";
 import { createBillExpenseAction } from "@/actions/bill-expenses";
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { v4 as uuidV4 } from "uuid";
+import "@/firebase";
 
 type CreateExpenseFormValues = {
   title: string;
@@ -48,6 +51,7 @@ export default function CreateExpenseForm({
   const [currencies, setCurrencies] = useState<currency[]>([]);
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const [users, setUsers] = useState<UserResult[]>([]);
+  const storage = getStorage();
   const [selectedMembers, setSelectedMembers] = useState<Record<string, boolean>>({});
   const [memberShares, setMemberShares] = useState<Record<string, { amount: number; percentage: number }>>({});
 
@@ -102,6 +106,29 @@ export default function CreateExpenseForm({
     fetchCurrencies();
   }, []);
 
+  const uploadImage = (file: File | undefined | null) => {
+    return new Promise((resolve, _) => {
+      if (!file) resolve(undefined);
+      const dbId = uuidV4();
+      const storageRef = ref(storage, dbId);
+
+      // 'file' comes from the Blob or File API
+      const uploadTask = uploadBytesResumable(storageRef, file as any);
+
+      uploadTask.on(
+        "state_changed",
+        () => {},
+        () => {},
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async () => {
+            const url = await getDownloadURL(storageRef);
+            resolve(url as string);
+          });
+        }
+      );
+    });
+  };
+
   const [openDialog, setOpenDialog] = useState(false);
   const initialFormValues: CreateExpenseFormValues = {
     title: "",
@@ -124,8 +151,10 @@ export default function CreateExpenseForm({
         amount: memberShares[memberId].amount,
         percentage: values.splitType === "percentage" ? memberShares[memberId].percentage : undefined,
       }));
+      const file = document.getElementById("file") as HTMLInputElement;
+      const imageUrl = (await uploadImage(file?.files?.[0])) as string | undefined;
 
-      return await createBillExpenseAction(
+      const { data, error } = await createBillExpenseAction(
         values.title.trim(),
         parseFloat(values.amount.toString()),
         values.currencyId,
@@ -133,8 +162,15 @@ export default function CreateExpenseForm({
         values.splitType,
         values.paidBy,
         values.description.trim() || undefined,
-        shares
+        shares,
+        imageUrl
       );
+      if (error && imageUrl) {
+        const imageUrlArray = imageUrl.split("/");
+        const fileRef = ref(storage, imageUrlArray[imageUrlArray.length - 1].split("?")[0]);
+        await deleteObject(fileRef);
+      }
+      return { data, error };
     },
     onSuccess: () => setOpenDialog(false),
     optionalFields: ["description"],
@@ -329,7 +365,9 @@ export default function CreateExpenseForm({
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="title">
+                Title<span className="text-destructive">*</span>
+              </Label>
               <Input
                 id="title"
                 name="title"
@@ -337,11 +375,12 @@ export default function CreateExpenseForm({
                 value={formValues.title}
                 onChange={handleInputChange}
                 required
+                autoFocus
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Description (Optional)</Label>
+              <Label htmlFor="description">Description</Label>
               <Textarea
                 id="description"
                 name="description"
@@ -354,7 +393,9 @@ export default function CreateExpenseForm({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="amount">Amount</Label>
+                <Label htmlFor="amount">
+                  Amount<span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="amount"
                   name="amount"
@@ -369,7 +410,9 @@ export default function CreateExpenseForm({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="currencyId">Currency</Label>
+                <Label htmlFor="currencyId">
+                  Currency<span className="text-destructive">*</span>
+                </Label>
                 <Select
                   name="currencyId"
                   value={formValues.currencyId}
@@ -391,7 +434,9 @@ export default function CreateExpenseForm({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="paidBy">Paid By</Label>
+              <Label htmlFor="paidBy">
+                Paid By<span className="text-destructive">*</span>
+              </Label>
               <Select
                 name="paidBy"
                 value={formValues.paidBy}
@@ -411,7 +456,9 @@ export default function CreateExpenseForm({
             </div>
 
             <div className="space-y-2">
-              <Label>Split Type</Label>
+              <Label>
+                Split Type<span className="text-destructive">*</span>
+              </Label>
               <RadioGroup
                 name="splitType"
                 value={formValues.splitType}
@@ -444,7 +491,9 @@ export default function CreateExpenseForm({
             </div>
 
             <div className="space-y-2">
-              <Label>Split With</Label>
+              <Label>
+                Split With<span className="text-destructive">*</span>
+              </Label>
               <div className="border rounded-md p-4 space-y-4">
                 {members.map((member) => (
                   <div key={member.id} className="flex items-start space-x-2">
@@ -557,6 +606,13 @@ export default function CreateExpenseForm({
                   </div>
                 )}
               </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="file">
+                Upload Receipt<span className="text-destructive">*</span>
+              </Label>
+              <Input type="file" multiple={false} id="file" name="file" required />
             </div>
           </div>
 

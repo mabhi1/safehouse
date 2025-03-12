@@ -91,6 +91,7 @@ export const useFormSubmit = <T extends Record<string, string | Date | number | 
           successRedirectUrl && router.push(successRedirectUrl);
         }
       } catch (error) {
+        console.error(error);
         toast.error("Error submitting form");
         onFailure && onFailure();
       }

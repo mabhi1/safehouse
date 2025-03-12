@@ -26,6 +26,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { UserResult } from "@/lib/db-types";
 import { getUsersByIds } from "@/actions/users";
 import { updateBillExpenseAction } from "@/actions/bill-expenses";
+import { ref, uploadBytesResumable, getDownloadURL, getStorage, deleteObject } from "firebase/storage";
+import { v4 as uuidV4 } from "uuid";
+import "@/firebase";
 
 type EditExpenseFormValues = {
   title: string;
@@ -56,6 +59,7 @@ export default function EditExpenseForm({
       amount: number;
       percentage: number | null;
     }[];
+    imageUrl?: string;
   };
   members: { id: string; userId: string }[];
   groupId: string;
@@ -64,6 +68,8 @@ export default function EditExpenseForm({
   const [currencies, setCurrencies] = useState<currency[]>([]);
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const [users, setUsers] = useState<UserResult[]>([]);
+  const [file, setFile] = useState<File | undefined>(undefined);
+  const storage = getStorage();
   const [selectedMembers, setSelectedMembers] = useState<Record<string, boolean>>({});
   const [memberShares, setMemberShares] = useState<Record<string, { amount: number; percentage: number }>>({});
   const [openDialog, setOpenDialog] = useState(false);
@@ -153,6 +159,28 @@ export default function EditExpenseForm({
     paidBy: expense.paidBy,
   };
 
+  const uploadImage = (file: File | undefined | null) => {
+    return new Promise((resolve, _) => {
+      if (!file) resolve(undefined);
+      const dbId = uuidV4();
+      const storageRef = ref(storage, dbId);
+
+      // 'file' comes from the Blob or File API
+      const uploadTask = uploadBytesResumable(storageRef, file as any);
+
+      uploadTask.on(
+        "state_changed",
+        () => {},
+        () => {},
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(async () => {
+            const url = await getDownloadURL(storageRef);
+            resolve(url as string);
+          });
+        }
+      );
+    });
+  };
   const { formValues, handleInputChange, handleSubmit, isPending, isValid } = useFormSubmit<EditExpenseFormValues>({
     initialValues: initialFormValues,
     onSubmit: async (values) => {
@@ -166,7 +194,15 @@ export default function EditExpenseForm({
         percentage: values.splitType === "percentage" ? memberShares[memberId].percentage : undefined,
       }));
 
-      return await updateBillExpenseAction(
+      if (expense.imageUrl) {
+        const imageUrlArray = expense.imageUrl.split("/");
+        const fileRef = ref(storage, imageUrlArray[imageUrlArray.length - 1].split("?")[0]);
+        await deleteObject(fileRef);
+      }
+
+      const newImageUrl = (await uploadImage(file)) as string | undefined;
+
+      const { data, error } = await updateBillExpenseAction(
         expense.id,
         values.title.trim(),
         parseFloat(values.amount.toString()),
@@ -175,8 +211,15 @@ export default function EditExpenseForm({
         values.splitType,
         values.paidBy,
         values.description.trim() || undefined,
-        shares
+        shares,
+        newImageUrl
       );
+      if (error && newImageUrl) {
+        const imageUrlArray = newImageUrl.split("/");
+        const fileRef = ref(storage, imageUrlArray[imageUrlArray.length - 1].split("?")[0]);
+        await deleteObject(fileRef);
+      }
+      return { data, error };
     },
     onSuccess: () => {
       setOpenDialog(false);
@@ -210,7 +253,7 @@ export default function EditExpenseForm({
       // Check if paidBy changed
       const paidByChanged: boolean = initialFormValues.paidBy !== expense.paidBy;
 
-      return memberSharesChanged || selectedMembersChanged || paidByChanged;
+      return memberSharesChanged || selectedMembersChanged || paidByChanged || !!file;
     },
   });
 
@@ -619,6 +662,19 @@ export default function EditExpenseForm({
                   </div>
                 )}
               </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="file">
+                Upload Receipt<span className="text-destructive">*</span>
+              </Label>
+              <Input
+                type="file"
+                multiple={false}
+                id="file"
+                name="file"
+                required
+                onChange={(e) => setFile(e.target.files?.[0])}
+              />
             </div>
           </div>
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { deleteBillExpenseAction } from "@/actions/bill-expenses";
+import { deleteBillExpenseAction, deleteBillExpenseImageAction } from "@/actions/bill-expenses";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Receipt, Trash, Calendar, AlertTriangle } from "lucide-react";
+import { Receipt, Trash, Calendar, AlertTriangle, ImageOff } from "lucide-react";
 import CreateExpenseForm from "./create-expense-form";
 import { UserResult } from "@/lib/db-types";
 import { Separator } from "@/components/ui/separator";
@@ -12,6 +12,12 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import EditExpenseForm from "./edit-expense-form";
 import ExpenseHistory from "./expense-history";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { deleteObject } from "firebase/storage";
+import { ref } from "firebase/storage";
+import { getStorage } from "firebase/storage";
+import { toast } from "sonner";
 
 interface Member {
   id: string;
@@ -55,6 +61,7 @@ interface Expense {
     changes: Record<string, { old: any; new: any }>;
     createdAt: Date;
   }[];
+  imageUrl?: string;
 }
 
 interface ExpenseListProps {
@@ -66,6 +73,7 @@ interface ExpenseListProps {
 }
 
 export default function ExpenseList({ expenses, members, groupId, userId, allUsers }: ExpenseListProps) {
+  const storage = getStorage();
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -90,6 +98,41 @@ export default function ExpenseList({ expenses, members, groupId, userId, allUse
               className={cn(expense.isPaidByRemovedUser && "border-amber-300 bg-amber-50 dark:bg-amber-950/20")}
             >
               <CardHeader className="pb-2">
+                {expense.imageUrl ? (
+                  <div>
+                    <a
+                      href={expense.imageUrl}
+                      target="_blank"
+                      className="flex flex-col items-center text-center rounded hover:bg-accent p-1 gap-1"
+                    >
+                      <Image src={expense.imageUrl} width={70} height={70} alt={expense.title} priority />
+                    </a>
+                    <Button
+                      onClick={async () => {
+                        try {
+                          const imageUrlArray = expense.imageUrl!.split("/");
+                          const fileRef = ref(storage, imageUrlArray[imageUrlArray.length - 1].split("?")[0]);
+                          await deleteObject(fileRef)
+                            .then(async () => {
+                              const { error } = await deleteBillExpenseImageAction(expense.id, groupId, userId);
+                              if (error) throw new Error();
+                              toast.success("Image deleted successfully");
+                            })
+                            .catch(() => {
+                              toast.error("Unable to delete image");
+                            });
+                        } catch (error) {
+                          console.log(error);
+                          toast.error("Unable to delete image");
+                        }
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                ) : (
+                  <ImageOff className="w-4 h-4" />
+                )}
                 <div className="flex justify-between">
                   <div className="flex items-start gap-2">
                     <div>
@@ -129,6 +172,7 @@ export default function ExpenseList({ expenses, members, groupId, userId, allUse
                           amount: share.amount,
                           percentage: share.percentage || null,
                         })),
+                        imageUrl: expense.imageUrl,
                       }}
                       members={members}
                       groupId={groupId}

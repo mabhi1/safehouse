@@ -153,6 +153,7 @@ model billExpense {
   updatedAt   DateTime         @updatedAt
   shares      billShare[]
   history     expenseHistory[]
+  imageUrl    String?
 }
 
 model billShare {

@@ -81,6 +81,12 @@ export default function ExpenseHistory({ history, users, currentUserId }: Expens
     }
 
     switch (key) {
+      case "imageUrl":
+        if (change.old === change.new) return null;
+        else if (!change.old && change.new) return `Added image`;
+        else if (change.old && !change.new) return `Removed image`;
+        else return `Changed image`;
+
       case "title":
         return `Changed title from "${change.old || "(empty)"}" to "${change.new || "(empty)"}"`;
 
