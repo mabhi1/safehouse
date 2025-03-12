@@ -11,6 +11,7 @@ import { DeleteButton } from "@/components/ui/delete-button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import EditExpenseForm from "./edit-expense-form";
+import ExpenseHistory from "./expense-history";
 
 interface Member {
   id: string;
@@ -41,12 +42,19 @@ interface Expense {
   amount: number;
   currency: Currency;
   paidBy: string;
+  addedBy: string;
   splitType: "equal" | "percentage" | "amount";
   createdAt: Date;
   updatedAt: Date;
   user: UserResult;
   isPaidByRemovedUser?: boolean;
   shares: Share[];
+  history?: {
+    id: string;
+    updatedBy: string;
+    changes: Record<string, { old: any; new: any }>;
+    createdAt: Date;
+  }[];
 }
 
 interface ExpenseListProps {
@@ -54,9 +62,10 @@ interface ExpenseListProps {
   members: Member[];
   groupId: string;
   userId: string;
+  allUsers?: UserResult[];
 }
 
-export default function ExpenseList({ expenses, members, groupId, userId }: ExpenseListProps) {
+export default function ExpenseList({ expenses, members, groupId, userId, allUsers }: ExpenseListProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -98,41 +107,46 @@ export default function ExpenseList({ expenses, members, groupId, userId }: Expe
                     )}
                   </div>
                   <div className="flex">
-                    {expense.paidBy === userId && (
-                      <EditExpenseForm
-                        expense={{
-                          id: expense.id,
-                          title: expense.title,
-                          description: expense.description,
-                          amount: expense.amount,
-                          currencyId: expense.currency.id,
-                          splitType: expense.splitType,
-                          shares: expense.shares.map((share) => ({
-                            id: share.id,
-                            memberId: share.member.id,
-                            amount: share.amount,
-                            percentage: share.percentage || null,
-                          })),
-                        }}
-                        members={members}
-                        groupId={groupId}
-                        userId={userId}
-                      />
-                    )}
-                    {expense.paidBy === userId && (
-                      <DeleteButton
-                        deleteAction={deleteBillExpenseAction}
-                        successMessage="Expense deleted successfully"
-                        id={expense.id!}
-                        uid={expense.id!}
-                        successRedirect={`/split-bill/${groupId}`}
-                        dialogDescription="This action will permanently delete the expense from our servers."
-                        hideIcon
-                        size="icon"
-                      >
-                        <Trash className="h-4 w-4" />
-                      </DeleteButton>
-                    )}
+                    <ExpenseHistory
+                      expenseId={expense.id}
+                      history={expense.history || []}
+                      users={allUsers || members.map((member) => member.user)}
+                      currentUserId={userId}
+                    />
+
+                    <EditExpenseForm
+                      expense={{
+                        id: expense.id,
+                        title: expense.title,
+                        description: expense.description,
+                        amount: expense.amount,
+                        currencyId: expense.currency.id,
+                        splitType: expense.splitType,
+                        paidBy: expense.paidBy,
+                        shares: expense.shares.map((share) => ({
+                          id: share.id,
+                          memberId: share.member.id,
+                          amount: share.amount,
+                          percentage: share.percentage || null,
+                        })),
+                      }}
+                      members={members}
+                      groupId={groupId}
+                      userId={userId}
+                    />
+
+                    <DeleteButton
+                      deleteAction={deleteBillExpenseAction}
+                      successMessage="Expense deleted successfully"
+                      id={expense.id!}
+                      uid={expense.id!}
+                      successRedirect={`/split-bill/${groupId}`}
+                      dialogDescription="This action will permanently delete the expense from our servers."
+                      hideIcon
+                      size="icon"
+                    >
+                      <Trash className="h-4 w-4" />
+                    </DeleteButton>
                   </div>
                 </div>
               </CardHeader>
@@ -143,11 +157,31 @@ export default function ExpenseList({ expenses, members, groupId, userId }: Expe
                       {expense.currency.symbol}
                       {expense.amount.toFixed(2)} {expense.currency.code}
                     </p>
-                    <p className="text-muted-foreground">
-                      Paid by {expense.user.firstName} {expense.user.lastName}
-                      {expense.paidBy === userId && <span className="ml-1 font-medium">(You)</span>}
+                    <p className="text-muted-foreground flex gap-[2px]">
+                      <span>Paid by</span>
+                      {expense.paidBy === userId ? (
+                        <span>You</span>
+                      ) : (
+                        <span>
+                          {expense.user.firstName} {expense.user.lastName}
+                        </span>
+                      )}
                       {expense.isPaidByRemovedUser && <span className="ml-1 italic">(removed)</span>}
                     </p>
+                    {expense.addedBy && (
+                      <p className="text-muted-foreground text-xs flex items-center mt-1 gap-1">
+                        <span>Added by</span>
+                        {(() => {
+                          const adder = members.find((m) => m.userId === expense.addedBy);
+                          if (!adder) return <span className="italic">Unknown user</span>;
+                          return (
+                            <span className={expense.addedBy === userId ? "font-medium" : ""}>
+                              {expense.addedBy === userId ? "You" : `${adder.user.firstName} ${adder.user.lastName}`}
+                            </span>
+                          );
+                        })()}
+                      </p>
+                    )}
                   </div>
                   <div className="text-right space-y-2">
                     <p className="font-medium capitalize">Split: {expense.splitType}</p>

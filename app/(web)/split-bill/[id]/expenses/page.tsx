@@ -75,8 +75,15 @@ export default async function ExpensesPage({ params }: { params: { id: string } 
     // Check if the expense was paid by a removed user
     const isPaidByRemovedUser = removedUserIds.includes(expense.paidBy);
 
+    // Transform history changes to the expected format
+    const transformedHistory = expense.history?.map((entry) => ({
+      ...entry,
+      changes: entry.changes as Record<string, { old: any; new: any }>,
+    }));
+
     return {
       ...expense,
+      history: transformedHistory,
       user: allUsersData!.find((user) => user.id === expense.paidBy)!,
       isPaidByRemovedUser,
       shares: expense.shares.map((share) => {
@@ -97,7 +104,13 @@ export default async function ExpensesPage({ params }: { params: { id: string } 
 
   return (
     <div className="mt-6">
-      <ExpenseList expenses={enhancedExpenses || []} members={enhancedMembers} groupId={params.id} userId={userId} />
+      <ExpenseList
+        expenses={enhancedExpenses || []}
+        members={enhancedMembers}
+        groupId={params.id}
+        userId={userId}
+        allUsers={allUsersData || []}
+      />
     </div>
   );
 }

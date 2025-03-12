@@ -33,6 +33,7 @@ type CreateExpenseFormValues = {
   amount: number;
   currencyId: string;
   splitType: "equal" | "percentage" | "amount";
+  paidBy: string;
 };
 
 export default function CreateExpenseForm({
@@ -108,13 +109,14 @@ export default function CreateExpenseForm({
     amount: 0,
     currencyId: currencies.find((currency) => currency.code === "USD")?.id || "",
     splitType: "equal",
+    paidBy: userId,
   };
 
   const { formValues, handleInputChange, handleSubmit, isPending, isValid } = useFormSubmit<CreateExpenseFormValues>({
     initialValues: initialFormValues,
     onSubmit: async (values) => {
       if (!validateShares()) {
-        return { data: "", error: "Invalid shares" };
+        return { data: null, error: "Invalid shares" };
       }
       const selectedMemberIds = Object.keys(selectedMembers).filter((id) => selectedMembers[id]);
       const shares = selectedMemberIds.map((memberId) => ({
@@ -129,6 +131,7 @@ export default function CreateExpenseForm({
         values.currencyId,
         groupId,
         values.splitType,
+        values.paidBy,
         values.description.trim() || undefined,
         shares
       );
@@ -143,6 +146,9 @@ export default function CreateExpenseForm({
       currencyId: (value) => {
         return value !== "";
       },
+      paidBy: (value) => {
+        return value !== "";
+      },
     },
   });
 
@@ -150,8 +156,27 @@ export default function CreateExpenseForm({
   useEffect(() => {
     if (formValues.splitType === "equal") {
       calculateEqualShares();
+    } else if (formValues.amount && formValues.splitType === "percentage") {
+      // Recalculate amounts when total amount changes but keep percentages the same
+      updateAmountsFromPercentages();
     }
   }, [formValues.amount, selectedMembers, formValues.splitType]);
+
+  // Add this new function to update amounts based on percentages
+  const updateAmountsFromPercentages = () => {
+    if (!formValues.amount) return;
+
+    const totalAmount = parseFloat(formValues.amount.toString());
+    const newMemberShares = { ...memberShares };
+
+    Object.keys(newMemberShares).forEach((memberId) => {
+      if (selectedMembers[memberId]) {
+        newMemberShares[memberId].amount = (newMemberShares[memberId].percentage / 100) * totalAmount;
+      }
+    });
+
+    setMemberShares(newMemberShares);
+  };
 
   const validateShares = () => {
     if (!formValues.amount) return false;
@@ -203,7 +228,6 @@ export default function CreateExpenseForm({
 
   const getShareStatus = () => {
     if (!formValues.amount) return { isValid: false, message: "" };
-
     const totalAmount = formValues.amount;
     const totalShares = getTotalShares();
 
@@ -291,25 +315,27 @@ export default function CreateExpenseForm({
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>
-        <Button mobileVariant ICON={Plus}>
+        <Button variant="default" className="gap-1">
+          <Plus className="h-4 w-4" />
           Add Expense
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add Expense</DialogTitle>
-          <DialogDescription>Enter expense details and click save when you&apos;re done.</DialogDescription>
+          <DialogTitle>Add New Expense</DialogTitle>
+          <DialogDescription>Create a new expense to split with your group members.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
+
+        <form onSubmit={handleSubmit} className="space-y-6 py-4">
+          <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Expense Title</Label>
+              <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
-                placeholder="Enter expense title"
+                name="title"
+                placeholder="Dinner, Groceries, etc."
                 value={formValues.title}
                 onChange={handleInputChange}
-                disabled={isPending}
                 required
               />
             </div>
@@ -318,11 +344,11 @@ export default function CreateExpenseForm({
               <Label htmlFor="description">Description (Optional)</Label>
               <Textarea
                 id="description"
-                placeholder="Enter expense description"
+                name="description"
+                placeholder="Add more details about this expense"
                 value={formValues.description}
                 onChange={handleInputChange}
-                disabled={isPending}
-                rows={2}
+                rows={3}
               />
             </div>
 
@@ -331,24 +357,23 @@ export default function CreateExpenseForm({
                 <Label htmlFor="amount">Amount</Label>
                 <Input
                   id="amount"
+                  name="amount"
                   type="number"
                   step="0.01"
-                  min="0.01"
+                  min="0"
                   placeholder="0.00"
                   value={formValues.amount}
-                  onChange={(e) => {
-                    handleInputChange(e);
-                  }}
-                  disabled={isPending}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="currency">Currency</Label>
+                <Label htmlFor="currencyId">Currency</Label>
                 <Select
+                  name="currencyId"
                   value={formValues.currencyId}
-                  onValueChange={(value) => handleInputChange({ target: { id: "currencyId", value } })}
+                  onValueChange={(value) => handleInputChange({ target: { id: "currencyId", value } } as any)}
                   disabled={loadingCurrencies}
                 >
                   <SelectTrigger>
@@ -366,31 +391,53 @@ export default function CreateExpenseForm({
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="paidBy">Paid By</Label>
+              <Select
+                name="paidBy"
+                value={formValues.paidBy}
+                onValueChange={(value) => handleInputChange({ target: { id: "paidBy", value } } as any)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select who paid" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users.map((user) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.id === userId ? "You" : `${user.firstName} ${user.lastName}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
               <Label>Split Type</Label>
               <RadioGroup
+                name="splitType"
                 value={formValues.splitType}
-                onValueChange={(value) => {
-                  handleInputChange({ target: { id: "splitType", value } });
-                }}
-                className="flex space-x-4"
-                disabled={isPending}
+                onValueChange={(value) =>
+                  handleInputChange({
+                    target: { id: "splitType", value },
+                  } as any)
+                }
+                className="flex flex-col space-y-1"
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="equal" id="equal" />
-                  <Label htmlFor="equal" className="cursor-pointer">
-                    Equal
+                  <Label htmlFor="equal" className="font-normal cursor-pointer">
+                    Equal Split
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="percentage" id="percentage" />
-                  <Label htmlFor="percentage" className="cursor-pointer">
-                    Percentage
+                  <Label htmlFor="percentage" className="font-normal cursor-pointer">
+                    Percentage Split
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="amount" id="amount" />
-                  <Label htmlFor="amount" className="cursor-pointer">
-                    Amount
+                  <Label htmlFor="amount" className="font-normal cursor-pointer">
+                    Amount Split
                   </Label>
                 </div>
               </RadioGroup>
@@ -515,12 +562,12 @@ export default function CreateExpenseForm({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="secondary" ICON={CircleSlash}>
+              <Button type="button" variant="outline" ICON={CircleSlash}>
                 Cancel
               </Button>
             </DialogClose>
-            <Button loading={isPending} disabled={!isValid} ICON={Save}>
-              Save
+            <Button type="submit" ICON={Save} loading={isPending} disabled={!isValid || !shareStatus.isValid}>
+              Save Expense
             </Button>
           </DialogFooter>
         </form>

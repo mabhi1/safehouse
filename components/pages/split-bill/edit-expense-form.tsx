@@ -33,6 +33,7 @@ type EditExpenseFormValues = {
   amount: number;
   currencyId: string;
   splitType: "equal" | "percentage" | "amount";
+  paidBy: string;
 };
 
 export default function EditExpenseForm({
@@ -48,6 +49,7 @@ export default function EditExpenseForm({
     amount: number;
     currencyId: string;
     splitType: "equal" | "percentage" | "amount";
+    paidBy: string;
     shares: {
       id: string;
       memberId: string;
@@ -148,13 +150,14 @@ export default function EditExpenseForm({
     amount: expense.amount,
     currencyId: expense.currencyId,
     splitType: expense.splitType,
+    paidBy: expense.paidBy,
   };
 
   const { formValues, handleInputChange, handleSubmit, isPending, isValid } = useFormSubmit<EditExpenseFormValues>({
     initialValues: initialFormValues,
     onSubmit: async (values) => {
       if (!validateShares()) {
-        return { data: "", error: "Invalid shares" };
+        return { data: null, error: "Invalid shares" };
       }
       const selectedMemberIds = Object.keys(selectedMembers).filter((id) => selectedMembers[id]);
       const shares = selectedMemberIds.map((memberId) => ({
@@ -170,6 +173,7 @@ export default function EditExpenseForm({
         values.currencyId,
         groupId,
         values.splitType,
+        values.paidBy,
         values.description.trim() || undefined,
         shares
       );
@@ -186,6 +190,9 @@ export default function EditExpenseForm({
       currencyId: (value) => {
         return value !== "";
       },
+      paidBy: (value) => {
+        return value !== "";
+      },
     },
     additionalChanges: () => {
       const memberSharesChanged = Object.keys(memberShares).some((memberId) => {
@@ -199,7 +206,11 @@ export default function EditExpenseForm({
       const selectedMembersChanged = Object.keys(selectedMembers).some(
         (memberId) => selectedMembers[memberId] !== initialSelectedMembers[memberId]
       );
-      return memberSharesChanged || selectedMembersChanged;
+
+      // Check if paidBy changed
+      const paidByChanged: boolean = initialFormValues.paidBy !== expense.paidBy;
+
+      return memberSharesChanged || selectedMembersChanged || paidByChanged;
     },
   });
 
@@ -207,8 +218,27 @@ export default function EditExpenseForm({
   useEffect(() => {
     if (formValues.splitType === "equal") {
       calculateEqualShares();
+    } else if (formValues.amount && formValues.splitType === "percentage") {
+      // Recalculate amounts when total amount changes but keep percentages the same
+      updateAmountsFromPercentages();
     }
   }, [formValues.amount, selectedMembers, formValues.splitType]);
+
+  // Add this new function to update amounts based on percentages
+  const updateAmountsFromPercentages = () => {
+    if (!formValues.amount) return;
+
+    const totalAmount = parseFloat(formValues.amount.toString());
+    const newMemberShares = { ...memberShares };
+
+    Object.keys(newMemberShares).forEach((memberId) => {
+      if (selectedMembers[memberId]) {
+        newMemberShares[memberId].amount = (newMemberShares[memberId].percentage / 100) * totalAmount;
+      }
+    });
+
+    setMemberShares(newMemberShares);
+  };
 
   const validateShares = () => {
     if (!formValues.amount) return false;
@@ -352,21 +382,22 @@ export default function EditExpenseForm({
           <Pencil className="h-4 w-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Expense</DialogTitle>
           <DialogDescription>Update expense details and click save when you&apos;re done.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-4">
+
+        <form onSubmit={handleSubmit} className="space-y-6 py-4">
+          <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Expense Title</Label>
+              <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
-                placeholder="Enter expense title"
+                name="title"
+                placeholder="Dinner, Groceries, etc."
                 value={formValues.title}
                 onChange={handleInputChange}
-                disabled={isPending}
                 required
               />
             </div>
@@ -375,11 +406,11 @@ export default function EditExpenseForm({
               <Label htmlFor="description">Description (Optional)</Label>
               <Textarea
                 id="description"
-                placeholder="Enter expense description"
+                name="description"
+                placeholder="Add more details about this expense"
                 value={formValues.description}
                 onChange={handleInputChange}
-                disabled={isPending}
-                rows={2}
+                rows={3}
               />
             </div>
 
@@ -388,24 +419,23 @@ export default function EditExpenseForm({
                 <Label htmlFor="amount">Amount</Label>
                 <Input
                   id="amount"
+                  name="amount"
                   type="number"
                   step="0.01"
-                  min="0.01"
+                  min="0"
                   placeholder="0.00"
                   value={formValues.amount}
-                  onChange={(e) => {
-                    handleInputChange(e);
-                  }}
-                  disabled={isPending}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="currency">Currency</Label>
+                <Label htmlFor="currencyId">Currency</Label>
                 <Select
+                  name="currencyId"
                   value={formValues.currencyId}
-                  onValueChange={(value) => handleInputChange({ target: { id: "currencyId", value } })}
+                  onValueChange={(value) => handleInputChange({ target: { id: "currencyId", value } } as any)}
                   disabled={loadingCurrencies}
                 >
                   <SelectTrigger>
@@ -423,31 +453,53 @@ export default function EditExpenseForm({
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="paidBy">Paid By</Label>
+              <Select
+                name="paidBy"
+                value={formValues.paidBy}
+                onValueChange={(value) => handleInputChange({ target: { id: "paidBy", value } } as any)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select who paid" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users.map((user) => (
+                    <SelectItem key={user.id} value={user.id}>
+                      {user.id === userId ? "You" : `${user.firstName} ${user.lastName}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
               <Label>Split Type</Label>
               <RadioGroup
+                name="splitType"
                 value={formValues.splitType}
-                onValueChange={(value) => {
-                  handleInputChange({ target: { id: "splitType", value } });
-                }}
-                className="flex space-x-4"
-                disabled={isPending}
+                onValueChange={(value) =>
+                  handleInputChange({
+                    target: { id: "splitType", value },
+                  } as any)
+                }
+                className="flex flex-col space-y-1"
               >
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="equal" id="equal" />
-                  <Label htmlFor="equal" className="cursor-pointer">
-                    Equal
+                  <Label htmlFor="equal" className="font-normal cursor-pointer">
+                    Equal Split
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="percentage" id="percentage" />
-                  <Label htmlFor="percentage" className="cursor-pointer">
-                    Percentage
+                  <Label htmlFor="percentage" className="font-normal cursor-pointer">
+                    Percentage Split
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="amount" id="amount" />
-                  <Label htmlFor="amount" className="cursor-pointer">
-                    Amount
+                  <Label htmlFor="amount" className="font-normal cursor-pointer">
+                    Amount Split
                   </Label>
                 </div>
               </RadioGroup>
@@ -572,12 +624,12 @@ export default function EditExpenseForm({
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="secondary" ICON={CircleSlash}>
+              <Button type="button" variant="outline" ICON={CircleSlash}>
                 Cancel
               </Button>
             </DialogClose>
-            <Button loading={isPending} disabled={!isValid} ICON={Save}>
-              Save
+            <Button type="submit" ICON={Save} loading={isPending} disabled={!isValid}>
+              Save Changes
             </Button>
           </DialogFooter>
         </form>
