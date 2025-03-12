@@ -61,7 +61,7 @@ interface Expense {
     changes: Record<string, { old: any; new: any }>;
     createdAt: Date;
   }[];
-  imageUrl?: string;
+  imageUrl?: string | null;
 }
 
 interface ExpenseListProps {
