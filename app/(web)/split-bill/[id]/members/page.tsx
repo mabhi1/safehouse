@@ -39,7 +39,7 @@ export default async function MembersPage({ params }: { params: { id: string } }
   });
 
   return (
-    <div className="mt-6">
+    <div>
       <MemberList id={params.id} members={enhancedMembers} isCreator={isCreator} userId={userId} />
     </div>
   );

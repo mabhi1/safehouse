@@ -1,23 +1,13 @@
 "use client";
 
-import { deleteBillExpenseAction, deleteBillExpenseImageAction } from "@/actions/bill-expenses";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Receipt, Trash, Calendar, AlertTriangle, ImageOff } from "lucide-react";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Receipt } from "lucide-react";
 import CreateExpenseForm from "./create-expense-form";
 import { UserResult } from "@/lib/db-types";
-import { Separator } from "@/components/ui/separator";
-import { dateFormatter } from "@/lib/utils";
-import { DeleteButton } from "@/components/ui/delete-button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import EditExpenseForm from "./edit-expense-form";
-import ExpenseHistory from "./expense-history";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { deleteObject } from "firebase/storage";
-import { ref } from "firebase/storage";
-import { getStorage } from "firebase/storage";
-import { toast } from "sonner";
+import Link from "next/link";
 
 interface Member {
   id: string;
@@ -72,8 +62,27 @@ interface ExpenseListProps {
   allUsers?: UserResult[];
 }
 
-export default function ExpenseList({ expenses, members, groupId, userId, allUsers }: ExpenseListProps) {
-  const storage = getStorage();
+export default function ExpenseList({ expenses, members, groupId, userId }: ExpenseListProps) {
+  // Calculate the amount the user is getting or has to give for each expense
+  const calculateUserBalance = (expense: Expense) => {
+    // If the user paid for the expense
+    const isPayer = expense.paidBy === userId;
+
+    // Find the user's share
+    const userShare = expense.shares.find((share) => share.member.userId === userId);
+
+    if (!userShare) return { amount: 0, isGetting: false };
+
+    if (isPayer) {
+      // User paid, so they're getting money back from others (total - their share)
+      const amountGetting = expense.amount - userShare.amount;
+      return { amount: amountGetting, isGetting: true };
+    } else {
+      // User didn't pay, so they have to give their share
+      return { amount: userShare.amount, isGetting: false };
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -91,175 +100,54 @@ export default function ExpenseList({ expenses, members, groupId, userId, allUse
           <CreateExpenseForm members={members} groupId={groupId} userId={userId} />
         </div>
       ) : (
-        <div className="space-y-4">
-          {expenses.map((expense) => (
-            <Card
-              key={expense.id}
-              className={cn(expense.isPaidByRemovedUser && "border-amber-300 bg-amber-50 dark:bg-amber-950/20")}
-            >
-              <CardHeader className="pb-2">
-                {expense.imageUrl ? (
-                  <div>
-                    <a
-                      href={expense.imageUrl}
-                      target="_blank"
-                      className="flex flex-col items-center text-center rounded hover:bg-accent p-1 gap-1"
-                    >
-                      <Image src={expense.imageUrl} width={70} height={70} alt={expense.title} priority />
-                    </a>
-                    <Button
-                      onClick={async () => {
-                        try {
-                          const imageUrlArray = expense.imageUrl!.split("/");
-                          const fileRef = ref(storage, imageUrlArray[imageUrlArray.length - 1].split("?")[0]);
-                          await deleteObject(fileRef)
-                            .then(async () => {
-                              const { error } = await deleteBillExpenseImageAction(expense.id, groupId, userId);
-                              if (error) throw new Error();
-                              toast.success("Image deleted successfully");
-                            })
-                            .catch(() => {
-                              toast.error("Unable to delete image");
-                            });
-                        } catch (error) {
-                          console.log(error);
-                          toast.error("Unable to delete image");
-                        }
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                ) : (
-                  <ImageOff className="w-4 h-4" />
-                )}
-                <div className="flex justify-between">
-                  <div className="flex items-start gap-2">
-                    <div>
-                      <CardTitle className="text-lg font-medium">{expense.title}</CardTitle>
-                      {expense.description && <CardDescription>{expense.description}</CardDescription>}
-                    </div>
-                    {expense.isPaidByRemovedUser && (
-                      <Badge
-                        variant="outline"
-                        className="bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700 flex items-center gap-1"
-                      >
-                        <AlertTriangle className="h-3 w-3" />
-                        Removed user
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex">
-                    <ExpenseHistory
-                      expenseId={expense.id}
-                      history={expense.history || []}
-                      users={allUsers || members.map((member) => member.user)}
-                      currentUserId={userId}
-                    />
+        <div className="flex flex-col gap-2 md:gap-5">
+          {expenses.map((expense) => {
+            const { amount, isGetting } = calculateUserBalance(expense);
 
-                    <EditExpenseForm
-                      expense={{
-                        id: expense.id,
-                        title: expense.title,
-                        description: expense.description,
-                        amount: expense.amount,
-                        currencyId: expense.currency.id,
-                        splitType: expense.splitType,
-                        paidBy: expense.paidBy,
-                        shares: expense.shares.map((share) => ({
-                          id: share.id,
-                          memberId: share.member.id,
-                          amount: share.amount,
-                          percentage: share.percentage || null,
-                        })),
-                        imageUrl: expense.imageUrl,
-                      }}
-                      members={members}
-                      groupId={groupId}
-                      userId={userId}
-                    />
-
-                    <DeleteButton
-                      deleteAction={deleteBillExpenseAction}
-                      successMessage="Expense deleted successfully"
-                      id={expense.id!}
-                      uid={expense.id!}
-                      successRedirect={`/split-bill/${groupId}`}
-                      dialogDescription="This action will permanently delete the expense from our servers."
-                      hideIcon
-                      size="icon"
-                    >
-                      <Trash className="h-4 w-4" />
-                    </DeleteButton>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pb-2">
-                <div className="flex justify-between text-sm">
-                  <div>
-                    <p className="font-medium">
-                      {expense.currency.symbol}
-                      {expense.amount.toFixed(2)} {expense.currency.code}
-                    </p>
-                    <p className="text-muted-foreground flex gap-[2px]">
-                      <span>Paid by</span>
-                      {expense.paidBy === userId ? (
-                        <span>You</span>
+            return (
+              <Link href={`/split-bill/${groupId}/expenses/${expense.id}`} key={expense.id}>
+                <Card
+                  className={cn(
+                    "hover:bg-accent/50 transition-colors cursor-pointer",
+                    expense.isPaidByRemovedUser && "border-amber-300 bg-amber-50 dark:bg-amber-950/20"
+                  )}
+                >
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      {expense.imageUrl ? (
+                        <div className="h-12 w-12 overflow-hidden">
+                          <Image
+                            src={expense.imageUrl}
+                            width={50}
+                            height={50}
+                            alt={expense.title}
+                            className="w-full h-full rounded-md object-fill"
+                            priority
+                          />
+                        </div>
                       ) : (
-                        <span>
-                          {expense.user.firstName} {expense.user.lastName}
-                        </span>
+                        <div className="w-12 h-12 bg-muted rounded-md flex items-center justify-center flex-shrink-0">
+                          <Receipt className="w-6 h-6 text-muted-foreground" />
+                        </div>
                       )}
-                      {expense.isPaidByRemovedUser && <span className="ml-1 italic">(removed)</span>}
-                    </p>
-                    {expense.addedBy && (
-                      <p className="text-muted-foreground text-xs flex items-center mt-1 gap-1">
-                        <span>Added by</span>
-                        {(() => {
-                          const adder = members.find((m) => m.userId === expense.addedBy);
-                          if (!adder) return <span className="italic">Unknown user</span>;
-                          return (
-                            <span className={expense.addedBy === userId ? "font-medium" : ""}>
-                              {expense.addedBy === userId ? "You" : `${adder.user.firstName} ${adder.user.lastName}`}
-                            </span>
-                          );
-                        })()}
-                      </p>
-                    )}
-                  </div>
-                  <div className="text-right space-y-2">
-                    <p className="font-medium capitalize">Split: {expense.splitType}</p>
-                    <div className="text-muted-foreground">
-                      {expense.shares.map((share) => (
-                        <p
-                          key={share.id}
-                          className={cn(
-                            "text-xs",
-                            share.member.isRemovedUser && "italic text-amber-600 dark:text-amber-400"
-                          )}
-                        >
-                          {share.member.userId === userId
-                            ? "You "
-                            : `${share.member.user.firstName} ${share.member.user.lastName} `}
-                          {share.member.isRemovedUser && "(removed) "}
-                          {expense.currency.symbol}
-                          {share.amount.toFixed(2)}
-                          {expense.splitType === "percentage" && share.percentage && (
-                            <span> ({share.percentage.toFixed(1)}%)</span>
-                          )}
-                        </p>
-                      ))}
+                      <CardTitle className="text-lg font-medium">{expense.title}</CardTitle>
                     </div>
-                  </div>
-                </div>
-                <Separator className="my-2" />
-                <p className="text-muted-foreground text-xs flex gap-1 items-center">
-                  <Calendar className="h-4 w-4" />
-                  <span className="mt-[2px]">{dateFormatter(expense.updatedAt)}</span>
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+
+                    <div
+                      className={cn(
+                        "text-right font-medium",
+                        isGetting ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
+                      )}
+                    >
+                      {isGetting ? "+" : "-"}
+                      {expense.currency.symbol}
+                      {amount.toFixed(2)}
+                    </div>
+                  </CardHeader>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

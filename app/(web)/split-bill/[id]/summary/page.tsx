@@ -227,7 +227,7 @@ export default async function SummaryPage({ params }: { params: { id: string } }
     }) || [];
 
   return (
-    <div className="mt-6">
+    <div>
       <ExpenseSummary
         groupId={params.id}
         userId={userId}

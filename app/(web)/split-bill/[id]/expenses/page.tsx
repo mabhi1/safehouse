@@ -103,7 +103,7 @@ export default async function ExpensesPage({ params }: { params: { id: string } 
   });
 
   return (
-    <div className="mt-6">
+    <div>
       <ExpenseList
         expenses={enhancedExpenses || []}
         members={enhancedMembers}
