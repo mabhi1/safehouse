@@ -17,11 +17,11 @@ export default async function Layout({ children }: { children: React.ReactNode }
   const { data: notes } = await getNotesByUser(userId);
 
   return (
-    <div className="flex flex-col md:flex-row gap-5 md:gap-14 md:pt-4">
+    <div className="flex-1 h-full flex flex-col md:flex-row gap-5 md:gap-14 md:pt-4">
       <div className="hidden lg:block">
         <NotesSidebar notes={notes || []} userId={userId} />
       </div>
-      <div className="flex-1">{children}</div>
+      <div className="flex flex-col flex-1">{children}</div>
     </div>
   );
 }
