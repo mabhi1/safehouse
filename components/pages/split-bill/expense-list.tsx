@@ -100,7 +100,7 @@ export default function ExpenseList({ expenses, members, groupId, userId }: Expe
           <CreateExpenseForm members={members} groupId={groupId} userId={userId} />
         </div>
       ) : (
-        <div className="flex flex-col gap-2 md:gap-5">
+        <div className="flex flex-col gap-2">
           {expenses.map((expense) => {
             const { amount, isGetting } = calculateUserBalance(expense);
 
@@ -112,7 +112,7 @@ export default function ExpenseList({ expenses, members, groupId, userId }: Expe
                     expense.isPaidByRemovedUser && "border-amber-300 bg-amber-50 dark:bg-amber-950/20"
                   )}
                 >
-                  <CardHeader className="flex flex-row items-center justify-between">
+                  <CardHeader className="flex flex-row items-center justify-between p-4">
                     <div className="flex items-center gap-4">
                       {expense.imageUrl ? (
                         <div className="h-12 w-12 overflow-hidden">
@@ -130,7 +130,7 @@ export default function ExpenseList({ expenses, members, groupId, userId }: Expe
                           <Receipt className="w-6 h-6 text-muted-foreground" />
                         </div>
                       )}
-                      <CardTitle className="text-lg font-medium">{expense.title}</CardTitle>
+                      <CardTitle className="text-base font-normal">{expense.title}</CardTitle>
                     </div>
 
                     <div

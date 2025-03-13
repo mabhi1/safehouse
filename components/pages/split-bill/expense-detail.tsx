@@ -58,8 +58,13 @@ export default function ExpenseDetail({ expense, members, groupId, userId, allUs
         </Link>
       </div>
 
-      <Card className={cn(expense.isPaidByRemovedUser && "border-amber-300 bg-amber-50 dark:bg-amber-950/20")}>
-        <CardHeader className="pb-2">
+      <Card
+        className={cn(
+          expense.isPaidByRemovedUser && "border-amber-300 bg-amber-50 dark:bg-amber-950/20",
+          "border-0 shadow-none"
+        )}
+      >
+        <CardHeader className="p-0 pb-2">
           <div className="flex justify-between">
             <div className="flex items-start gap-2">
               <div>
@@ -122,7 +127,7 @@ export default function ExpenseDetail({ expense, members, groupId, userId, allUs
           </div>
         </CardHeader>
 
-        <CardContent>
+        <CardContent className="p-0">
           {expense.imageUrl && (
             <div className="mb-4">
               <div className="flex flex-col items-center mb-2">
@@ -145,11 +150,11 @@ export default function ExpenseDetail({ expense, members, groupId, userId, allUs
             </div>
           )}
 
-          <div className="flex justify-between text-sm">
+          <div className="flex justify-between">
             <div>
               <p className="font-medium">
                 {expense.currency.symbol}
-                {expense.amount.toFixed(2)} {expense.currency.code}
+                {expense.amount.toFixed(2)}
               </p>
               <p className="text-muted-foreground flex gap-[2px]">
                 <span>Paid by</span>
@@ -169,7 +174,7 @@ export default function ExpenseDetail({ expense, members, groupId, userId, allUs
                 {expense.shares.map((share) => (
                   <p
                     key={share.id}
-                    className={cn("text-xs", share.member.isRemovedUser && "italic text-amber-600 dark:text-amber-400")}
+                    className={cn(share.member.isRemovedUser && "italic text-amber-600 dark:text-amber-400")}
                   >
                     {share.member.userId === userId
                       ? "You "
@@ -186,14 +191,8 @@ export default function ExpenseDetail({ expense, members, groupId, userId, allUs
             </div>
           </div>
 
-          <div className="mt-6 p-4 rounded-md bg-muted">
-            <h3 className="text-sm font-medium mb-2">Your balance for this expense</h3>
-            <p
-              className={cn(
-                "text-lg font-bold",
-                isGetting ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
-              )}
-            >
+          <div className="mt-6 p-2 pl-4 rounded-md bg-muted">
+            <p className={cn(isGetting ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
               {isGetting ? "You get " : "You owe "}
               {expense.currency.symbol}
               {balanceAmount.toFixed(2)} {expense.currency.code}
