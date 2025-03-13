@@ -112,8 +112,12 @@ export default function ExpenseList({ expenses, members, groupId, userId }: Expe
                     expense.isPaidByRemovedUser && "border-amber-300 bg-amber-50 dark:bg-amber-950/20"
                   )}
                 >
-                  <CardHeader className="flex flex-row items-center justify-between p-4 gap-2">
-                    <div className="flex items-center gap-4">
+                  <CardHeader className="flex flex-row items-center p-4 gap-4 space-y-0">
+                    <div className="flex flex-col justify-center items-center">
+                      <span>{new Date(expense.createdAt).getDate()}</span>
+                      <span>{new Date(expense.createdAt).toLocaleString("default", { month: "short" })}</span>
+                    </div>
+                    <div className="flex items-center gap-4 mr-auto">
                       {expense.imageUrl ? (
                         <div className="h-12 w-12 overflow-hidden">
                           <Image
@@ -130,7 +134,7 @@ export default function ExpenseList({ expenses, members, groupId, userId }: Expe
                           <Receipt className="w-6 h-6 text-muted-foreground" />
                         </div>
                       )}
-                      <CardTitle className="text-base font-normal">{expense.title}</CardTitle>
+                      <CardTitle className="text-sm font-normal">{expense.title}</CardTitle>
                     </div>
 
                     <div
