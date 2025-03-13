@@ -243,7 +243,7 @@ export default async function BillGroupLayout({
             <CardContent>
               {Object.keys(currentUserSummary.credits).length > 0 &&
               Object.values(currentUserSummary.owes).some((amount) => !isEffectivelyZero(amount)) ? (
-                <div className="space-y-4">
+                <div className="space-y-1">
                   {Object.entries(currentUserSummary.credits).map(([creditorId, currencies]) => {
                     const creditor = enhancedGroupSummary.find((m) => m.userId === creditorId);
                     const isRemovedUser = removedUserIds.includes(creditorId);
@@ -256,7 +256,7 @@ export default async function BillGroupLayout({
                       <div
                         key={creditorId}
                         className={cn(
-                          "flex flex-col md:flex-row justify-between border-b pb-3 last:border-0 last:pb-0",
+                          "flex justify-between border-b pb-1 last:border-0 last:pb-0",
                           isRemovedUser && "bg-amber-50 dark:bg-amber-950/20 p-2 rounded-md"
                         )}
                       >
@@ -306,7 +306,7 @@ export default async function BillGroupLayout({
             <CardContent>
               {Object.keys(currentUserSummary.debts).length > 0 &&
               Object.entries(currentUserSummary.balance).some(([_, amount]) => amount > 0) ? (
-                <div className="space-y-4">
+                <div className="space-y-1">
                   {Object.entries(currentUserSummary.debts).map(([debtorId, currencies]) => {
                     const debtor = enhancedGroupSummary.find((m) => m.userId === debtorId);
                     const isRemovedUser = removedUserIds.includes(debtorId);
@@ -319,7 +319,7 @@ export default async function BillGroupLayout({
                       <div
                         key={debtorId}
                         className={cn(
-                          "border-b pb-3 last:border-0 last:pb-0 flex flex-col md:flex-row justify-between",
+                          "border-b pb-1 last:border-0 last:pb-0 flex justify-between",
                           isRemovedUser && "bg-amber-50 dark:bg-amber-950/20 p-2 rounded-md"
                         )}
                       >
