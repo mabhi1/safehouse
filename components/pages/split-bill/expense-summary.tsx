@@ -326,7 +326,7 @@ export default function ExpenseSummary({
             >
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center flex-wrap gap-2">
-                  <span className="font-medium">{member.name}</span>
+                  <span className="font-medium">{member.userId === userId ? "You" : member.name}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -360,7 +360,7 @@ export default function ExpenseSummary({
                             >
                               <div className="flex items-center gap-2">
                                 <p className="font-medium">
-                                  {creditor ? creditor.name : "Unknown User"}
+                                  {creditor ? (creditor.userId === userId ? "You" : creditor.name) : "Unknown User"}
                                   {isRemovedUser && <span className="ml-1 italic">(removed)</span>}
                                 </p>
                               </div>
@@ -389,7 +389,7 @@ export default function ExpenseSummary({
                   <div>
                     <h4 className="text-sm font-medium mb-2 flex items-center">
                       <ArrowUp className="h-3 w-3 mr-1 text-green-500" />
-                      Is Owed
+                      Owed
                     </h4>
                     {Object.keys(member.debts).length > 0 &&
                     Object.entries(member.balance).some(([_, amount]) => amount > 0) ? (
@@ -414,7 +414,7 @@ export default function ExpenseSummary({
                             >
                               <div className="flex items-center gap-2">
                                 <p className="font-medium">
-                                  {debtor ? debtor.name : "Unknown User"}
+                                  {debtor ? (debtor.userId === userId ? "You" : debtor.name) : "Unknown User"}
                                   {isRemovedUser && <span className="ml-1 italic">(removed)</span>}
                                 </p>
                               </div>
