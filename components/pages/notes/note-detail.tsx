@@ -15,7 +15,7 @@ interface NoteDetailProps {
 
 export default function NoteDetail({ note, userId }: NoteDetailProps) {
   const { id, title, description, updatedAt } = note;
-  console.log(description);
+
   return (
     <div className="flex flex-col gap-5">
       <Link href="/notes" className="flex lg:hidden items-center mr-auto gap-2">
