@@ -104,6 +104,51 @@ interface UserResult {
   imageUrl: string;
 }
 
+interface Expense {
+  id: string;
+  title: string;
+  description: string | null;
+  amount: number;
+  currency: Currency;
+  paidBy: string;
+  addedBy: string;
+  splitType: "equal" | "percentage" | "amount";
+  createdAt: Date;
+  updatedAt: Date;
+  user: UserResult;
+  isPaidByRemovedUser?: boolean;
+  shares: Share[];
+  history?: {
+    id: string;
+    updatedBy: string;
+    changes: Record<string, { old: any; new: any }>;
+    createdAt: Date;
+  }[];
+  imageUrl?: string | null;
+}
+
+interface Member {
+  id: string;
+  userId: string;
+  user: UserResult;
+}
+
+interface Share {
+  id: string;
+  amount: number;
+  percentage?: number | null;
+  member: Member & {
+    isRemovedUser?: boolean;
+  };
+}
+
+interface Currency {
+  id: string;
+  code: string;
+  name: string;
+  symbol: string;
+}
+
 export type {
   NotesType,
   PasswordType,
@@ -117,4 +162,8 @@ export type {
   ExpenseCurrencyType,
   BookmarkType,
   UserResult,
+  Expense,
+  Member,
+  Share,
+  Currency,
 };

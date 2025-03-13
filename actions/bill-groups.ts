@@ -2,16 +2,13 @@
 
 import {
   createBillGroup,
-  getBillGroupsByUser,
   getBillGroupById,
   updateBillGroup,
   deleteBillGroup,
   addMemberToBillGroup,
   removeMemberFromBillGroup,
-  isUserGroupCreator,
 } from "@/prisma/db/billGroups";
 import { memberHasOutstandingBalances } from "@/prisma/db/billExpenses";
-import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export async function createBillGroupAction(userId: string, name: string, description?: string) {

@@ -154,9 +154,7 @@ export async function updateBillExpenseAction(
     imageUrl
   );
 
-  if (result.data) {
-    revalidatePath(`/split-bill/${groupId}/expenses`);
-  }
+  revalidatePath(`/split-bill/${groupId}/expenses`);
 
   return result;
 }

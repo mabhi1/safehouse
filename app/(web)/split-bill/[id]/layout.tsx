@@ -203,7 +203,7 @@ export default async function BillGroupLayout({
         <MoveLeft className="w-4 h-4" />
         <span className="text-lg capitalize">All Groups</span>
       </Link>
-      <div className="flex gap-5 items-start">
+      <div className="flex gap-2 md:gap-5 items-start">
         <div className="mr-auto">
           <h2 className="text-2xl">{group.name}</h2>
           <p className="text-xs text-muted-foreground">{group.description || "Manage your bill group and members."}</p>

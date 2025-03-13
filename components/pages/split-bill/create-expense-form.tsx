@@ -609,10 +609,8 @@ export default function CreateExpenseForm({
             </div>
 
             <div className="flex flex-col gap-2">
-              <Label htmlFor="file">
-                Upload Receipt<span className="text-destructive">*</span>
-              </Label>
-              <Input type="file" multiple={false} id="file" name="file" required />
+              <Label htmlFor="file">Upload Receipt</Label>
+              <Input type="file" multiple={false} id="file" name="file" />
             </div>
           </div>
 
