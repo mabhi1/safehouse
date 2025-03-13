@@ -112,7 +112,7 @@ export default function ExpenseList({ expenses, members, groupId, userId }: Expe
                     expense.isPaidByRemovedUser && "border-amber-300 bg-amber-50 dark:bg-amber-950/20"
                   )}
                 >
-                  <CardHeader className="flex flex-row items-center justify-between p-4">
+                  <CardHeader className="flex flex-row items-center justify-between p-4 gap-2">
                     <div className="flex items-center gap-4">
                       {expense.imageUrl ? (
                         <div className="h-12 w-12 overflow-hidden">

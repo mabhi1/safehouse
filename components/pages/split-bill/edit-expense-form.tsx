@@ -194,13 +194,13 @@ export default function EditExpenseForm({
         percentage: values.splitType === "percentage" ? memberShares[memberId].percentage : undefined,
       }));
 
-      if (expense.imageUrl) {
+      const newImageUrl = (await uploadImage(file)) as string | undefined;
+
+      if (expense.imageUrl && newImageUrl) {
         const imageUrlArray = expense.imageUrl.split("/");
         const fileRef = ref(storage, imageUrlArray[imageUrlArray.length - 1].split("?")[0]);
         await deleteObject(fileRef);
       }
-
-      const newImageUrl = (await uploadImage(file)) as string | undefined;
 
       const { data, error } = await updateBillExpenseAction(
         expense.id,
@@ -212,8 +212,9 @@ export default function EditExpenseForm({
         values.paidBy,
         values.description.trim() || undefined,
         shares,
-        newImageUrl
+        newImageUrl || expense.imageUrl || undefined
       );
+
       if (error && newImageUrl) {
         const imageUrlArray = newImageUrl.split("/");
         const fileRef = ref(storage, imageUrlArray[imageUrlArray.length - 1].split("?")[0]);
