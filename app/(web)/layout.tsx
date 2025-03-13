@@ -22,7 +22,7 @@ export default async function WebLayout({ children }: { children: React.ReactNod
   return (
     <MasterPasswordProvider salt={data?.salt || ""} hash={data?.hash || ""}>
       <Header />
-      <main className="w-full max-w-[90rem] mx-auto pt-1 px-5 pb-5 text-sm flex-1">{children}</main>
+      <main className="flex flex-col w-full max-w-[90rem] mx-auto pt-1 px-5 pb-5 text-sm flex-1">{children}</main>
       <Footer />
     </MasterPasswordProvider>
   );

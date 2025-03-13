@@ -28,19 +28,22 @@ export default function EditNoteForm({ note, userId }: { note: NotesType; userId
     initialValues: initialFormValues,
     onSubmit: async (values) => {
       const result = await editNote(note.id, values.title.trim(), values.description.trim(), userId);
+      if (result.data) {
+        router.push(`/notes/${result.data.id}`);
+      }
       return result;
     },
   });
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex-1 flex flex-col gap-5">
       <Link href="/notes" className="flex lg:hidden items-center mr-auto gap-2">
         <MoveLeft className="w-4 h-4" />
         <span className="text-lg capitalize">All Notes</span>
       </Link>
 
-      <form onSubmit={handleSubmit}>
-        <div className="flex flex-col gap-5">
+      <form onSubmit={handleSubmit} className="flex flex-col flex-1">
+        <div className="flex-1 flex flex-col gap-5">
           <div className="flex items-center justify-between lg:gap-20">
             <Input
               name="title"
@@ -80,7 +83,7 @@ export default function EditNoteForm({ note, userId }: { note: NotesType; userId
             required
             onChange={handleInputChange}
             rows={10}
-            className="min-h-[200px] border-none resize-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="flex-1 min-h-[200px] border-none resize-none p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
       </form>

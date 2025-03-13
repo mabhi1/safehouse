@@ -15,7 +15,7 @@ interface NoteDetailProps {
 
 export default function NoteDetail({ note, userId }: NoteDetailProps) {
   const { id, title, description, updatedAt } = note;
-
+  console.log(description);
   return (
     <div className="flex flex-col gap-5">
       <Link href="/notes" className="flex lg:hidden items-center mr-auto gap-2">
@@ -46,13 +46,10 @@ export default function NoteDetail({ note, userId }: NoteDetailProps) {
       </div>
 
       <div>
-        <div className="whitespace-pre-wrap">
-          {description.split("\n").map((line, index) => (
-            <div key={index} className="break-words">
-              {line}
-            </div>
-          ))}
-        </div>
+        <div
+          className="whitespace-pre-wrap flex flex-col gap-1"
+          dangerouslySetInnerHTML={{ __html: description }}
+        ></div>
       </div>
     </div>
   );
