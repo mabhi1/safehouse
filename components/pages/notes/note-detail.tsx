@@ -17,7 +17,7 @@ export default function NoteDetail({ note, userId }: NoteDetailProps) {
   const { id, title, description, updatedAt } = note;
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 min-w-0">
       <Link href="/notes" className="flex lg:hidden items-center mr-auto gap-2">
         <MoveLeft className="w-4 h-4" />
         <span className="text-lg capitalize">All Notes</span>
@@ -47,7 +47,7 @@ export default function NoteDetail({ note, userId }: NoteDetailProps) {
 
       <div>
         <div
-          className="whitespace-pre-wrap flex flex-col gap-1"
+          className="whitespace-pre-wrap flex flex-col gap-1 w-full break-all"
           dangerouslySetInnerHTML={{ __html: description }}
         ></div>
       </div>
